@@ -1,0 +1,309 @@
+h3.carusel-first{
+    font-size: 70px;
+    font-weight: bold;
+    color: #ffb700;
+    text-align: left;
+    margin-left: -30px;
+    padding-bottom: 160px;
+    font-family: "Comic Sans MS";
+}
+
+.carusel-second h3{
+    position: relative;
+    margin-bottom: 50px;
+    text-align: left;
+    text-justify: inter-word;
+    font-size: 50px;
+    font-weight: bold;
+    font-family: "Comic Sans MS";
+}
+
+.carusel-second p{
+    position: relative;
+    margin-bottom: 100px;
+    text-align: left;
+    text-justify: inter-word;
+    font-size: 15px;
+    font-family: "Comic Sans MS";
+}
+
+.carusel-third h3{
+    position: relative;
+    margin-bottom: 10px;
+    text-align: left;
+    text-justify: inter-word;
+    font-size: 40px;
+    font-weight: bold;
+    font-family: "Comic Sans MS";
+}
+
+.carusel-third p{
+    position: relative;
+    margin-bottom: 120px;
+    text-align: left;
+    text-justify: inter-word;
+    font-size: 20px;
+    font-family: "Comic Sans MS";
+}
+
+.carusel-third ul{
+    list-style-type: none
+}
+
+
+
+.search-sec{
+    background-color: #5a84be;
+    height: 150px;
+    padding: 2rem;
+}
+
+.search-desc{
+    color:white;
+    font-family: "Comic Sans MS";
+}
+
+.search-slt{
+    display: block;
+    width: 100%;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #55595c;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    height: calc(3rem + 2px) !important;
+    border-radius:0;
+}
+.wrn-btn{
+    font-family: "Comic Sans MS";
+    width: 100%;
+    font-size: 16px;
+    font-weight: 400;
+    text-transform: capitalize;
+    margin-top: 40px;
+    height: calc(3rem + 2px) !important;
+    border-radius:0;
+}
+
+
+
+
+
+.country-image-container{
+    display: block;
+    position: relative;
+    left: 10%;
+    top: 15%;
+}
+
+
+
+.main h2{
+    font-size: 25px;
+    font-family: "Comic Sans MS";
+}
+
+.main-line{
+    content: " ";
+    position: absolute;
+    width: 50%;
+    height: 2px;
+    margin-top: -5px;
+    color: #0066f0;
+    left: calc((100% - 50%) / 2);
+}
+
+col-lg-4 col-md-6 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.trip_dir {
+    margin: 0 5px 10px;
+    height: 250px;
+    overflow: hidden;
+    padding: 0;
+    width: calc(33.33333333% - 10px);
+    cursor: pointer;
+}
+
+
+
+
+.row:before{
+    display: table;
+    content: " ";
+}
+
+
+.highlight_trip{
+    position: absolute;
+    width: 60%;
+    padding: 15px 25px;
+    top: 30px;
+    left: 15%;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-transition: all ease-in-out 500ms;
+}
+
+
+.country-image-container:hover .highlight_trip{
+    position: absolute;
+    width: 100%;
+    padding: 0 0 ;
+    top: 0;
+    left: 0;
+    right: 10px;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-transition: all ease-in-out 500ms;
+}
+
+
+.country-image-container:hover .highlight_trip h3{
+   margin-right: 30px;
+}
+
+.country-image-container:hover .trip-price{
+    margin-left: -10px;
+}
+
+.highlight_trip > h3{
+    display: block;
+    position: center;
+    font-size: 25px;
+    font-family: "Comic Sans MS";
+    text-transform: uppercase;
+    color: black;
+    text-align: center;
+}
+
+
+.highlight_trip > span{
+    display: block;
+    width: 100%;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: "Comic Sans MS";
+    margin-top: 0;
+    text-align: center;
+}
+
+.dark_cover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 10px;
+    height: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.15);
+}
+
+.info-container {
+    position: absolute;
+    width: 89%;
+    background: rgba(0,0,0,0.50);
+    top: 25px;
+    left: 0;
+    right: 15px;
+    color: #ffffff;
+    font-family: "Comic Sans MS";
+    font-size: 12px;
+    text-align: justify;
+    visibility: hidden;
+}
+
+.country-image-container:hover .info-container{
+    visibility: visible;
+}
+
+
+
+
+
+.trip-info-sections h3 {
+    display: block;
+    font-size: 1.17em;
+    margin-block-end: 1em;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    font-weight: bold;
+    font-family: "Comic Sans MS";
+    color: #0066f0;
+    text-align: center;
+}
+
+.trip-info-sections {
+    background: transparent;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 24px;
+    max-height: 1000px;
+    overflow: hidden;
+    position: relative;
+    transition: all .3s ease-in-out;
+}
+
+
+.trip-info-sect{
+    max-width:415px;
+}
+
+.trip-info {
+    text-align: justify;
+    color: #020202;
+    font-size: 14px;
+    margin-top: 48px;
+    padding-bottom: 32px;
+    padding-top: 10px;
+}
+
+.read-more-state {
+    display: none;
+}
+.read-more-target {
+    opacity: 0;
+    max-height: 0;
+    max-width: 30px;
+    font-size: 0;
+    transition: .25s ease;
+}
+
+.read-more-state:checked ~ .read-more-wrap .read-more-target {
+    opacity: 1;
+    font-size: inherit;
+    max-height: 999em;
+    width: 50px;
+}
+
+.read-more-state ~ .read-more-trigger:before {
+    content: 'Czytaj więcej';
+}
+
+.read-more-state:checked ~ .read-more-trigger:before {
+    content: 'Czytaj mniej';
+}
+
+.read-more-trigger {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0 .5em;
+    color: #1e5799;
+    font-size: .9em;
+    line-height: 2;
+    border: 1px solid #1e5799;
+    border-radius: .25em;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.show-text {
+    display: none;
+}
+
+.show-text:target {
+    display: block;
+}

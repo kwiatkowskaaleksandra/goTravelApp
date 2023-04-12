@@ -1,0 +1,102 @@
+.navbar-brand-menu{
+    margin-left: 40px;
+}
+
+.dropdown-item{
+    height: 130px;
+}
+
+.custom-dropdown-menu{
+    margin-left: 50px;
+    color: black;
+}
+
+.ml-auto{
+    font-family: "Comic Sans MS";
+}
+
+a.nav-link.navbar-menu {
+    color: black;
+}
+
+.custom-dropdown-menu.dropdown.nav-item.show, a#basic-nav-dropdown {
+    color:black;
+}
+
+.navbar-menu:hover, .custom-dropdown-menu:hover,.dropdown-item:hover{
+    background: #0066f0;
+    border-radius: 10px;
+    border-color: #0066f0;
+}
+
+.custom-dropdown-menu .dropdown-menu {
+    transition: all 0.3s;
+    opacity: 0;
+    visibility: hidden;
+    margin-top: 0;
+}
+
+.dropdown-menu.show{
+    width: 400px;
+}
+
+.custom-dropdown-menu .dropdown-toggle:hover + .dropdown-menu,
+.custom-dropdown-menu .dropdown-menu:hover {
+    opacity: 1;
+    visibility: visible;
+    margin-top: 0;
+}
+
+.navbar-menu{
+    margin-left: 50px;
+}
+
+.navbar-menu:hover{
+    color: black;
+}
+
+
+.float-right{
+    position: absolute;
+    top: 15%;
+    right: 0;
+    margin: 30px;
+    color: white;
+}
+
+.float-right:hover{
+    color: white;
+}
+
+.navbar-menu-help, a.navbar-menu-help.nav-link{
+    position: absolute;
+    top: 2px;
+    right: 2%;
+    color: #0066f0;
+}
+
+.navbar-menu-help img{
+    margin-right: 5px;
+}
+
+.navbar-menu-help:hover{
+    color: #0066f0;
+}
+
+a.btn.btn-primary.btn-sm.float-right.nav-link{
+    color:white;
+}
+
+.user-info-navbar{
+    position: absolute;
+    right: 10%;
+    top: 40%;
+}
+
+.logout-navbar{
+    position: absolute;
+
+    top: 10%;
+    background-color: #0066f0;
+    color: white;
+}
