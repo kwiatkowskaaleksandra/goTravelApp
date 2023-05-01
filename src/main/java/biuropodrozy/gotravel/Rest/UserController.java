@@ -54,4 +54,8 @@ public class UserController {
         userService.deleteUser(user);
         return userMapper.toUserDto(user);
     }
+    @GetMapping("/getUser/{idUser}")
+    User findUserByIdUser(@PathVariable Long idUser){
+        return userService.getUserById(idUser);
+    }
 }

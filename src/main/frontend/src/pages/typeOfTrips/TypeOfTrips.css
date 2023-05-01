@@ -1,0 +1,114 @@
+.head{
+    margin-top: 30px;
+    flex-direction: row;
+}
+
+.titleTrip{
+    font-family: "Comic Sans MS";
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.list-group-flush.listTrip.list-group{
+    font-family: "Comic Sans MS";
+    font-size: 17px;
+}
+
+.priceTrip{
+    font-family: "Comic Sans MS";
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 30%;
+}
+
+.seeTheOffer{
+    font-family: "Comic Sans MS";
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 30%;
+}
+
+.filtrName{
+    font-family: "Comic Sans MS";
+    font-weight: bold;
+    margin-top: 10%;
+}
+
+.tab-content {
+    display: none;
+}
+.tab-content.is-active {
+    display: block;
+}
+.tabs ul {
+    align-items: center;
+    border-bottom-color: #dbdbdb;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    justify-content: flex-start;
+    list-style: none;
+}
+.tabs li {
+    display: block;
+}
+.tabs li.is-active a {
+    border-bottom-color: #3273dc;
+    color: #3273dc;
+}
+.tabs a {
+    align-items: center;
+    border-bottom-color: #dbdbdb;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    color: #4a4a4a;
+    display: flex;
+    justify-content: center;
+    margin-bottom: -1px;
+    padding: .5em 1em;
+    vertical-align: top;
+    cursor: pointer;
+    text-decoration: none;
+}
+.tabs a:hover {
+    border-bottom-color: #363636;
+    color: #363636;
+}
+
+.infoTrip{
+    font-family: "Comic Sans MS";
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+p.mt-3.ms-3.info{
+    font-family: "Comic Sans MS";
+}
+
+p.mt-3.ms-3.desc{
+    font-family: "Apple Chancery";
+    text-align: justify;
+}
+
+p.mt-3.ms-3.price{
+    font-family: "Comic Sans MS";
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #3273dc;
+}
+
+button.btn.btn-primary.reservation{
+    font-family: "Comic Sans MS";
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.attraction{
+    font-family: "Comic Sans MS";
+    margin-top: 2%;
+}

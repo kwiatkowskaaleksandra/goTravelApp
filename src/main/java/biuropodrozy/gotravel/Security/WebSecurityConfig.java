@@ -35,9 +35,26 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyAuthority(USER)
                 .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority(USER)
                 .requestMatchers("/public/**", "/auth/**","/gotravel/**").permitAll()
+                .requestMatchers("/api/trips/all/*/*").permitAll()
+                .requestMatchers("/api/trips/*").permitAll()
+                .requestMatchers("/api/trips/byCity/*/*").permitAll()
+                .requestMatchers("/api/trips/findByValues/*/*/*/*").permitAll()
+                .requestMatchers("/api/trips/findByFilters/*/*/*/*/*/*/*").permitAll()
+                .requestMatchers("/api/trips/all/*/*/*").permitAll()
+                .requestMatchers("/api/trips/all/*").permitAll()
+                .requestMatchers("/api/attractions/*").permitAll()
+                .requestMatchers("/api/transport/all").permitAll()
+                .requestMatchers("/api/country/all").permitAll()
+                .requestMatchers("/api/cities/all/*").permitAll()
+                .requestMatchers("/api/opinions/*").permitAll()
+                .requestMatchers("/api/opinions/addOpinion/*/*").permitAll()
+                .requestMatchers("/api/opinions/deleteOpinion/*").permitAll()
+                .requestMatchers("/api/photos/*").permitAll()
+                .requestMatchers("/api/photos/trip/*").permitAll()
+                .requestMatchers("/api/trip/photos/*").permitAll()
+                .requestMatchers("/api/users/getUser/*").permitAll()
                 .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

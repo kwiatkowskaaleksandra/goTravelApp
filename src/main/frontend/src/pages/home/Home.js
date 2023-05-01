@@ -15,8 +15,83 @@ import Holiday from '../../assets/image/holiday.png'
 import {Container} from "react-bootstrap";
 import Footer from "../../others/Footer";
 import NavigationBar from "../../others/NavigationBar";
+import {orderApi} from "../../others/OrderApi";
 
 class Home extends Component {
+
+    state = {
+        countries: [],
+        transports: [],
+        selectedTransport: '',
+        selectedTransportId: 0,
+        selectedCountry: '',
+        selectedCountryId: 0,
+        numberOfDaysMin: 0,
+        numberOfDaysMax: 0,
+    }
+
+    componentDidMount() {
+        this.handleGetTransports()
+        this.handleGetCountries()
+    }
+
+    handleGetTransports = () => {
+        orderApi.getTransports().then(res => {
+            this.setState({transports: res.data})
+        })
+    }
+
+    handleGetCountries = () => {
+        orderApi.getCountries().then(res => {
+            this.setState({countries: res.data})
+        })
+    }
+
+    handleChangeCountry = (e) => {
+        this.setState({selectedCountry: e.target.value})
+
+        this.state.countries.map(country => {
+            if (country.nameCountry === e.target.value) {
+                this.setState({selectedCountryId: country.idCountry, selectedCountry: ''})
+            } else if (e.target.value === '') {
+                this.setState({selectedCountryId: 0, selectedCountry: ''})
+            }
+        })
+    }
+
+    handleChangeTransport = (e) => {
+        this.setState({selectedTransport: e.target.value})
+
+        this.state.transports.map(tran => {
+            if (tran.nameTransport === e.target.value) {
+                this.setState({selectedTransportId: tran.idTransport, selectedTransport: ''})
+            } else if (e.target.value.trim() === "") {
+                this.setState({selectedTransportId: 0, selectedTransport: ''})
+            }
+        })
+    }
+
+    handleChangeNumberOfDays = (e) => {
+
+        if(e.target.value === "Ilekolwiek"){
+            this.setState( {numberOfDaysMin: 1, numberOfDaysMax: 100})
+        }else if(e.target.value === "> 15 dni") {
+            this.setState( {numberOfDaysMin: 15, numberOfDaysMax: 100})
+        }else{
+            const textArr = e.target.value.split(" - ")
+            const textArr2 = textArr[1].split(" dni")
+            this.setState( {numberOfDaysMin: textArr[0], numberOfDaysMax: textArr2[0]})
+        }
+
+
+
+
+
+    }
+
+    handleClickSearch = () => {
+        window.location.href = "/searchedTrips/" + this.state.selectedCountryId + "/" + this.state.selectedTransportId + "/" + this.state.numberOfDaysMin + "/" + this.state.numberOfDaysMax
+    }
 
     render() {
             return (
@@ -31,28 +106,37 @@ class Home extends Component {
                                             <div className="row">
                                                 <div className="col-lg-3 col-md-3 col-sm-12 p-0">
                                                     <p className="search-desc">Dokąd chcesz jechać ?</p>
-                                                    <input type="text" className="form-control search-slt"
-                                                           placeholder="Gdziekolwiek"/>
-                                                </div>
-                                                <div className="col-lg-3 col-md-3 col-sm-12 p-0">
-                                                    <p className="search-desc">Kiedy ?</p>
-                                                    <input type="text" className="form-control search-slt"
-                                                           placeholder="Kiedykolwiek"/>
-                                                </div>
-                                                <div className="col-lg-3 col-md-3 col-sm-12 p-0">
-                                                    <p className="search-desc">Czym ?</p>
-                                                    <select className="form-control search-slt" id="exampleFormControlSelect1">
-                                                        <option>Czymkolwiek</option>
-                                                        <option>Example one</option>
-                                                        <option>Example one</option>
-                                                        <option>Example one</option>
-                                                        <option>Example one</option>
-                                                        <option>Example one</option>
-                                                        <option>Example one</option>
+                                                    <select className="form-control search-slt" id="exampleFormControlSelect1"
+                                                            name={"selectedCountry"} onChange={this.handleChangeCountry}>
+                                                        <option value={this.state.selectedCountry}>Gdziekolwiek</option>
+                                                        {this.state.countries.map(country =>
+                                                            <option key={country.idCountry}>{country.nameCountry}</option>
+                                                        )}
                                                     </select>
                                                 </div>
                                                 <div className="col-lg-3 col-md-3 col-sm-12 p-0">
-                                                    <button type="button" className="btn btn-danger wrn-btn">Szukaj</button>
+                                                    <p className="search-desc">Jak długo ?</p>
+                                                    <select className="form-control search-slt" id="exampleFormControlSelect1" onChange={this.handleChangeNumberOfDays}>
+                                                        <option>Ilekolwiek</option>
+                                                        <option>1 - 5 dni</option>
+                                                        <option>5 - 10 dni</option>
+                                                        <option>10 - 15 dni</option>
+                                                        <option> > 15 dni</option>
+                                                    </select>
+                                                </div>
+                                                <div className="col-lg-3 col-md-3 col-sm-12 p-0">
+                                                    <p className="search-desc">Czym ?</p>
+                                                    <select className="form-control search-slt" id="exampleFormControlSelect1"
+                                                            name={"selectedTransport"} onChange={this.handleChangeTransport}>
+
+                                                        <option value={this.state.selectedTransport}>Czymkolwiek</option>
+                                                        {this.state.transports.map(transport =>
+                                                            <option key={transport.idTransport}>{transport.nameTransport}</option>
+                                                        )}
+                                                    </select>
+                                                </div>
+                                                <div className="col-lg-3 col-md-3 col-sm-12 p-0">
+                                                    <button type="button" className="btn btn-danger wrn-btn" onClick={this.handleClickSearch}>Szukaj</button>
                                                 </div>
                                             </div>
                                         </div>

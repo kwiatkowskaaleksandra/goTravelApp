@@ -6,7 +6,76 @@ import axios from "axios";
 export const orderApi = {
     authenticate,
     signup,
-    getUserInfo
+    getUserInfo,
+    getTrips,
+    getPhotos,
+    getTransports,
+    getCountries,
+    getTripsByTransport,
+    getTripsByFilters,
+    getTripById,
+    getOpinionsByIdTrip,
+    getTripsAndPhotosByTypeOfTrip,
+    getAttractions,
+    getSearchedTrips,
+    postNewOpinion,
+    deleteOpinion
+}
+
+function deleteOpinion(idOpinion){
+    return instance.delete("/api/opinions/deleteOpinion/"+idOpinion)
+}
+
+function postNewOpinion(idUser, idTrip, opinion){
+    return instance.post("/api/opinions/addOpinion/"+idUser+"/"+idTrip, opinion,{
+        headers: {
+            'Content-type': 'application/json'
+        }
+    })
+}
+
+function getSearchedTrips(idCountry, typeOfTransport, minDays, maxDays){
+    return instance.get('/api/trips/findByValues/'+idCountry+'/'+typeOfTransport+'/'+minDays+'/'+maxDays)
+}
+
+function getAttractions(idTrip){
+    return instance.get("/api/attractions/"+idTrip)
+}
+
+function getTripsAndPhotosByTypeOfTrip(typeOfTrip){
+    return instance.get("/api/photos/"+typeOfTrip)
+}
+
+function getOpinionsByIdTrip(idTrip){
+    return instance.get("/api/opinions/"+idTrip)
+}
+
+function getTripById(idTrip){
+    return instance.get("/api/trips/"+idTrip)
+}
+
+function getTrips(typeOfTrip){
+    return instance.get("/api/trips/all/"+typeOfTrip)
+}
+
+function getPhotos(idTrip){
+    return instance.get("/api/photos/"+idTrip);
+}
+
+function getCountries(){
+    return instance.get("/api/country/all");
+}
+
+function getTransports(){
+    return instance.get("/api/transport/all");
+}
+
+function getTripsByFilters(typeOfTrip, idCountry, typeOfTransport, minPrice, maxPrice, minDays, maxDays){
+    return instance.get('/api/trips/findByFilters/'+typeOfTrip+'/'+idCountry+'/'+typeOfTransport+'/'+minPrice+'/'+maxPrice+'/'+minDays+'/'+maxDays)
+}
+
+function getTripsByTransport(typeOfTrip,typeOfTransport){
+    return instance.get('/api/trips/all/'+typeOfTrip+'/'+typeOfTransport)
 }
 
 function authenticate(username, password) {

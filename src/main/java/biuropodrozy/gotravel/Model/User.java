@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,12 +30,7 @@ public class User {
     private String email;
     private String role;
 
-    public User(String username, String password, String firstname,String lastname, String email, String role) {
-        this.username = username;
-        this.password = password;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.role = role;
-    }
+    @OneToMany(mappedBy = "user")
+    private Set<Opinion> opinions;
+
 }

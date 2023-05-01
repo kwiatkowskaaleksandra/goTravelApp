@@ -47,32 +47,33 @@ function NavigationBar() {
                         <Row>
                             <Col>
                                 <center> <NavDropdown.Item  className="dropdown-item">
-                                    <img alt="" src={exotic} width="80" height="80" className="d-inline-block align top"/><br/>
-                                    {' '}
-                                    Egzotyka</NavDropdown.Item></center>
+                                    <Nav.Link as={Link} to={"/exotis"}  style={{color: 'black'}} >   <img alt="" src={exotic} width="80" height="80" className="d-inline-block align top"/><br/>
+                                    {' '}Egzotyka</Nav.Link>
+                                    </NavDropdown.Item></center>
 
                                 <center><NavDropdown.Item >
+                                    <Nav.Link as={Link} to={"/cruises"}  style={{color: 'black'}} >
                                     <img alt="" src={cruise} width="80" height="80" className="d-inline-block align top"/><br/>
-                                    {' '}
-                                    Rejsy</NavDropdown.Item></center>
+                                    {' '}Rejsy</Nav.Link></NavDropdown.Item></center>
+
                                 <center><NavDropdown.Item >
+                                    <Nav.Link as={Link} to={"/allInclusive"}  style={{color: 'black'}} >
                                     <img alt="" src={allInclusive} width="80" height="80" className="d-inline-block align top"/><br/>
-                                    {' '}
-                                    All inclusive</NavDropdown.Item></center>
+                                        {' '}All inclusive</Nav.Link></NavDropdown.Item></center>
                             </Col>
                             <Col>
                                 <center><NavDropdown.Item>
+                                    <Nav.Link as={Link} to={"/longTrips"}  style={{color: 'black'}} >
                                     <img alt="" src={longTrip} width="80" height="80" className="d-inline-block align top"/><br/>
-                                    {' '}
-                                    Długi pobyt</NavDropdown.Item></center>
+                                        {' '}Długi pobyt</Nav.Link></NavDropdown.Item></center>
                                 <center><NavDropdown.Item >
+                                    <Nav.Link as={Link} to={"/shortTrips"}  style={{color: 'black'}} >
                                     <img alt="" src={shortTrip} width="80" height="80" className="d-inline-block align top"/><br/>
-                                    {' '}
-                                    Krótki urlop</NavDropdown.Item></center>
+                                        {' '}Krótki urlop</Nav.Link></NavDropdown.Item></center>
                                 <center><NavDropdown.Item >
+                                    <Nav.Link as={Link} to={"/familyTrips"}  style={{color: 'black'}} >
                                     <img alt="" src={familyTrip} width="80" height="80" className="d-inline-block align top"/><br/>
-                                    {' '}
-                                    Wakacje z dziećmi</NavDropdown.Item></center>
+                                        {' '}Wakacje z dziećmi</Nav.Link></NavDropdown.Item></center>
                             </Col>
                         </Row>
                     </NavDropdown>
