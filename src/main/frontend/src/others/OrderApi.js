@@ -19,7 +19,35 @@ export const orderApi = {
     getAttractions,
     getSearchedTrips,
     postNewOpinion,
-    deleteOpinion
+    deleteOpinion,
+    getAllTypeOfRoom,
+    postNewReservation,
+    getReservationByIdReservation,
+    postReservationsTypOfRooms
+}
+
+function postReservationsTypOfRooms(idTypeOfRoom, reservationTypeOfRoom){
+    return instance.post("/api/reservationsTypOfRooms/addReservationsTypOfRooms/" + idTypeOfRoom, reservationTypeOfRoom,{
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+}
+
+function getReservationByIdReservation(idReservation){
+    return instance.get("/api/reservations/getReservation/"+idReservation);
+}
+
+function postNewReservation(idUser,idTrip,reservation){
+    return instance.post("/api/reservations/addReservation/"+idUser+'/'+idTrip,reservation,{
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+}
+
+function getAllTypeOfRoom(){
+    return instance.get("/api/typeOfRoom/all")
 }
 
 function deleteOpinion(idOpinion){

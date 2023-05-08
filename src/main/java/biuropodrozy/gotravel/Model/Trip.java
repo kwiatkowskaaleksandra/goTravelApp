@@ -59,4 +59,7 @@ public class Trip {
     @JoinTable(name = "attractions_trips", joinColumns = {@JoinColumn(name = "idTrip")}, inverseJoinColumns = {@JoinColumn(name = "idAttraction")})
     private Set<Attraction> tripAttraction;
 
+    @OneToMany(mappedBy = "trip")
+    private Set<Reservation> reservations;
+
 }

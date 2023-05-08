@@ -8,24 +8,35 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "opinions")
-public class Opinion {
+@Table(name = "reservations")
+public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idOpinion;
+    private Long idReservation;
 
-    private String description;
+    @Temporal(TemporalType.DATE)
+    private Date dateOfReservation;
 
-    private Date date;
+    private int numberOfChildren;
+
+    private int numberOfAdults;
+
+    @Temporal(TemporalType.DATE)
+    private LocalDate departureDate;
+
+    private double totalPrice;
+
+   @OneToMany(mappedBy = "reservation")
+    private Set<ReservationsTypeOfRoom> typeOfRoomReservation;
 
     @ManyToOne
     @JoinColumn(name = "idUser")
@@ -34,6 +45,4 @@ public class Opinion {
     @ManyToOne
     @JoinColumn(name = "idTrip")
     private Trip trip;
-
-
 }

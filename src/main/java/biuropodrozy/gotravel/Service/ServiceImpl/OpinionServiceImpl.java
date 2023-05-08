@@ -1,10 +1,11 @@
-package biuropodrozy.gotravel.Service;/*
+package biuropodrozy.gotravel.Service.ServiceImpl;/*
  * @project gotravel
  * @author kola
  */
 
 import biuropodrozy.gotravel.Model.Opinion;
 import biuropodrozy.gotravel.Repository.OpinionRepository;
+import biuropodrozy.gotravel.Service.OpinionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class OpinionServiceImpl implements OpinionService{
+public class OpinionServiceImpl implements OpinionService {
 
     private final OpinionRepository opinionRepository;
 

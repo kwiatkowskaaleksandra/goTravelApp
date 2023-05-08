@@ -1,0 +1,16 @@
+.personalData{
+    font-family: "Comic Sans MS";
+}
+
+.containerForm{
+    width: 60rem;
+    justify-content: center;
+}
+
+.col.colReservation{
+    text-align: right;
+}
+
+.row {
+    justify-content: flex-end;
+}

@@ -1,4 +1,4 @@
-package biuropodrozy.gotravel.Service;/*
+package biuropodrozy.gotravel.Service.ServiceImpl;/*
  * @project gotravel
  * @author kola
  */
@@ -6,6 +6,7 @@ package biuropodrozy.gotravel.Service;/*
 import biuropodrozy.gotravel.Model.Transport;
 import biuropodrozy.gotravel.Model.Trip;
 import biuropodrozy.gotravel.Repository.TripRepository;
+import biuropodrozy.gotravel.Service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class TripServiceImpl implements TripService{
+public class TripServiceImpl implements TripService {
 
     private final TripRepository tripRepository;
 

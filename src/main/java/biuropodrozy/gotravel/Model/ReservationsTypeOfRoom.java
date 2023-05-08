@@ -8,32 +8,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "opinions")
-public class Opinion {
+@Table(name = "reservations_type_of_room")
+public class ReservationsTypeOfRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idOpinion;
-
-    private String description;
-
-    private Date date;
+    private int idReservationsTypeOfRoom;
 
     @ManyToOne
-    @JoinColumn(name = "idUser")
-    private User user;
+    @JoinColumn(name = "idReservation")
+    private Reservation reservation;
 
     @ManyToOne
-    @JoinColumn(name = "idTrip")
-    private Trip trip;
+    @JoinColumn(name = "idTypeOfRoom")
+    private TypeOfRoom typeOfRoom;
 
-
+    private int numberOfRoom;
 }

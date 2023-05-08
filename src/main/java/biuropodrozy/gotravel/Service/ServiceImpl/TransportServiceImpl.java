@@ -1,10 +1,11 @@
-package biuropodrozy.gotravel.Service;/*
+package biuropodrozy.gotravel.Service.ServiceImpl;/*
  * @project gotravel
  * @author kola
  */
 
 import biuropodrozy.gotravel.Model.Transport;
 import biuropodrozy.gotravel.Repository.TransportRepository;
+import biuropodrozy.gotravel.Service.TransportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

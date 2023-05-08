@@ -25,4 +25,6 @@ public class TypeOfRoom {
 
     private double roomPrice;
 
+    @OneToMany(mappedBy = "typeOfRoom")
+    private Set<ReservationsTypeOfRoom> typeOfRooms;
 }

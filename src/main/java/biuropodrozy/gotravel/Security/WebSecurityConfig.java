@@ -55,6 +55,13 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/photos/trip/*").permitAll()
                 .requestMatchers("/api/trip/photos/*").permitAll()
                 .requestMatchers("/api/users/getUser/*").permitAll()
+                .requestMatchers("/api/reservations/getReservation/*").permitAll()
+                .requestMatchers("/api/reservations/addReservation/*/*").permitAll()
+
+                .requestMatchers("/api/reservationsTypOfRooms/getReservationsTypOfRooms/*").permitAll()
+                .requestMatchers("/api/reservationsTypOfRooms/addReservationsTypOfRooms/*").permitAll()
+
+                .requestMatchers("/api/typeOfRoom/all").permitAll()
                 .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

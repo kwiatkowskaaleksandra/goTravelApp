@@ -1,4 +1,4 @@
-package biuropodrozy.gotravel.Service;/*
+package biuropodrozy.gotravel.Service.ServiceImpl;/*
  * @project gotravel
  * @author kola
  */
@@ -6,6 +6,7 @@ package biuropodrozy.gotravel.Service;/*
 import biuropodrozy.gotravel.Exception.UserNotFoundException;
 import biuropodrozy.gotravel.Model.User;
 import biuropodrozy.gotravel.Repository.UserRepository;
+import biuropodrozy.gotravel.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -145,7 +145,7 @@ class SeeTheOffer extends Component{
         if(this.state.isUserLogin === false){
             window.location.href = "/customerZone/login"
         }else{
-            console.log("rezerwacja")
+            window.location.href = "/reservationForm/"+this.state.idTripSelected
         }
     }
 

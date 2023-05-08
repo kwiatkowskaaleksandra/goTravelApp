@@ -5,7 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import Home from "./pages/home/Home"
 import CustomerZoneRegistration from "./pages/home/CustomerZoneRegistration";
-import CustomerHome from "./pages/user/CustomerHome";
 import {AuthProvider} from "./others/AuthContext";
 import PrivateRoute from "./others/PrivateRoute";
 import Login from "./pages/home/CustomerZoneLogin";
@@ -19,6 +18,7 @@ import ShortTrip from './pages/typeOfTrips/ShortTrip'
 import FamilyTrip from './pages/typeOfTrips/FamilyTrip'
 import SeeTheOffer from "./pages/typeOfTrips/SeeTheOffer";
 import SearchedTrips from "./pages/typeOfTrips/SearchedTrips";
+import ReservationForm from './pages/user/ReservationForm'
 
 function App() {
   return (
@@ -52,6 +52,7 @@ function App() {
                        <Route path={"/allInclusive/*"} element={<SeeTheOffer />}/>
 
                        <Route path={"/customerHome"} element={<PrivateRoute><Home /></PrivateRoute>}/>
+                       <Route path={"/reservationForm/*"} element={<PrivateRoute><ReservationForm /></PrivateRoute>}/>
 
                    </Routes>
 
