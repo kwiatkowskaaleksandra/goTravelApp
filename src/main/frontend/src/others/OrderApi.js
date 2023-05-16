@@ -23,7 +23,35 @@ export const orderApi = {
     getAllTypeOfRoom,
     postNewReservation,
     getReservationByIdReservation,
-    postReservationsTypOfRooms
+    getReservationByUser,
+    postReservationsTypOfRooms,
+    putUserUpdate,
+    putUserPasswordUpdate,
+    deleteUser
+}
+
+function getReservationByUser(username){
+    return instance.get("/api/reservations/getReservationByUser/"+username);
+}
+
+function deleteUser(username){
+    return instance.delete("/api/users/deleteUser/"+username)
+}
+
+function putUserPasswordUpdate(username, passwords){
+    return instance.put("/api/users/updatePassword/" + username, passwords,{
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+}
+
+function putUserUpdate(username, userDetails){
+    return instance.put("/api/users/update/" + username, userDetails,{
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
 }
 
 function postReservationsTypOfRooms(idTypeOfRoom, reservationTypeOfRoom){
@@ -38,8 +66,8 @@ function getReservationByIdReservation(idReservation){
     return instance.get("/api/reservations/getReservation/"+idReservation);
 }
 
-function postNewReservation(idUser,idTrip,reservation){
-    return instance.post("/api/reservations/addReservation/"+idUser+'/'+idTrip,reservation,{
+function postNewReservation(username,idTrip,reservation){
+    return instance.post("/api/reservations/addReservation/"+username+'/'+idTrip,reservation,{
         headers: {
             'Content-type': 'application/json'
         }

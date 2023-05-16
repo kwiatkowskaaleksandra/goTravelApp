@@ -17,4 +17,5 @@ public interface OpinionService {
 
     void deleteOpinion(Opinion opinion);
 
+    List<Opinion> getOpinionsByIdUser(Long idUser);
 }

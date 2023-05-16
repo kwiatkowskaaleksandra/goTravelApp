@@ -56,10 +56,15 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/trip/photos/*").permitAll()
                 .requestMatchers("/api/users/getUser/*").permitAll()
                 .requestMatchers("/api/reservations/getReservation/*").permitAll()
+                .requestMatchers("/api/reservations/getReservationByUser/*").permitAll()
                 .requestMatchers("/api/reservations/addReservation/*/*").permitAll()
 
                 .requestMatchers("/api/reservationsTypOfRooms/getReservationsTypOfRooms/*").permitAll()
                 .requestMatchers("/api/reservationsTypOfRooms/addReservationsTypOfRooms/*").permitAll()
+
+                .requestMatchers("/api/users/update/*").permitAll()
+                .requestMatchers("/api/users/updatePassword/*").permitAll()
+                .requestMatchers("/api/users/deleteUser/*").permitAll()
 
                 .requestMatchers("/api/typeOfRoom/all").permitAll()
                 .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()

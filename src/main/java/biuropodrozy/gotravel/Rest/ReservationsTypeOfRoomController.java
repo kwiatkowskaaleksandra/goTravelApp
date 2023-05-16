@@ -23,11 +23,6 @@ public class ReservationsTypeOfRoomController {
     private final ReservationService reservationService;
     private final TypeOfRoomService typeOfRoomService;
 
-    @GetMapping("/getReservationsTypOfRooms/{idReservation}")
-    ResponseEntity<ReservationsTypeOfRoom> getType(@PathVariable Long idReservation){
-        return ResponseEntity.ok(reservationsTypeOfRoomService.getByReservation_IdReservation(idReservation));
-    }
-
     @PostMapping("/addReservationsTypOfRooms/{idTypeOfRoom}")
     ResponseEntity<ReservationsTypeOfRoom> createNew(@PathVariable int idTypeOfRoom, @RequestBody ReservationsTypeOfRoom reservationsTypeOfRoom){
 

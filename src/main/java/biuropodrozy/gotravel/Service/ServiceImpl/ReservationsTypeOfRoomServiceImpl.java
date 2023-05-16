@@ -9,6 +9,8 @@ import biuropodrozy.gotravel.Service.ReservationsTypeOfRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class ReservationsTypeOfRoomServiceImpl implements ReservationsTypeOfRoomService {
@@ -20,8 +22,18 @@ public class ReservationsTypeOfRoomServiceImpl implements ReservationsTypeOfRoom
         return reservationsTypeOfRoomRepository.save(reservationsTypeOfRoom);
     }
 
-    @Override
+   /* @Override
     public ReservationsTypeOfRoom getByReservation_IdReservation(Long id) {
+        return (ReservationsTypeOfRoom) reservationsTypeOfRoomRepository.findByReservation_IdReservation(id);
+    }
+*/
+    @Override
+    public List<ReservationsTypeOfRoom> findByReservation_IdReservation(Long id) {
         return reservationsTypeOfRoomRepository.findByReservation_IdReservation(id);
+    }
+
+    @Override
+    public void deleteReservationsTypeOfRoom(ReservationsTypeOfRoom reservationsTypeOfRoom) {
+        reservationsTypeOfRoomRepository.delete(reservationsTypeOfRoom);
     }
 }

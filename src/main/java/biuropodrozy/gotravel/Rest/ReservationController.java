@@ -4,10 +4,12 @@ package biuropodrozy.gotravel.Rest;/*
  */
 
 import biuropodrozy.gotravel.Exception.ReservationException;
+import biuropodrozy.gotravel.Exception.UserException;
 import biuropodrozy.gotravel.Model.Reservation;
 import biuropodrozy.gotravel.Model.ReservationsTypeOfRoom;
 import biuropodrozy.gotravel.Model.Trip;
 import biuropodrozy.gotravel.Model.User;
+import biuropodrozy.gotravel.Rest.dto.UserDto;
 import biuropodrozy.gotravel.Service.ReservationService;
 import biuropodrozy.gotravel.Service.ReservationsTypeOfRoomService;
 import biuropodrozy.gotravel.Service.TripService;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,11 +42,16 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getReservationsByIdReservation(idReservation));
     }
 
+    @GetMapping("/getReservationByUser/{username}")
+    ResponseEntity <List<Reservation>> getReservationByUser(@PathVariable String username){
+        User user = userService.validateAndGetUserByUsername(username);
+        return ResponseEntity.ok(reservationService.getReservationByIdUser(user.getId()));
+    }
 
-    @PostMapping("/addReservation/{idUser}/{idTrip}")
-    ResponseEntity<Reservation> createReservation(@PathVariable Long idUser, @PathVariable Long idTrip, @RequestBody Reservation reservation){
+    @PostMapping("/addReservation/{username}/{idTrip}")
+    ResponseEntity<Reservation> createReservation(@PathVariable String username, @PathVariable Long idTrip, @RequestBody Reservation reservation){
 
-        User user = userService.getUserById(idUser);
+        User user = userService.validateAndGetUserByUsername(username);
         Trip trip = tripService.getTripByIdTrip(idTrip);
 
         Date localDate = new Date();
@@ -64,6 +72,10 @@ public class ReservationController {
         }
         if(reservation.getDepartureDate().equals(LocalDate.of(1970, 1, 1))){
             throw new ReservationException("Proszę podać datę wyjazdu.");
+        }
+        if(user.getUsername() == null || user.getEmail() == null || user.getStreet() == null || user.getCity() == null || user.getZipCode() == null || user.getLastname() == null
+                || user.getFirstname() == null|| user.getPhoneNumber() == null || user.getStreetNumber() == null){
+            throw new UserException("Proszę o uzupełnienie wszytskich danych osobowych.");
         }
 
         return ResponseEntity.ok(reservationService.saveReservation(reservation));

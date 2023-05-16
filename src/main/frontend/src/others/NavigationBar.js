@@ -12,7 +12,7 @@ import allInclusive from '../assets/image/allInclusive.svg'
 import longTrip from '../assets/image/longTrip.svg'
 import shortTrip from '../assets/image/shortTrip.svg'
 import familyTrip from '../assets/image/familyTrip.svg'
-import { Menu } from 'semantic-ui-react'
+import {CgProfile} from "react-icons/cg";
 
 function NavigationBar() {
     const { getUser, userIsAuthenticated, userLogout } = useAuth()
@@ -47,7 +47,7 @@ function NavigationBar() {
                         <Row>
                             <Col>
                                 <center> <NavDropdown.Item  className="dropdown-item">
-                                    <Nav.Link as={Link} to={"/exotis"}  style={{color: 'black'}} >   <img alt="" src={exotic} width="80" height="80" className="d-inline-block align top"/><br/>
+                                    <Nav.Link as={Link} to={"/exotics"}  style={{color: 'black'}} >   <img alt="" src={exotic} width="80" height="80" className="d-inline-block align top"/><br/>
                                     {' '}Egzotyka</Nav.Link>
                                     </NavDropdown.Item></center>
 
@@ -84,7 +84,11 @@ function NavigationBar() {
                     <Nav.Link as={Link} to={"/help"} className="navbar-menu-help"> <img alt="" src={phone} width="25" height="25" />41 780 23 32</Nav.Link>
 
 
-                    <Menu.Item header style={logoutMenuStyle()} className={"user-info-navbar"}>{`Witaj ${getUserName()} !`}</Menu.Item>
+
+                    <Nav.Link as={Link} to={"/myProfile"} style={logoutMenuStyle()}  className={"btn btn-primary btn-sm float-right user-info-navbar"}>
+                       <CgProfile/> {`Witaj ${getUserName()} !`}
+                    </Nav.Link>
+
                     <Nav.Link as={Link} to={"/"} style={logoutMenuStyle()} onClick={logout} className={"btn btn-primary btn-sm float-right logout-navbar"}>Wyloguj się</Nav.Link>
 
                 </Nav>

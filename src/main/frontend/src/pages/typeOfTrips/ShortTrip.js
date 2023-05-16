@@ -145,10 +145,10 @@ class ShortTrip extends Component{
 
                                 <div className="input-group mb-3">
                                     <p className={"filtrName"}>Ilosć dni: </p>
-                                    <span className="input-group-text">Od:</span>
+                                    <span className="input-group-text" style={{width: '3rem'}}>Od:</span>
                                     <input type="number" className="form-control" aria-label="Cena od" placeholder="0"
                                            name={"numberOfDaysMin"} onChange={this.handleChangeNumberOfDaysMin}/>
-                                    <span className="input-group-text">Do:</span>
+                                    <span className="input-group-text" style={{width: '3rem'}}>Do:</span>
                                     <input type="number" className="form-control" aria-label="Cena do" placeholder="0"
                                            name={"numberOfDaysMax"} onChange={this.handleChangeNumberOfDaysMax}/>
                                 </div>

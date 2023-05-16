@@ -1,0 +1,13 @@
+.head{
+    margin-top: 30px;
+    flex-direction: row;
+}
+
+.input-group-text{
+    width: 35%;
+    justify-content: center;
+}
+
+label#floatingInputValue {
+    font-family: unset;
+}

@@ -36,4 +36,9 @@ public class OpinionServiceImpl implements OpinionService {
     public void deleteOpinion(Opinion opinion) {
         opinionRepository.delete(opinion);
     }
+
+    @Override
+    public List<Opinion> getOpinionsByIdUser(Long idUser) {
+        return opinionRepository.getOpinionByUser_Id(idUser);
+    }
 }

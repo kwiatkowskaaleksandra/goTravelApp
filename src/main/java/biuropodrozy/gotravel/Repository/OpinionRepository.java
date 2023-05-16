@@ -16,4 +16,6 @@ public interface OpinionRepository extends JpaRepository<Opinion, Integer> {
 
     Opinion findOpinionByIdOpinion(int idOpinion);
 
+    List<Opinion> getOpinionByUser_Id(Long idUser);
+
 }

@@ -83,20 +83,20 @@ a.nav-link.navbar-menu {
     color: #0066f0;
 }
 
-a.btn.btn-primary.btn-sm.float-right.nav-link{
-    color:white;
-}
 
 .user-info-navbar{
     position: absolute;
-    right: 10%;
-    top: 40%;
+    top: 35%;
+    margin-top: 2.5%;
+    background-color: white;
+    color: black;
 }
+
 
 .logout-navbar{
     position: absolute;
-
     top: 10%;
     background-color: #0066f0;
     color: white;
 }
+

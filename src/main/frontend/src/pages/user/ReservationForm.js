@@ -22,7 +22,7 @@ class ReservationForm extends Component{
         transport: '',
         accommodation: '',
         isUserLogin: false,
-        userId: 0,
+        username: '',
         userInfo: [],
         typeOfRoom: [],
         rooms: [],
@@ -50,7 +50,7 @@ class ReservationForm extends Component{
             orderApi.getUserInfo(user).then(res => {
                 this.setState({
                     userInfo: res.data,
-                    userId: res.data.id
+                    username: res.data.username
                 })
             })
         }
@@ -96,7 +96,7 @@ class ReservationForm extends Component{
             this.setState({isError: true, errorMessage: "Proszę wskazać do rezerwacji ilość oraz rodzaj pokoi."})
             return;
         }
-        orderApi.postNewReservation(this.state.userId, this.state.idTripSelected, reservation).then(() => {
+        orderApi.postNewReservation(this.state.username, this.state.idTripSelected, reservation).then(() => {
 
                 if (this.state.singleRoom !== 0) {
                     const reservationsTypOfRooms = {numberOfRoom: this.state.singleRoom}
@@ -124,7 +124,7 @@ class ReservationForm extends Component{
                     })
                 }
 
-            window.location.reload()
+            window.location.href="/"
         }).catch(error => {
             handleLogError(error)
             const errorData = error.response.data
@@ -242,7 +242,7 @@ class ReservationForm extends Component{
                                                     <div className="col colReservation">
                                                         <label className="visually-hidden" htmlFor="autoSizingInputGroup">Adres email</label>
                                                         <div className="input-group" style={{width: '20rem'}}>
-                                                            <div className="input-group-text">@</div>
+                                                            <div className="input-group-text" style={{width: '15%'}}>@</div>
                                                             <input type="text" className="form-control"  id="autoSizingInputGroup" placeholder="Username" value={this.state.userInfo.email} disabled/>
                                                         </div>
                                                     </div>

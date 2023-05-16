@@ -15,4 +15,8 @@ public interface ReservationService {
 
     Reservation getTopByOrderByIdReservation();
 
+    List<Reservation> getReservationByIdUser(Long idUser);
+
+    void deleteReservation(Reservation reservation);
+
 }
