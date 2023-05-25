@@ -44,10 +44,13 @@ public class User {
     @Size (max = 5, min = 5)
     private String zipCode;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private Set<Opinion> opinions;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private Set<Reservation> reservations;
+
+    @OneToMany(mappedBy = "user")
+    private Set<OwnOffer> ownOffers;
 
 }

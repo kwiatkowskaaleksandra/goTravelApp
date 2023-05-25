@@ -28,4 +28,7 @@ public class Accommodation {
 
     @OneToMany(mappedBy = "idTrip")
     private Set<Trip> trips;
+
+    @OneToMany(mappedBy = "idOwnOffer")
+    private Set<OwnOffer> ownOffers;
 }

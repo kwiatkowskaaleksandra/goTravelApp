@@ -1,0 +1,16 @@
+p.infoOwnOffer {
+    font-family: "Century Gothic";
+    text-align: justify;
+    font-size: 18px;
+}
+
+.ownTrip {
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.filterNameOwnTrip{
+    font-family: "Comic Sans MS";
+    font-weight: bold;
+    margin-top: 5%;
+}

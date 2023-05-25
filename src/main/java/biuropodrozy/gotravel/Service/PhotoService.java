@@ -6,7 +6,6 @@ package biuropodrozy.gotravel.Service;/*
 import biuropodrozy.gotravel.Model.Photo;
 
 import java.util.List;
-import java.util.Set;
 
 public interface PhotoService {
 

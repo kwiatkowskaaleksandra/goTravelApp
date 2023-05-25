@@ -4,14 +4,10 @@ package biuropodrozy.gotravel.Service;/*
  */
 
 import biuropodrozy.gotravel.Model.City;
-import biuropodrozy.gotravel.Model.Country;
-
 import java.util.List;
-import java.util.Optional;
 
 public interface CityService {
 
-    Optional<City> getCitiesByCountry(Optional<Country> idCountry );
+    List<City> getCitiesByCountry_IdCountry(int idCountry);
 
-    Optional<City> getCitiesById(int idCity);
 }

@@ -33,4 +33,12 @@ public class Attraction {
             },mappedBy = "tripAttraction")
     @JsonIgnore
     private Set<Trip> trips;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },mappedBy = "offerAttraction")
+    @JsonIgnore
+    private Set<OwnOffer> ownOffers;
 }

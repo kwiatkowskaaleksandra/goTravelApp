@@ -12,6 +12,7 @@ import {MdOutlineDeleteSweep} from "react-icons/md";
 import {handleLogError, parseJwt} from "../../others/Helpers";
 import Button from "react-bootstrap/Button";
 import {Message} from "semantic-ui-react";
+import {IoTrashBin} from "react-icons/io5";
 
 class MyProfile extends Component{
 
@@ -23,6 +24,7 @@ class MyProfile extends Component{
         usernameID: '',
         userInfo: [],
         reservations: [],
+        ownOffers: [],
 
         username:'',
         firstname: '',
@@ -63,9 +65,17 @@ class MyProfile extends Component{
                     zipCode: res.data.zipCode,
                 })
                 this.handleGetReservations(res.data.username)
+                this.handleGetOwnOffers(res.data.username)
             })
         }
 
+    }
+
+    handleGetOwnOffers = (username) => {
+        orderApi.getOwnOffersByUsername(username).then(res => {
+            console.log(res.data)
+            this.setState({ownOffers: res.data})
+        })
     }
 
     handleGetReservations = (username) => {
@@ -161,7 +171,17 @@ class MyProfile extends Component{
         this.setState({showModalDelete: false });
     };
 
+    deleteOwnOffer = (id) => {
+        orderApi.deleteOwnOffer(id).then(() => {
+            window.location.reload()
+        })
+    }
 
+    deleteReservation= (id) => {
+        orderApi.deleteReservation(id).then(() => {
+            window.location.reload()
+        })
+    }
 
     render() {
         const tabs = document.querySelectorAll(".my-tabs .tabs li");
@@ -207,8 +227,9 @@ class MyProfile extends Component{
                                         <ul>
                                             <li className="is-active"><a href="#tab-one"> <CgProfile/> Dane osobowe</a></li>
                                             <li><a href="#tab-two"> <RiLockPasswordLine/> Zmiana hasła</a></li>
-                                            <li><a href="#tab-three"> <HiOutlineClipboardDocumentList/> Faktury</a></li>
-                                            <li><a href="#tab-four"> <MdOutlineDeleteSweep/> Usuń konto</a></li>
+                                            <li><a href="#tab-three"> <HiOutlineClipboardDocumentList/> Rezerwacje</a></li>
+                                            <li><a href="#tab-four"> <HiOutlineClipboardDocumentList/> Własne wycieczki</a></li>
+                                            <li><a href="#tab-five"> <MdOutlineDeleteSweep/> Usuń konto</a></li>
                                         </ul>
 
                                     </nav>
@@ -307,6 +328,7 @@ class MyProfile extends Component{
                                                 <th scope={"col"}>Data wyjazdu</th>
                                                 <th scope={"col"}>Ilość dni</th>
                                                 <th scope={"col"}>Cena całkowita</th>
+                                                <th scope={"col"}></th>
                                             </tr>
                                             </thead>
                                             <tbody> {this.state.reservations.map(res =>
@@ -330,6 +352,9 @@ class MyProfile extends Component{
                                                 <th scope={"row"} style={{fontWeight: 'normal'}}>
                                                     <td>{res.totalPrice}</td>
                                                 </th>
+                                                <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                    <td><IoTrashBin onClick={() => this.deleteReservation(res.idReservation)}/></td>
+                                                </th>
 
                                             </tr> )}
                                             </tbody>
@@ -337,7 +362,52 @@ class MyProfile extends Component{
 
                                     </section>
 
-                                    <section className="tab-content" id="tab-four" style={{height: '300px'}}>
+                                    <section className="tab-content" id="tab-four">
+
+                                        <table className={"table"}>
+                                            <thead>
+                                            <tr>
+                                                <th scope={"col"}>Kraj</th>
+                                                <th scope={"col"}>Miasto</th>
+                                                <th scope={"col"}>Data rezerwacji</th>
+                                                <th scope={"col"}>Data wyjazdu</th>
+                                                <th scope={"col"}>Ilość dni</th>
+                                                <th scope={"col"}>Cena całkowita</th>
+                                                <th scope={"col"}></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody> {this.state.ownOffers.map(offer =>
+                                                <tr key={offer.idOwnOffer} >
+
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{offer.offerCity.country.nameCountry}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{offer.offerCity.nameCity}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{offer.dateOfReservation}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{offer.departureDate}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{offer.numberOfDays}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{offer.totalPrice}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td><IoTrashBin onClick={() => this.deleteOwnOffer(offer.idOwnOffer)}/></td>
+                                                    </th>
+
+                                                </tr> )}
+                                            </tbody>
+                                        </table>
+
+                                    </section>
+
+                                    <section className="tab-content" id="tab-five" style={{height: '300px'}}>
 
                                         <div style={{textAlignLast: 'center'}}>
                                            <label  >Czy jesteś pewien że chcesz usunąć swoje konto ?</label>

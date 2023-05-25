@@ -3,18 +3,13 @@ package biuropodrozy.gotravel.Repository;/*
  * @author kola
  */
 
-import biuropodrozy.gotravel.Model.City;
+import biuropodrozy.gotravel.Model.OwnOfferTypeOfRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface CityRepository extends JpaRepository<City, Integer> {
-
-    @Override
-    List<City> findAll();
-
-    List<City> findByCountry_IdCountry(int idCountry);
-
+public interface OwnOfferTypeOfRoomRepository extends JpaRepository<OwnOfferTypeOfRoom, Integer> {
+    List<OwnOfferTypeOfRoom> findByOwnOffer_IdOwnOffer(Long id);
 }

@@ -20,6 +20,7 @@ import SeeTheOffer from "./pages/typeOfTrips/SeeTheOffer";
 import SearchedTrips from "./pages/typeOfTrips/SearchedTrips";
 import ReservationForm from './pages/user/ReservationForm'
 import MyProfile from "./pages/user/MyProfile";
+import YourOwnOffer from "./pages/user/YourOwnOffer";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
                        <Route path={"/customerHome"} element={<PrivateRoute><Home /></PrivateRoute>}/>
                        <Route path={"/reservationForm/*"} element={<PrivateRoute><ReservationForm /></PrivateRoute>}/>
                        <Route path={"/myProfile"} element={<PrivateRoute><MyProfile /></PrivateRoute>}/>
+                       <Route path={"/yourOwnOffer"} element={<PrivateRoute><YourOwnOffer /></PrivateRoute>}/>
 
                    </Routes>
 

@@ -10,24 +10,78 @@ export const orderApi = {
     getTrips,
     getPhotos,
     getTransports,
+    getAccommodations,
     getCountries,
-    getTripsByTransport,
+    getCitiesByIdCountry,
     getTripsByFilters,
     getTripById,
     getOpinionsByIdTrip,
-    getTripsAndPhotosByTypeOfTrip,
     getAttractions,
     getSearchedTrips,
     postNewOpinion,
     deleteOpinion,
     getAllTypeOfRoom,
     postNewReservation,
-    getReservationByIdReservation,
     getReservationByUser,
     postReservationsTypOfRooms,
     putUserUpdate,
     putUserPasswordUpdate,
-    deleteUser
+    deleteUser,
+    getAllAttractions,
+    postOwnOffer,
+    postOwnOfferTypOfRooms,
+    postAttractionOwnOffer,
+    getOwnOffersByUsername,
+    deleteOwnOffer,
+    deleteReservation,
+}
+
+function deleteReservation(idReservation){
+    return instance.delete("/api/reservations/deleteReservation/"+idReservation)
+}
+
+function deleteOwnOffer(idOwnOffer){
+    return instance.delete("/api/ownOffer/deleteOwnOffer/"+idOwnOffer)
+}
+
+function getOwnOffersByUsername(username){
+    return instance.get("/api/ownOffer/getByUsername/"+username);
+}
+
+function postAttractionOwnOffer(attractions){
+    return instance.post("/api/ownOffer/addOwnOfferAttractions"  , attractions,{
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+}
+
+function postOwnOfferTypOfRooms(idTypeOfRoom, ownOfferTypeOfRoom){
+    return instance.post("/api/ownOfferTypOfRooms/addOwnOfferTypeOfRooms/" + idTypeOfRoom, ownOfferTypeOfRoom,{
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+}
+
+function postOwnOffer(username, ownOffer){
+    return instance.post("/api/ownOffer/addOwnOffer/" + username, ownOffer,{
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+}
+
+function getAllAttractions(){
+    return instance.get("/api/attractions/all");
+}
+
+function getAccommodations(){
+    return instance.get("/api/accommodations/all");
+}
+
+function getCitiesByIdCountry(idCountry){
+    return instance.get("/api/cities/all/"+idCountry);
 }
 
 function getReservationByUser(username){
@@ -60,10 +114,6 @@ function postReservationsTypOfRooms(idTypeOfRoom, reservationTypeOfRoom){
             'Content-type': 'application/json'
         }
     });
-}
-
-function getReservationByIdReservation(idReservation){
-    return instance.get("/api/reservations/getReservation/"+idReservation);
 }
 
 function postNewReservation(username,idTrip,reservation){
@@ -128,10 +178,6 @@ function getTransports(){
 
 function getTripsByFilters(typeOfTrip, idCountry, typeOfTransport, minPrice, maxPrice, minDays, maxDays){
     return instance.get('/api/trips/findByFilters/'+typeOfTrip+'/'+idCountry+'/'+typeOfTransport+'/'+minPrice+'/'+maxPrice+'/'+minDays+'/'+maxDays)
-}
-
-function getTripsByTransport(typeOfTrip,typeOfTransport){
-    return instance.get('/api/trips/all/'+typeOfTrip+'/'+typeOfTransport)
 }
 
 function authenticate(username, password) {

@@ -8,28 +8,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "cities")
-public class City {
+@Table(name = "ownOfferTypeOfRoom")
+public class OwnOfferTypeOfRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idCity;
-
-    private String nameCity;
-
-    @OneToMany(mappedBy = "idTrip")
-    private Set<Trip> trips;
-
-    @OneToMany(mappedBy = "idOwnOffer")
-    private Set<OwnOffer> ownOffers;
+    private int idOwnOfferTypeOfRoom;
 
     @ManyToOne
-    @JoinColumn(name = "idCountry")
-    private Country country;
+    @JoinColumn(name = "idOwnOffer")
+    private OwnOffer ownOffer;
+
+    @ManyToOne
+    @JoinColumn(name = "idTypeOfRoom")
+    private TypeOfRoom typeOfRoom;
+
+    private int numberOfRoom;
 }

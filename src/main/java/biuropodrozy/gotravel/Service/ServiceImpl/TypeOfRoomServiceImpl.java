@@ -26,4 +26,9 @@ public class TypeOfRoomServiceImpl implements TypeOfRoomService {
     public TypeOfRoom getTypeOfRoom(int idTypeOfRoom) {
         return typeOfRoomRepository.findByIdTypeOfRoom(idTypeOfRoom);
     }
+
+    @Override
+    public TypeOfRoom getTypeOfRoomByType(String typeOfRoom) {
+        return typeOfRoomRepository.findByType(typeOfRoom);
+    }
 }

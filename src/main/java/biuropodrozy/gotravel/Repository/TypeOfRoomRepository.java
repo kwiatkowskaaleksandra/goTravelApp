@@ -15,4 +15,6 @@ public interface TypeOfRoomRepository extends JpaRepository<TypeOfRoom, Integer>
     List<TypeOfRoom> findAll();
 
     TypeOfRoom findByIdTypeOfRoom(int idTypeOfRoom);
+
+    TypeOfRoom findByType(String type);
 }

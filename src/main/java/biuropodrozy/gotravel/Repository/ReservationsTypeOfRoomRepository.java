@@ -11,8 +11,5 @@ import java.util.List;
 
 @Repository
 public interface ReservationsTypeOfRoomRepository extends JpaRepository<ReservationsTypeOfRoom,Integer> {
-
-    //ReservationsTypeOfRoom findByReservation_IdReservation(Long id);
-
     List<ReservationsTypeOfRoom> findByReservation_IdReservation(Long id);
 }

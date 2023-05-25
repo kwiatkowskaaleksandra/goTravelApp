@@ -82,14 +82,14 @@ class Login extends Component {
                                             <Form.Field>
                                                 <label>Nazwa użytkownika:</label>
                                                 <Form.Input fluid autoFocus type="text" id="floatingInput"
-                                                            placeholder="username" name="username"
+                                                            placeholder="nazwa użytkownika" name="username"
                                                             onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
                                                 <label>Hasło:</label>
                                                 <Form.Input fluid type="password" id="floatingInput"
-                                                            placeholder="password" name="password"
+                                                            placeholder="hasło" name="password"
                                                             onChange={this.handleInputChange}/>
                                             </Form.Field>
 

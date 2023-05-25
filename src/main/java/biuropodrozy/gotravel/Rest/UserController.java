@@ -8,10 +8,7 @@ import biuropodrozy.gotravel.Mapper.UserMapper;
 import biuropodrozy.gotravel.Model.*;
 import biuropodrozy.gotravel.Rest.dto.UserDto;
 import biuropodrozy.gotravel.Security.CustomUserDetails;
-import biuropodrozy.gotravel.Service.OpinionService;
-import biuropodrozy.gotravel.Service.ReservationService;
-import biuropodrozy.gotravel.Service.ReservationsTypeOfRoomService;
-import biuropodrozy.gotravel.Service.UserService;
+import biuropodrozy.gotravel.Service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -34,7 +31,9 @@ public class UserController {
 
     private final UserService userService;
     private final ReservationService reservationService;
+    private final OwnOfferService ownOfferService;
     private final ReservationsTypeOfRoomService reservationsTypeOfRoomService;
+    private final OwnOfferTypeOfRoomService ownOfferTypeOfRoomService;
     private final UserMapper userMapper;
 
     private final OpinionService opinionService;
@@ -67,15 +66,22 @@ public class UserController {
     public UserDto deleteUser(@PathVariable String username) {
         User user = userService.validateAndGetUserByUsername(username);
 
-        List<Opinion> opinions = opinionService.getOpinionsByIdUser(user.getId());
-        opinions.forEach(opinionService::deleteOpinion);
+       List<Opinion> opinions = opinionService.getOpinionsByIdUser(user.getId());
+       opinions.forEach(opinionService::deleteOpinion);
 
-        List<Reservation> reservations = reservationService.getReservationByIdUser(user.getId());
-        reservations.forEach(reservation -> {
-            List<ReservationsTypeOfRoom> reservationsTypeOfRooms = reservationsTypeOfRoomService.findByReservation_IdReservation(reservation.getIdReservation());
-                    reservationsTypeOfRooms.forEach((reservationsTypeOfRoomService::deleteReservationsTypeOfRoom));
-                    reservationService.deleteReservation(reservation);
-                });
+       List<Reservation> reservations = reservationService.getReservationByIdUser(user.getId());
+       reservations.forEach(reservation -> {
+           List<ReservationsTypeOfRoom> reservationsTypeOfRooms = reservationsTypeOfRoomService.findByReservation_IdReservation(reservation.getIdReservation());
+           reservationsTypeOfRooms.forEach((reservationsTypeOfRoomService::deleteReservationsTypeOfRoom));
+           reservationService.deleteReservation(reservation);
+       });
+
+       List<OwnOffer> ownOffers = ownOfferService.getAllOwnOfferByUsername(username);
+       ownOffers.forEach(offer -> {
+           List<OwnOfferTypeOfRoom> ownOfferTypeOfRooms = ownOfferTypeOfRoomService.findByOwnOffer_IdOwnOffer(offer.getIdOwnOffer());
+           ownOfferTypeOfRooms.forEach((ownOfferTypeOfRoomService::deleteOwnOfferTypeOfRoom));
+           ownOfferService.deleteOwnOffer(offer);
+       });
 
         userService.deleteUser(user);
         return userMapper.toUserDto(user);

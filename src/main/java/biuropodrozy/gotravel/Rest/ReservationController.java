@@ -30,9 +30,8 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
-
     private final UserService userService;
-
+    private final ReservationsTypeOfRoomService reservationsTypeOfRoomService;
     private final TripService tripService;
 
     public static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
@@ -62,7 +61,6 @@ public class ReservationController {
 
         double price = reservation.getNumberOfAdults() * trip.getPrice() + reservation.getNumberOfChildren() * (trip.getPrice()/2);
         reservation.setTotalPrice(price);
-        logger.warn("dcfdsf "+ reservation.getIdReservation());
 
         if(reservation.getNumberOfChildren() == 0 && reservation.getNumberOfAdults() == 0 ){
             throw new ReservationException("Proszę uzupełnić inormacje o liczbie osób podróżujących.");
@@ -79,6 +77,17 @@ public class ReservationController {
         }
 
         return ResponseEntity.ok(reservationService.saveReservation(reservation));
+    }
+
+    @DeleteMapping("/deleteReservation/{idReservation}")
+    ResponseEntity<?> deleteReservation(@PathVariable Long idReservation){
+        Reservation reservation = reservationService.getReservationsByIdReservation(idReservation);
+
+        List<ReservationsTypeOfRoom> reservationsTypeOfRooms = reservationsTypeOfRoomService.findByReservation_IdReservation(idReservation);
+        reservationsTypeOfRooms.forEach((reservationsTypeOfRoomService::deleteReservationsTypeOfRoom));
+
+        reservationService.deleteReservation(reservation);
+        return ResponseEntity.ok().build();
     }
 
 }

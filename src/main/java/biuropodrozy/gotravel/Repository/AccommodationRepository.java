@@ -3,18 +3,14 @@ package biuropodrozy.gotravel.Repository;/*
  * @author kola
  */
 
-import biuropodrozy.gotravel.Model.City;
+import biuropodrozy.gotravel.Model.Accommodation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface CityRepository extends JpaRepository<City, Integer> {
+public interface AccommodationRepository extends JpaRepository<Accommodation, Integer> {
 
-    @Override
-    List<City> findAll();
-
-    List<City> findByCountry_IdCountry(int idCountry);
-
+    List<Accommodation> findAll();
 }
