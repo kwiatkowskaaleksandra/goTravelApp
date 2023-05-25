@@ -4,6 +4,7 @@ package biuropodrozy.gotravel.Service;/*
  */
 
 import biuropodrozy.gotravel.Model.City;
+
 import java.util.List;
 
 public interface CityService {

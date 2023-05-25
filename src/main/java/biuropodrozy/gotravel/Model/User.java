@@ -4,7 +4,8 @@ package biuropodrozy.gotravel.Model;/*
  */
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,7 @@ public class User {
     private String email;
     private String role;
 
-    @Size (max = 9, min = 9)
+    @Size(max = 9, min = 9)
     private String phoneNumber;
 
     private String city;
@@ -41,7 +42,7 @@ public class User {
 
     private String streetNumber;
 
-    @Size (max = 5, min = 5)
+    @Size(max = 5, min = 5)
     private String zipCode;
 
     @OneToMany(mappedBy = "user")

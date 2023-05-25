@@ -1,7 +1,7 @@
 import NavigationBar from "../../others/NavigationBar";
 import Footer from "../../others/Footer";
-import React, {Component, useReducer} from "react";
-import {Container, Form, Modal} from "react-bootstrap";
+import React, {Component} from "react";
+import {Container, Modal} from "react-bootstrap";
 import "./MyProfile.css"
 import AuthContext from "../../others/AuthContext";
 import {orderApi} from "../../others/OrderApi";
@@ -9,12 +9,12 @@ import {CgProfile} from "react-icons/cg";
 import {RiLockPasswordLine} from "react-icons/ri";
 import {HiOutlineClipboardDocumentList} from "react-icons/hi2";
 import {MdOutlineDeleteSweep} from "react-icons/md";
-import {handleLogError, parseJwt} from "../../others/Helpers";
+import {handleLogError} from "../../others/Helpers";
 import Button from "react-bootstrap/Button";
 import {Message} from "semantic-ui-react";
 import {IoTrashBin} from "react-icons/io5";
 
-class MyProfile extends Component{
+class MyProfile extends Component {
 
     static contextType = AuthContext
 
@@ -26,7 +26,7 @@ class MyProfile extends Component{
         reservations: [],
         ownOffers: [],
 
-        username:'',
+        username: '',
         firstname: '',
         lastname: '',
         email: '',
@@ -48,7 +48,7 @@ class MyProfile extends Component{
         const Auth = this.context
         const user = Auth.getUser()
 
-        if(user != null){
+        if (user != null) {
             this.setState({isUserLogin: true})
             orderApi.getUserInfo(user).then(res => {
                 this.setState({
@@ -101,7 +101,7 @@ class MyProfile extends Component{
         orderApi.putUserUpdate(this.state.usernameID, userDetails).then(() => {
             const Auth = this.context
             Auth.userLogout()
-            window.location.href="/"
+            window.location.href = "/"
         }).catch(error => {
             handleLogError(error)
             const errorData = error.response.data
@@ -124,25 +124,25 @@ class MyProfile extends Component{
             newPassword2: this.state.passwordNew2
         }
 
-            orderApi.putUserPasswordUpdate(this.state.usernameID, passwords).then(() => {
-                const Auth = this.context
-                Auth.userLogout()
-                window.location.href="/"
-            }).catch(error => {
-                handleLogError(error)
-                const errorData = error.response.data
-                this.handleShowModal()
-                let errorMessage = 'Pola zostały błędnie uzupełnione.'
-                if (errorData.status === 409) {
-                    errorMessage = errorData.message
-                } else if (errorData.status === 400) {
-                    errorMessage = errorData.errors[0].defaultMessage
-                }
-                this.setState({isError: true, errorMessage: errorMessage})
-            })
+        orderApi.putUserPasswordUpdate(this.state.usernameID, passwords).then(() => {
+            const Auth = this.context
+            Auth.userLogout()
+            window.location.href = "/"
+        }).catch(error => {
+            handleLogError(error)
+            const errorData = error.response.data
+            this.handleShowModal()
+            let errorMessage = 'Pola zostały błędnie uzupełnione.'
+            if (errorData.status === 409) {
+                errorMessage = errorData.message
+            } else if (errorData.status === 400) {
+                errorMessage = errorData.errors[0].defaultMessage
+            }
+            this.setState({isError: true, errorMessage: errorMessage})
+        })
     }
 
-    deleteAccount =() => {
+    deleteAccount = () => {
 
         this.showModalDelete()
 
@@ -150,25 +150,25 @@ class MyProfile extends Component{
             const Auth = this.context
             Auth.userLogout()
             handleLogError("konto usuniete")
-            window.location.href="/"
-        } )
+            window.location.href = "/"
+        })
     }
 
     handleCloseModal = () => {
-        this.setState({ showModal: false });
-        this.setState({isError: false, errorMessage:' '})
+        this.setState({showModal: false});
+        this.setState({isError: false, errorMessage: ' '})
     };
 
     handleShowModal = () => {
-        this.setState({ showModal: true });
+        this.setState({showModal: true});
     };
 
     showModalDelete = () => {
-        this.setState({ showModalDelete: true });
+        this.setState({showModalDelete: true});
     };
 
     handleCloseModalDelete = () => {
-        this.setState({showModalDelete: false });
+        this.setState({showModalDelete: false});
     };
 
     deleteOwnOffer = (id) => {
@@ -177,7 +177,7 @@ class MyProfile extends Component{
         })
     }
 
-    deleteReservation= (id) => {
+    deleteReservation = (id) => {
         orderApi.deleteReservation(id).then(() => {
             window.location.reload()
         })
@@ -213,8 +213,7 @@ class MyProfile extends Component{
         }
 
 
-
-        return(
+        return (
             <div>
                 <NavigationBar/>
                 <header className={"head"}>
@@ -225,10 +224,13 @@ class MyProfile extends Component{
                                 <div className="my-tabs">
                                     <nav className="tabs">
                                         <ul>
-                                            <li className="is-active"><a href="#tab-one"> <CgProfile/> Dane osobowe</a></li>
+                                            <li className="is-active"><a href="#tab-one"> <CgProfile/> Dane osobowe</a>
+                                            </li>
                                             <li><a href="#tab-two"> <RiLockPasswordLine/> Zmiana hasła</a></li>
-                                            <li><a href="#tab-three"> <HiOutlineClipboardDocumentList/> Rezerwacje</a></li>
-                                            <li><a href="#tab-four"> <HiOutlineClipboardDocumentList/> Własne wycieczki</a></li>
+                                            <li><a href="#tab-three"> <HiOutlineClipboardDocumentList/> Rezerwacje</a>
+                                            </li>
+                                            <li><a href="#tab-four"> <HiOutlineClipboardDocumentList/> Własne wycieczki</a>
+                                            </li>
                                             <li><a href="#tab-five"> <MdOutlineDeleteSweep/> Usuń konto</a></li>
                                         </ul>
 
@@ -236,51 +238,81 @@ class MyProfile extends Component{
 
                                     <section className="tab-content is-active" id="tab-one">
 
-                                        <form className="form-floating row gy-2 gx-3" style={{justifyContent: 'center'}}>
+                                        <form className="form-floating row gy-2 gx-3"
+                                              style={{justifyContent: 'center'}}>
 
                                             <div className="input-group mb-3 w-75">
-                                                <span className="input-group-text " >Imię</span>
-                                                <input type="text" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({firstname: e.target.value})}} placeholder = {this.state.userInfo.firstname}/>
+                                                <span className="input-group-text ">Imię</span>
+                                                <input type="text" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({firstname: e.target.value})
+                                                       }} placeholder={this.state.userInfo.firstname}/>
                                             </div>
 
                                             <div className="input-group mb-3 w-75">
                                                 <span className="input-group-text" id="basic-addon1">Nazwisko</span>
-                                                <input type="text" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({lastname: e.target.value})}} placeholder= {this.state.userInfo.lastname}/>
+                                                <input type="text" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({lastname: e.target.value})
+                                                       }} placeholder={this.state.userInfo.lastname}/>
                                             </div>
 
                                             <div className="input-group mb-3 w-75">
                                                 <span className="input-group-text" id="basic-addon1">Adres email</span>
-                                                <input type="email" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({email: e.target.value})}} placeholder={this.state.userInfo.email}/>
+                                                <input type="email" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({email: e.target.value})
+                                                       }} placeholder={this.state.userInfo.email}/>
                                             </div>
 
                                             <div className="input-group mb-3 w-75">
-                                                <span className="input-group-text" id="basic-addon1">Nazwa użytkownika</span>
-                                                <input type="text" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({username: e.target.value})}} placeholder={this.state.userInfo.username}/>
+                                                <span className="input-group-text"
+                                                      id="basic-addon1">Nazwa użytkownika</span>
+                                                <input type="text" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({username: e.target.value})
+                                                       }} placeholder={this.state.userInfo.username}/>
                                             </div>
 
                                             <div className="input-group mb-3 w-75">
-                                                <span className="input-group-text" id="basic-addon1">Numer telefonu</span>
-                                                <input type="text" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({phoneNumber: e.target.value})}} placeholder={this.state.userInfo.phoneNumber}/>
+                                                <span className="input-group-text"
+                                                      id="basic-addon1">Numer telefonu</span>
+                                                <input type="text" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({phoneNumber: e.target.value})
+                                                       }} placeholder={this.state.userInfo.phoneNumber}/>
                                             </div>
 
                                             <div className="input-group mb-3 w-75">
                                                 <span className="input-group-text" id="basic-addon1">Miasto</span>
-                                                <input type="text" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({city: e.target.value})}} placeholder={this.state.userInfo.city}/>
+                                                <input type="text" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({city: e.target.value})
+                                                       }} placeholder={this.state.userInfo.city}/>
                                             </div>
 
                                             <div className="input-group mb-3 w-75">
                                                 <span className="input-group-text" id="basic-addon1">Ulica</span>
-                                                <input type="text" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({street: e.target.value})}} placeholder={this.state.userInfo.street}/>
+                                                <input type="text" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({street: e.target.value})
+                                                       }} placeholder={this.state.userInfo.street}/>
                                             </div>
 
                                             <div className="input-group mb-3 w-75">
                                                 <span className="input-group-text" id="basic-addon1">Numer</span>
-                                                <input type="text" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({streetNumber: e.target.value})}} placeholder={this.state.userInfo.streetNumber}/>
+                                                <input type="text" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({streetNumber: e.target.value})
+                                                       }} placeholder={this.state.userInfo.streetNumber}/>
                                             </div>
 
                                             <div className="input-group mb-3 w-75">
                                                 <span className="input-group-text" id="basic-addon1">Kod pocztowy</span>
-                                                <input type="text" className="form-control" id="floatingInputValue" onChange={(e) => {this.setState({zipCode: e.target.value})}} placeholder={this.state.userInfo.zipCode}/>
+                                                <input type="text" className="form-control" id="floatingInputValue"
+                                                       onChange={(e) => {
+                                                           this.setState({zipCode: e.target.value})
+                                                       }} placeholder={this.state.userInfo.zipCode}/>
                                             </div>
 
                                         </form>
@@ -293,21 +325,28 @@ class MyProfile extends Component{
                                     <section className="tab-content" id="tab-two">
 
 
-                                        <form className="form-floating row gy-2 gx-3" style={{justifyContent: 'center'}}>
+                                        <form className="form-floating row gy-2 gx-3"
+                                              style={{justifyContent: 'center'}}>
 
                                             <div className="input-group mb-3" style={{width: '60%'}}>
-                                                <span className="input-group-text " >Stare hasło</span>
-                                                <input type={"password"} className={"form-control"} onChange={(e) => {this.setState({passwordOld: e.target.value})}}/>
+                                                <span className="input-group-text ">Stare hasło</span>
+                                                <input type={"password"} className={"form-control"} onChange={(e) => {
+                                                    this.setState({passwordOld: e.target.value})
+                                                }}/>
                                             </div>
 
                                             <div className="input-group mb-3" style={{width: '60%'}}>
-                                                <span className="input-group-text " >Nowe hasło</span>
-                                                <input type={"password"} className={"form-control"} onChange={(e) => {this.setState({passwordNew: e.target.value})}}/>
+                                                <span className="input-group-text ">Nowe hasło</span>
+                                                <input type={"password"} className={"form-control"} onChange={(e) => {
+                                                    this.setState({passwordNew: e.target.value})
+                                                }}/>
                                             </div>
 
                                             <div className="input-group mb-3" style={{width: '60%'}}>
-                                                <span className="input-group-text " >Powtórz nowe hasło</span>
-                                                <input type={"password"} className={"form-control"} onChange={(e) => {this.setState({passwordNew2: e.target.value})}}/>
+                                                <span className="input-group-text ">Powtórz nowe hasło</span>
+                                                <input type={"password"} className={"form-control"} onChange={(e) => {
+                                                    this.setState({passwordNew2: e.target.value})
+                                                }}/>
                                             </div>
                                         </form>
 
@@ -332,31 +371,33 @@ class MyProfile extends Component{
                                             </tr>
                                             </thead>
                                             <tbody> {this.state.reservations.map(res =>
-                                            <tr key={res.idReservation} >
+                                                <tr key={res.idReservation}>
 
-                                                <th scope={"row"} style={{fontWeight: 'normal'}}>
-                                                    <td>{res.trip.tripCity.country.nameCountry}</td>
-                                                </th>
-                                                <th scope={"row"} style={{fontWeight: 'normal'}}>
-                                                    <td>{res.trip.tripCity.nameCity}</td>
-                                                </th>
-                                                <th scope={"row"} style={{fontWeight: 'normal'}}>
-                                                    <td>{res.dateOfReservation}</td>
-                                                </th>
-                                                <th scope={"row"} style={{fontWeight: 'normal'}}>
-                                                    <td>{res.departureDate}</td>
-                                                </th>
-                                                <th scope={"row"} style={{fontWeight: 'normal'}}>
-                                                    <td>{res.trip.numberOfDays}</td>
-                                                </th>
-                                                <th scope={"row"} style={{fontWeight: 'normal'}}>
-                                                    <td>{res.totalPrice}</td>
-                                                </th>
-                                                <th scope={"row"} style={{fontWeight: 'normal'}}>
-                                                    <td><IoTrashBin onClick={() => this.deleteReservation(res.idReservation)}/></td>
-                                                </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{res.trip.tripCity.country.nameCountry}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{res.trip.tripCity.nameCity}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{res.dateOfReservation}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{res.departureDate}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{res.trip.numberOfDays}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td>{res.totalPrice}</td>
+                                                    </th>
+                                                    <th scope={"row"} style={{fontWeight: 'normal'}}>
+                                                        <td><IoTrashBin
+                                                            onClick={() => this.deleteReservation(res.idReservation)}/>
+                                                        </td>
+                                                    </th>
 
-                                            </tr> )}
+                                                </tr>)}
                                             </tbody>
                                         </table>
 
@@ -377,7 +418,7 @@ class MyProfile extends Component{
                                             </tr>
                                             </thead>
                                             <tbody> {this.state.ownOffers.map(offer =>
-                                                <tr key={offer.idOwnOffer} >
+                                                <tr key={offer.idOwnOffer}>
 
                                                     <th scope={"row"} style={{fontWeight: 'normal'}}>
                                                         <td>{offer.offerCity.country.nameCountry}</td>
@@ -398,10 +439,11 @@ class MyProfile extends Component{
                                                         <td>{offer.totalPrice}</td>
                                                     </th>
                                                     <th scope={"row"} style={{fontWeight: 'normal'}}>
-                                                        <td><IoTrashBin onClick={() => this.deleteOwnOffer(offer.idOwnOffer)}/></td>
+                                                        <td><IoTrashBin
+                                                            onClick={() => this.deleteOwnOffer(offer.idOwnOffer)}/></td>
                                                     </th>
 
-                                                </tr> )}
+                                                </tr>)}
                                             </tbody>
                                         </table>
 
@@ -410,11 +452,15 @@ class MyProfile extends Component{
                                     <section className="tab-content" id="tab-five" style={{height: '300px'}}>
 
                                         <div style={{textAlignLast: 'center'}}>
-                                           <label  >Czy jesteś pewien że chcesz usunąć swoje konto ?</label>
+                                            <label>Czy jesteś pewien że chcesz usunąć swoje konto ?</label>
                                         </div>
 
                                         <button className="btn btn-primary reservation" type="submit"
-                                                onClick={this.showModalDelete} style={{backgroundColor: 'red', borderColor: 'red', marginTop:'5%'}}>Usuń konto
+                                                onClick={this.showModalDelete} style={{
+                                            backgroundColor: 'red',
+                                            borderColor: 'red',
+                                            marginTop: '5%'
+                                        }}>Usuń konto
                                         </button>
 
                                     </section>
@@ -441,7 +487,7 @@ class MyProfile extends Component{
                                     <Modal.Title>Usunięcie konta</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                   Czy na pewno chcesz usunąć konto ?
+                                    Czy na pewno chcesz usunąć konto ?
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button variant="secondary" onClick={this.handleCloseModalDelete}>

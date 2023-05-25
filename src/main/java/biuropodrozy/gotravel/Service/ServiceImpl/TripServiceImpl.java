@@ -37,7 +37,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public List<Trip> getTripsByTypeOfTripAndTripCity_Country_IdCountry(String typeOfTrip, int idCountry) {
-        return tripRepository.findByTypeOfTripAndTripCity_Country_IdCountry(typeOfTrip,idCountry);
+        return tripRepository.findByTypeOfTripAndTripCity_Country_IdCountry(typeOfTrip, idCountry);
     }
 
     @Override

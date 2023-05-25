@@ -11,22 +11,21 @@ import AuthContext from "../../others/AuthContext";
 import Button from "react-bootstrap/Button";
 
 
-
-class SeeTheOffer extends Component{
+class SeeTheOffer extends Component {
 
     static contextType = AuthContext
 
 
     state = {
-        idTripSelected:'',
+        idTripSelected: '',
         tripOffer: [],
-        typeTrip:'',
+        typeTrip: '',
         city: '',
         country: '',
         transport: '',
         accommodation: '',
         opinions: [],
-        dateFormatted:'',
+        dateFormatted: '',
         photos: [],
         isUserLogin: false,
         userId: 0,
@@ -41,7 +40,7 @@ class SeeTheOffer extends Component{
         const Auth = this.context
         const user = Auth.getUser()
 
-        if(user != null){
+        if (user != null) {
             this.setState({isUserLogin: true, userId: user.id})
             orderApi.getUserInfo(user).then(res => {
                 this.setState({
@@ -64,14 +63,18 @@ class SeeTheOffer extends Component{
         orderApi.getOpinionsByIdTrip(this.state.idTripSelected).then(res => {
             this.setState({
                 opinions: res.data,
-                dateFormatted: new Date(res.data.date).toLocaleDateString("en-CA",{year: "numeric", month:"2-digit", day:"2-digit"})
+                dateFormatted: new Date(res.data.date).toLocaleDateString("en-CA", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit"
+                })
             })
         })
     }
 
     handlePostOpinion = () => {
         const opinion = {description: this.state.opinionDesc}
-        orderApi.postNewOpinion(this.state.userId, this.state.idTripSelected,opinion).then(() => {
+        orderApi.postNewOpinion(this.state.userId, this.state.idTripSelected, opinion).then(() => {
             this.handleGetOpinion()
             this.setState({opinionDesc: ''})
             window.location.reload()
@@ -98,35 +101,35 @@ class SeeTheOffer extends Component{
         orderApi.getTripById(this.state.idTripSelected).then(res => {
             this.setState({tripOffer: res.data})
 
-            if(res.data.typeOfTrip === 'lastMinute'){
+            if (res.data.typeOfTrip === 'lastMinute') {
                 this.setState({
                     typeTrip: 'Last Minute'
                 })
-            }else if(res.data.typeOfTrip === 'promocje'){
+            } else if (res.data.typeOfTrip === 'promocje') {
                 this.setState({
                     typeTrip: 'Promocja'
                 })
-            }else if(res.data.typeOfTrip === 'krotkiUrlop'){
+            } else if (res.data.typeOfTrip === 'krotkiUrlop') {
                 this.setState({
                     typeTrip: 'Krótki urlop'
                 })
-            }else if(res.data.typeOfTrip === 'dlugiPobyt'){
+            } else if (res.data.typeOfTrip === 'dlugiPobyt') {
                 this.setState({
                     typeTrip: 'Dlugi pobyt'
                 })
-            }else if(res.data.typeOfTrip === 'rejs'){
+            } else if (res.data.typeOfTrip === 'rejs') {
                 this.setState({
                     typeTrip: 'Rejs'
                 })
-            }else if(res.data.typeOfTrip === 'allInclusive'){
+            } else if (res.data.typeOfTrip === 'allInclusive') {
                 this.setState({
                     typeTrip: 'All Inclusive'
                 })
-            }else if(res.data.typeOfTrip === 'wakacjeRodzina'){
+            } else if (res.data.typeOfTrip === 'wakacjeRodzina') {
                 this.setState({
                     typeTrip: 'Wakacje z dziećmi'
                 })
-            }else if(res.data.typeOfTrip === 'egzotyka'){
+            } else if (res.data.typeOfTrip === 'egzotyka') {
                 this.setState({
                     typeTrip: 'Egzotyka'
                 })
@@ -142,10 +145,10 @@ class SeeTheOffer extends Component{
     }
 
     handleReservation = () => {
-        if(this.state.isUserLogin === false){
+        if (this.state.isUserLogin === false) {
             window.location.href = "/customerZone/login"
-        }else{
-            window.location.href = "/reservationForm/"+this.state.idTripSelected
+        } else {
+            window.location.href = "/reservationForm/" + this.state.idTripSelected
         }
     }
 
@@ -191,31 +194,30 @@ class SeeTheOffer extends Component{
         }
 
 
-
-        return(
+        return (
             <main>
                 <NavigationBar/>
 
                 <header className={"head"}>
-                    <section  className={"d-flex justify-content-center mb-4 ms-5 me-5"}>
+                    <section className={"d-flex justify-content-center mb-4 ms-5 me-5"}>
 
-                        <div className={"card"} style={{width:'80rem'}}>
+                        <div className={"card"} style={{width: '80rem'}}>
                             <center>
-                            <Carousel>
-                                {this.state.photos.map(photo =>
-                                <Carousel.Item interval={1000}  key={photo.idPhoto}>
-                                    <img
-                                        className="d-block"
-                                        src={photo.urlPhoto}
-                                        alt=" "
-                                        style={{width:'40rem'}}
-                                    />
-                                </Carousel.Item>
-                                )}
-                            </Carousel>
-                        </center>
+                                <Carousel>
+                                    {this.state.photos.map(photo =>
+                                        <Carousel.Item interval={1000} key={photo.idPhoto}>
+                                            <img
+                                                className="d-block"
+                                                src={photo.urlPhoto}
+                                                alt=" "
+                                                style={{width: '40rem'}}
+                                            />
+                                        </Carousel.Item>
+                                    )}
+                                </Carousel>
+                            </center>
 
-                            <div class="card-body" >
+                            <div class="card-body">
                                 <div className="my-tabs">
                                     <nav className="tabs">
                                         <ul>
@@ -260,30 +262,40 @@ class SeeTheOffer extends Component{
 
                                         <p className={"mt-3 ms-3 desc"}> {this.state.tripOffer.tripDescription}</p>
 
-                                        <button class="btn btn-primary reservation" type="submit" onClick={this.handleReservation}>Zarezerwuj już teraz</button>
+                                        <button class="btn btn-primary reservation" type="submit"
+                                                onClick={this.handleReservation}>Zarezerwuj już teraz
+                                        </button>
 
                                     </section>
 
                                     <section className="tab-content" id="tab-two">
                                         {this.state.opinions.map(opinion =>
-                                        <div className="card mt-3"  style={{width:'77rem'}} key={opinion.idOpinion}>
-                                            <div className="card-body" >
-                                                <h5 className="card-title">{opinion.user.username}</h5>
-                                                <h6 className="card-subtitle mb-2 text-muted">{new Date(opinion.date).toLocaleDateString("en-CA",{year: "numeric", month:"2-digit", day:"2-digit"})}</h6>
-                                                <p className="card-text">{opinion.description}</p>
-                                                {opinion.user.username === this.state.userUsername && (
-                                               <BsTrash3 onClick={() => this.handleDeleteOpinion(opinion.idOpinion)}/>
-                                                )}
+                                            <div className="card mt-3" style={{width: '77rem'}} key={opinion.idOpinion}>
+                                                <div className="card-body">
+                                                    <h5 className="card-title">{opinion.user.username}</h5>
+                                                    <h6 className="card-subtitle mb-2 text-muted">{new Date(opinion.date).toLocaleDateString("en-CA", {
+                                                        year: "numeric",
+                                                        month: "2-digit",
+                                                        day: "2-digit"
+                                                    })}</h6>
+                                                    <p className="card-text">{opinion.description}</p>
+                                                    {opinion.user.username === this.state.userUsername && (
+                                                        <BsTrash3
+                                                            onClick={() => this.handleDeleteOpinion(opinion.idOpinion)}/>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
                                         )}
 
                                         <div>
 
                                             {this.state.isUserLogin ? (
-                                                <div className="input-group mt-3" style={{width:'77rem'}}>
-                                                    <textarea className="form-control" aria-label="With textarea" placeholder={"Moja opinia..."} onChange={this.handleGetDescription}></textarea>
-                                                    <Button type="submit" class="btn btn-primary" onClick={this.handlePostOpinion}>Dodaj opinie</Button>
+                                                <div className="input-group mt-3" style={{width: '77rem'}}>
+                                                    <textarea className="form-control" aria-label="With textarea"
+                                                              placeholder={"Moja opinia..."}
+                                                              onChange={this.handleGetDescription}></textarea>
+                                                    <Button type="submit" class="btn btn-primary"
+                                                            onClick={this.handlePostOpinion}>Dodaj opinie</Button>
                                                 </div>
                                             ) : (
                                                 <div></div>
@@ -298,7 +310,8 @@ class SeeTheOffer extends Component{
                                     <section className="tab-content" id="tab-three">
                                         {this.state.attractions.map(attraction =>
                                             <div key={attraction.idAttraction} className={"mt-3 ms-3"}>
-                                                <p className={"attraction"}><BsCheck2All/> {attraction.nameAttraction}</p>
+                                                <p className={"attraction"}><BsCheck2All/> {attraction.nameAttraction}
+                                                </p>
                                             </div>
                                         )}
                                     </section>

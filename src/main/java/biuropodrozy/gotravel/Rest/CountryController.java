@@ -21,7 +21,7 @@ public class CountryController {
     private final CountryService countryService;
 
     @GetMapping("/all")
-    ResponseEntity<List<Country>> readAllCountries(){
+    ResponseEntity<List<Country>> readAllCountries() {
         return ResponseEntity.ok(countryService.getAllCountries());
     }
 

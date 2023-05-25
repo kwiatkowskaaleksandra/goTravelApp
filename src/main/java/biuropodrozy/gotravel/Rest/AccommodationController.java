@@ -21,7 +21,7 @@ public class AccommodationController {
     private final AccommodationService accommodationService;
 
     @GetMapping("/all")
-    ResponseEntity<List<Accommodation>> readAllAccommodations(){
+    ResponseEntity<List<Accommodation>> readAllAccommodations() {
         return ResponseEntity.ok(accommodationService.getAllAccommodations());
     }
 }

@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 public class UserMapperImpl implements UserMapper {
     @Override
     public UserDto toUserDto(User user) {
-        if(user == null) {
+        if (user == null) {
             return null;
         }
 
-        return new UserDto(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname(),user.getEmail(), user.getRole(), user.getPhoneNumber(), user.getCity(), user.getStreet(), user.getStreetNumber(), user.getZipCode());
+        return new UserDto(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getRole(), user.getPhoneNumber(), user.getCity(), user.getStreet(), user.getStreetNumber(), user.getZipCode());
     }
 }

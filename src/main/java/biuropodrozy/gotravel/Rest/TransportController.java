@@ -17,12 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/transport")
-public class TransportController{
+public class TransportController {
 
     private final TransportService transportService;
 
     @GetMapping(value = "/all")
-    ResponseEntity<List<Transport>> readAllTransports(){
+    ResponseEntity<List<Transport>> readAllTransports() {
         return ResponseEntity.ok(transportService.getAllTransports());
     }
 }

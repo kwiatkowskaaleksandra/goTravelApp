@@ -24,7 +24,7 @@ public class ReservationsTypeOfRoomController {
     private final TypeOfRoomService typeOfRoomService;
 
     @PostMapping("/addReservationsTypOfRooms/{idTypeOfRoom}")
-    ResponseEntity<ReservationsTypeOfRoom> createNew(@PathVariable int idTypeOfRoom, @RequestBody ReservationsTypeOfRoom reservationsTypeOfRoom){
+    ResponseEntity<ReservationsTypeOfRoom> createNew(@PathVariable int idTypeOfRoom, @RequestBody ReservationsTypeOfRoom reservationsTypeOfRoom) {
 
         Reservation reservation = reservationService.getReservationsByIdReservation(reservationService.getTopByOrderByIdReservation().getIdReservation());
         reservationsTypeOfRoom.setReservation(reservation);

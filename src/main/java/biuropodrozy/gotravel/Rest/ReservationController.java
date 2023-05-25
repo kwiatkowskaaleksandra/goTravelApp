@@ -9,7 +9,6 @@ import biuropodrozy.gotravel.Model.Reservation;
 import biuropodrozy.gotravel.Model.ReservationsTypeOfRoom;
 import biuropodrozy.gotravel.Model.Trip;
 import biuropodrozy.gotravel.Model.User;
-import biuropodrozy.gotravel.Rest.dto.UserDto;
 import biuropodrozy.gotravel.Service.ReservationService;
 import biuropodrozy.gotravel.Service.ReservationsTypeOfRoomService;
 import biuropodrozy.gotravel.Service.TripService;
@@ -29,26 +28,25 @@ import java.util.List;
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
+    public static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
     private final ReservationService reservationService;
     private final UserService userService;
     private final ReservationsTypeOfRoomService reservationsTypeOfRoomService;
     private final TripService tripService;
 
-    public static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
-
     @GetMapping("/getReservation/{idReservation}")
-    ResponseEntity<Reservation> getReservationByIdReservation(@PathVariable Long idReservation){
+    ResponseEntity<Reservation> getReservationByIdReservation(@PathVariable Long idReservation) {
         return ResponseEntity.ok(reservationService.getReservationsByIdReservation(idReservation));
     }
 
     @GetMapping("/getReservationByUser/{username}")
-    ResponseEntity <List<Reservation>> getReservationByUser(@PathVariable String username){
+    ResponseEntity<List<Reservation>> getReservationByUser(@PathVariable String username) {
         User user = userService.validateAndGetUserByUsername(username);
         return ResponseEntity.ok(reservationService.getReservationByIdUser(user.getId()));
     }
 
     @PostMapping("/addReservation/{username}/{idTrip}")
-    ResponseEntity<Reservation> createReservation(@PathVariable String username, @PathVariable Long idTrip, @RequestBody Reservation reservation){
+    ResponseEntity<Reservation> createReservation(@PathVariable String username, @PathVariable Long idTrip, @RequestBody Reservation reservation) {
 
         User user = userService.validateAndGetUserByUsername(username);
         Trip trip = tripService.getTripByIdTrip(idTrip);
@@ -57,22 +55,21 @@ public class ReservationController {
         reservation.setUser(user);
         reservation.setDateOfReservation(localDate);
         reservation.setTrip(trip);
-        reservation.setIdReservation(reservationService.getTopByOrderByIdReservation().getIdReservation()+1);
+        reservation.setIdReservation(reservationService.getTopByOrderByIdReservation().getIdReservation() + 1);
 
-        double price = reservation.getNumberOfAdults() * trip.getPrice() + reservation.getNumberOfChildren() * (trip.getPrice()/2);
+        double price = reservation.getNumberOfAdults() * trip.getPrice() + reservation.getNumberOfChildren() * (trip.getPrice() / 2);
         reservation.setTotalPrice(price);
 
-        if(reservation.getNumberOfChildren() == 0 && reservation.getNumberOfAdults() == 0 ){
+        if (reservation.getNumberOfChildren() == 0 && reservation.getNumberOfAdults() == 0) {
             throw new ReservationException("Proszę uzupełnić inormacje o liczbie osób podróżujących.");
-        }
-        else if(reservation.getNumberOfChildren() != 0 && reservation.getNumberOfAdults() == 0 ){
+        } else if (reservation.getNumberOfChildren() != 0 && reservation.getNumberOfAdults() == 0) {
             throw new ReservationException("Osoby poniżej 18 roku życia nie mogą podróżować bez dorosłego opiekuna.");
         }
-        if(reservation.getDepartureDate().equals(LocalDate.of(1970, 1, 1))){
+        if (reservation.getDepartureDate().equals(LocalDate.of(1970, 1, 1))) {
             throw new ReservationException("Proszę podać datę wyjazdu.");
         }
-        if(user.getUsername() == null || user.getEmail() == null || user.getStreet() == null || user.getCity() == null || user.getZipCode() == null || user.getLastname() == null
-                || user.getFirstname() == null|| user.getPhoneNumber() == null || user.getStreetNumber() == null){
+        if (user.getUsername() == null || user.getEmail() == null || user.getStreet() == null || user.getCity() == null || user.getZipCode() == null || user.getLastname() == null
+                || user.getFirstname() == null || user.getPhoneNumber() == null || user.getStreetNumber() == null) {
             throw new UserException("Proszę o uzupełnienie wszytskich danych osobowych.");
         }
 
@@ -80,7 +77,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/deleteReservation/{idReservation}")
-    ResponseEntity<?> deleteReservation(@PathVariable Long idReservation){
+    ResponseEntity<?> deleteReservation(@PathVariable Long idReservation) {
         Reservation reservation = reservationService.getReservationsByIdReservation(idReservation);
 
         List<ReservationsTypeOfRoom> reservationsTypeOfRooms = reservationsTypeOfRoomService.findByReservation_IdReservation(idReservation);

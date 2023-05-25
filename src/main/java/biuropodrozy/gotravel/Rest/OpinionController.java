@@ -29,13 +29,13 @@ public class OpinionController {
     private final TripService tripService;
 
     @GetMapping("/{idTrip}")
-    ResponseEntity<List<Opinion>> getAllOpinionByIdTrip(@PathVariable Long idTrip){
+    ResponseEntity<List<Opinion>> getAllOpinionByIdTrip(@PathVariable Long idTrip) {
         return ResponseEntity.ok(opinionService.getOpinionsByIdTrip(idTrip));
     }
 
 
     @PostMapping("/addOpinion/{idUser}/{idTrip}")
-    ResponseEntity<Opinion> createOpinion(@PathVariable Long idUser, @PathVariable Long idTrip, @RequestBody Opinion opinion){
+    ResponseEntity<Opinion> createOpinion(@PathVariable Long idUser, @PathVariable Long idTrip, @RequestBody Opinion opinion) {
 
         User user = userService.getUserById(idUser);
         Trip trip = tripService.getTripByIdTrip(idTrip);
@@ -48,7 +48,7 @@ public class OpinionController {
     }
 
     @DeleteMapping("/deleteOpinion/{idOpinion}")
-    ResponseEntity<?> deleteOpinion(@PathVariable int idOpinion){
+    ResponseEntity<?> deleteOpinion(@PathVariable int idOpinion) {
 
         Opinion opinion = opinionService.getOpinionByIdOpinion(idOpinion);
         opinionService.deleteOpinion(opinion);

@@ -22,11 +22,11 @@ public class ReservationsTypeOfRoomServiceImpl implements ReservationsTypeOfRoom
         return reservationsTypeOfRoomRepository.save(reservationsTypeOfRoom);
     }
 
-   /* @Override
-    public ReservationsTypeOfRoom getByReservation_IdReservation(Long id) {
-        return (ReservationsTypeOfRoom) reservationsTypeOfRoomRepository.findByReservation_IdReservation(id);
-    }
-*/
+    /* @Override
+     public ReservationsTypeOfRoom getByReservation_IdReservation(Long id) {
+         return (ReservationsTypeOfRoom) reservationsTypeOfRoomRepository.findByReservation_IdReservation(id);
+     }
+ */
     @Override
     public List<ReservationsTypeOfRoom> findByReservation_IdReservation(Long id) {
         return reservationsTypeOfRoomRepository.findByReservation_IdReservation(id);

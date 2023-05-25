@@ -46,7 +46,7 @@ public class AuthController {
         if (userService.hasUserWithEmail(signUpRequest.getEmail())) {
             throw new DuplicatedUserInfoException(String.format("Użytkownik o adresie email %s już istnieje.", signUpRequest.getEmail()));
         }
-        if(signUpRequest.getPassword().length()<5){
+        if (signUpRequest.getPassword().length() < 5) {
             throw new UserSignUpException("Hasło powinno się składać z co najmniej 5 znaków.");
         }
 

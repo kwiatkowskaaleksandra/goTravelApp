@@ -30,7 +30,7 @@ public class Attraction {
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
-            },mappedBy = "tripAttraction")
+            }, mappedBy = "tripAttraction")
     @JsonIgnore
     private Set<Trip> trips;
 
@@ -38,7 +38,7 @@ public class Attraction {
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
-            },mappedBy = "offerAttraction")
+            }, mappedBy = "offerAttraction")
     @JsonIgnore
     private Set<OwnOffer> ownOffers;
 }

@@ -41,12 +41,12 @@ public class Trip {
 
     private int numberOfDays;
 
-   @OneToMany(mappedBy = "trip")
-   private Set<Photo> tripPhoto;
+    @OneToMany(mappedBy = "trip")
+    private Set<Photo> tripPhoto;
 
-   private String representativePhoto;
+    private String representativePhoto;
 
-    @Column(columnDefinition="LONGTEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String tripDescription;
 
     @OneToMany(mappedBy = "trip")

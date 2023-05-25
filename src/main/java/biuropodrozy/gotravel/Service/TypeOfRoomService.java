@@ -5,7 +5,6 @@ package biuropodrozy.gotravel.Service;/*
 
 import biuropodrozy.gotravel.Model.TypeOfRoom;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public interface TypeOfRoomService {

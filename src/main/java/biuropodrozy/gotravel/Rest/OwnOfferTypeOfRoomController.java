@@ -3,7 +3,9 @@ package biuropodrozy.gotravel.Rest;/*
  * @author kola
  */
 
-import biuropodrozy.gotravel.Model.*;
+import biuropodrozy.gotravel.Model.OwnOffer;
+import biuropodrozy.gotravel.Model.OwnOfferTypeOfRoom;
+import biuropodrozy.gotravel.Model.TypeOfRoom;
 import biuropodrozy.gotravel.Service.OwnOfferService;
 import biuropodrozy.gotravel.Service.OwnOfferTypeOfRoomService;
 import biuropodrozy.gotravel.Service.TypeOfRoomService;
@@ -21,7 +23,7 @@ public class OwnOfferTypeOfRoomController {
     private final TypeOfRoomService typeOfRoomService;
 
     @PostMapping("/addOwnOfferTypeOfRooms/{nameTypeOfRoom}")
-    ResponseEntity<OwnOfferTypeOfRoom> createNew(@PathVariable String nameTypeOfRoom, @RequestBody OwnOfferTypeOfRoom ownOfferTypeOfRoom){
+    ResponseEntity<OwnOfferTypeOfRoom> createNew(@PathVariable String nameTypeOfRoom, @RequestBody OwnOfferTypeOfRoom ownOfferTypeOfRoom) {
 
         OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(ownOfferService.getTopByOrderByIdOwnOffer().getIdOwnOffer());
         ownOfferTypeOfRoom.setOwnOffer(ownOffer);

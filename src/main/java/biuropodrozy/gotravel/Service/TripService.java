@@ -21,9 +21,9 @@ public interface TripService {
 
     List<Trip> getTripsByTripCity_Country_IdCountry(int idCountry);
 
-    List<Trip> getTripsByTypeOfTripAndTripTransport(String typeOfTrip, Optional<Transport> tripTransport );
+    List<Trip> getTripsByTypeOfTripAndTripTransport(String typeOfTrip, Optional<Transport> tripTransport);
 
-    List<Trip> getTripsByTripTransport(Optional<Transport> tripTransport );
+    List<Trip> getTripsByTripTransport(Optional<Transport> tripTransport);
 
     List<Trip> getTripsByTypeOfTripAndPriceBetween(String typeOfTrip, double minPrice, double maxPrice);
 

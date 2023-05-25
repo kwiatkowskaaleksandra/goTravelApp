@@ -1,13 +1,13 @@
-.personalData{
+.personalData {
     font-family: "Comic Sans MS";
 }
 
-.containerForm{
+.containerForm {
     width: 60rem;
     justify-content: center;
 }
 
-.col.colReservation{
+.col.colReservation {
     text-align: right;
 }
 

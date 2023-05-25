@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ReservationsTypeOfRoomRepository extends JpaRepository<ReservationsTypeOfRoom,Integer> {
+public interface ReservationsTypeOfRoomRepository extends JpaRepository<ReservationsTypeOfRoom, Integer> {
     List<ReservationsTypeOfRoom> findByReservation_IdReservation(Long id);
 }

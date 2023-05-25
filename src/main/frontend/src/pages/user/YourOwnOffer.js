@@ -10,7 +10,7 @@ import Button from "react-bootstrap/Button";
 import {handleLogError} from "../../others/Helpers";
 
 
-class YourOwnOffer extends Component{
+class YourOwnOffer extends Component {
 
     static contextType = AuthContext
 
@@ -67,7 +67,7 @@ class YourOwnOffer extends Component{
         const Auth = this.context
         const user = Auth.getUser()
 
-        if(user != null){
+        if (user != null) {
             this.setState({isUserLogin: true, userId: user.id})
             orderApi.getUserInfo(user).then(res => {
                 this.setState({
@@ -108,8 +108,8 @@ class YourOwnOffer extends Component{
     }
 
     handleChangeCountry = (e) => {
-        this.setState({selectedCountry: e.target.value,  stepThree: false})
-        if(e.target.value === 'Wybierz'){
+        this.setState({selectedCountry: e.target.value, stepThree: false})
+        if (e.target.value === 'Wybierz') {
             this.setState({
                 stepThree: false,
                 stepFour: false,
@@ -118,19 +118,19 @@ class YourOwnOffer extends Component{
                 cities: []
             })
         }
-            this.state.countries.map(country => {
-                if (country.nameCountry === e.target.value) {
-                    this.setState({selectedCountryId: country.idCountry, selectedCountry: e.target.value})
-                    orderApi.getCitiesByIdCountry(country.idCountry).then(response => {
-                        this.setState({cities: response.data})
-                    })
-                }
-            })
+        this.state.countries.map(country => {
+            if (country.nameCountry === e.target.value) {
+                this.setState({selectedCountryId: country.idCountry, selectedCountry: e.target.value})
+                orderApi.getCitiesByIdCountry(country.idCountry).then(response => {
+                    this.setState({cities: response.data})
+                })
+            }
+        })
     }
 
     handleChangeAccommodation = (e) => {
         this.setState({selectedAccommodation: e.target.value})
-        if(e.target.value === 'Wybierz'){
+        if (e.target.value === 'Wybierz') {
             this.setState({
                 stepFour: false,
                 stepFive: false,
@@ -139,7 +139,7 @@ class YourOwnOffer extends Component{
             })
         }
         this.state.accommodations.map(accommodation => {
-            if(accommodation.nameAccommodation === e.target.value){
+            if (accommodation.nameAccommodation === e.target.value) {
                 this.setState({selectedAccommodationId: accommodation.idAccommodation})
             }
         })
@@ -151,20 +151,20 @@ class YourOwnOffer extends Component{
             selectedCity: e.target.value,
         })
 
-        if( e.target.value === 'Wybierz'){
+        if (e.target.value === 'Wybierz') {
             this.setState({
                 stepThree: false,
                 stepFour: false,
                 stepFive: false,
                 stepSix: false
             })
-        }else{
+        } else {
             this.setState({
                 stepThree: true,
                 selectedCity: e.target.value
             })
             this.state.cities.map(city => {
-                if(city.nameCity === e.target.value){
+                if (city.nameCity === e.target.value) {
                     this.setState({selectedCityId: city.idCity})
                 }
             })
@@ -172,42 +172,42 @@ class YourOwnOffer extends Component{
     }
 
     sectionStyleStepThree = () => {
-        return this.state.stepThree ? { "display": "block" } : { "display": "none" }
+        return this.state.stepThree ? {"display": "block"} : {"display": "none"}
     }
     sectionStyleStepFour = () => {
-        return this.state.stepFour ? { "display": "block" } : { "display": "none" }
+        return this.state.stepFour ? {"display": "block"} : {"display": "none"}
     }
     sectionStyleStepFive = () => {
-        return this.state.stepFive ? { "display": "block" } : { "display": "none" }
+        return this.state.stepFive ? {"display": "block"} : {"display": "none"}
     }
     sectionStyleStepSix = () => {
-        return this.state.stepSix ? { "display": "block" } : { "display": "none" }
+        return this.state.stepSix ? {"display": "block"} : {"display": "none"}
     }
 
     typeOfRoomsStep = () => {
-        return this.state.selectedAccommodationId ? { "display": "block" } : { "display": "none" }
+        return this.state.selectedAccommodationId ? {"display": "block"} : {"display": "none"}
     }
 
     handleCloseModal = () => {
-        this.setState({ showModal: false });
+        this.setState({showModal: false});
     };
 
     handleShowModal = () => {
-        this.setState({ showModal: true });
+        this.setState({showModal: true});
     };
 
     handleCheckboxChangeAttractions = (e) => {
         const {name, checked} = e.target;
         this.setState(prevState => ({
-            checkedAttractions:{
+            checkedAttractions: {
                 ...prevState.checkedAttractions,
-                    [name]: checked
+                [name]: checked
             }
         }), this.checkIfAnyCheckboxCheckedAttractions);
     }
 
     checkIfAnyCheckboxCheckedAttractions = (e) => {
-        const { checkedAttractions } = this.state;
+        const {checkedAttractions} = this.state;
         const anyCheckboxChecked = Object.values(checkedAttractions).some(checked => checked);
         if (!anyCheckboxChecked) {
             this.setState({checkedAttractions: {}})
@@ -217,7 +217,7 @@ class YourOwnOffer extends Component{
     handleCheckboxChangeTypeOfRooms = (e) => {
         const {name, checked} = e.target
         this.setState(prevState => ({
-            checkedItems:{
+            checkedItems: {
                 ...prevState.checkedItems,
                 [name]: checked
             }
@@ -225,7 +225,7 @@ class YourOwnOffer extends Component{
     }
 
     checkIfAnyCheckboxChecked = () => {
-        const { checkedItems } = this.state;
+        const {checkedItems} = this.state;
         const anyCheckboxChecked = Object.values(checkedItems).some(checked => checked);
 
         if (!anyCheckboxChecked) {
@@ -243,7 +243,7 @@ class YourOwnOffer extends Component{
     }
 
     handleNumberInputChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         this.setState(prevState => ({
             numberOfRooms: {
                 ...prevState.numberOfRooms,
@@ -254,36 +254,36 @@ class YourOwnOffer extends Component{
 
     handleChangeDepartureDate = (e) => {
         this.setState({departureDate: this.formatDate(e.target.value)})
-        if(this.state.numberOfDays !== '0' && this.state.numberOfAdults !== '0' && e.target.value !== ''){
+        if (this.state.numberOfDays !== '0' && this.state.numberOfAdults !== '0' && e.target.value !== '') {
             this.setState({stepSix: true})
-        }else{
+        } else {
             this.setState({stepSix: false})
         }
     }
 
     handleNumberOfDaysChange = (e) => {
         this.setState({numberOfDays: e.target.value})
-        if(this.state.departureDate !== '' && this.state.numberOfAdults !== '0' && e.target.value !== '0'){
+        if (this.state.departureDate !== '' && this.state.numberOfAdults !== '0' && e.target.value !== '0') {
             this.setState({stepSix: true})
-        }else{
+        } else {
             this.setState({stepSix: false})
         }
     }
 
     handleNumberOfChildrenChange = (e) => {
         this.setState({numberOfChildren: e.target.value})
-        if(this.state.departureDate !== '' && this.state.numberOfDays !== '0' && this.state.numberOfAdults !== '0'){
+        if (this.state.departureDate !== '' && this.state.numberOfDays !== '0' && this.state.numberOfAdults !== '0') {
             this.setState({stepSix: true})
-        }else{
+        } else {
             this.setState({stepSix: false})
         }
     }
 
     handleNumberOfAdultsChange = (e) => {
         this.setState({numberOfAdults: e.target.value})
-        if(this.state.departureDate !== '' && this.state.numberOfDays !== '0' && e.target.value !== '0'){
+        if (this.state.departureDate !== '' && this.state.numberOfDays !== '0' && e.target.value !== '0') {
             this.setState({stepSix: true})
-        }else{
+        } else {
             this.setState({stepSix: false})
         }
     }
@@ -295,27 +295,27 @@ class YourOwnOffer extends Component{
     }
 
     returnTripFormat = (date) => {
-        if(date !== ''){
+        if (date !== '') {
             const newDate = new Date(date);
             newDate.setDate(newDate.getDate() + parseInt(this.state.numberOfDays));
-            return newDate.toISOString().slice(0,10);
+            return newDate.toISOString().slice(0, 10);
         }
     }
 
     totalCost = () => {
         const {checkedItems, numberOfRooms} = this.state;
         const numberInputChangeNames = Object.entries(checkedItems)
-            .filter(([key,value]) => value === true)
+            .filter(([key, value]) => value === true)
             .map(([key, value]) => ({room: key, quantity: numberOfRooms[key] || 0}));
 
         const checkedAttractionsName = Object.keys(this.state.checkedAttractions)
         let priceAcc = 0.0, totalPrice = 0.0, priceAtt = 0.0;
         this.state.accommodations.map(acc => {
-            if(acc.idAccommodation === this.state.selectedAccommodationId){
+            if (acc.idAccommodation === this.state.selectedAccommodationId) {
                 numberInputChangeNames.map(({room, quantity}) => {
-                    if(quantity !== 0) {
+                    if (quantity !== 0) {
                         this.state.typeOfRooms.map(type => {
-                            if(type.type === room){
+                            if (type.type === room) {
                                 priceAcc += (acc.priceAccommodation + type.roomPrice) * quantity
                             }
                         })
@@ -326,15 +326,15 @@ class YourOwnOffer extends Component{
 
         this.state.attractions.map(atr => {
             checkedAttractionsName.map(checked => {
-                if(atr.nameAttraction === checked){
+                if (atr.nameAttraction === checked) {
                     priceAtt += atr.priceAttraction
                 }
             })
         })
 
-        if(this.state.food === true){
-            totalPrice += (priceAcc * this.state.numberOfDays) + (this.state.numberOfChildren * (priceAtt / 2)) + (this.state.numberOfAdults * priceAtt) + (this.state.numberOfChildren * (50/2) * this.state.numberOfDays) + (this.state.numberOfAdults * 50 * this.state.numberOfDays)
-        }else{
+        if (this.state.food === true) {
+            totalPrice += (priceAcc * this.state.numberOfDays) + (this.state.numberOfChildren * (priceAtt / 2)) + (this.state.numberOfAdults * priceAtt) + (this.state.numberOfChildren * (50 / 2) * this.state.numberOfDays) + (this.state.numberOfAdults * 50 * this.state.numberOfDays)
+        } else {
             totalPrice += (priceAcc * this.state.numberOfDays) + (this.state.numberOfChildren * (priceAtt / 2)) + (this.state.numberOfAdults * priceAtt)
         }
 
@@ -344,7 +344,7 @@ class YourOwnOffer extends Component{
     handlePostOwnOffer = () => {
         const {checkedItems, numberOfRooms} = this.state;
         const numberInputChangeNames = Object.entries(checkedItems)
-            .filter(([key,value]) => value === true)
+            .filter(([key, value]) => value === true)
             .map(([key, value]) => ({room: key, quantity: numberOfRooms[key] || 0}));
 
         const checkedAttractionsName = Object.keys(this.state.checkedAttractions)
@@ -370,16 +370,18 @@ class YourOwnOffer extends Component{
                 const ownOfferTypeOfRooms = {
                     numberOfRoom: quantity
                 }
-                if(quantity !== 0) {
-                    orderApi.postOwnOfferTypOfRooms(room, ownOfferTypeOfRooms).then(() => {})
+                if (quantity !== 0) {
+                    orderApi.postOwnOfferTypOfRooms(room, ownOfferTypeOfRooms).then(() => {
+                    })
                 }
             })
 
             checkedAttractionsName.map(atr => {
-                orderApi.postAttractionOwnOffer(atr).then(() => {})
+                orderApi.postAttractionOwnOffer(atr).then(() => {
+                })
             })
 
-            window.location.href="/"
+            window.location.href = "/"
         }).catch(error => {
             handleLogError(error)
             const errorData = error.response.data
@@ -419,10 +421,10 @@ class YourOwnOffer extends Component{
         const checkedAttractionsName = Object.keys(this.state.checkedAttractions)
         const {checkedItems, numberOfRooms} = this.state;
         const numberInputChangeNames = Object.entries(checkedItems)
-            .filter(([key,value]) => value === true)
+            .filter(([key, value]) => value === true)
             .map(([key, value]) => ({room: key, quantity: numberOfRooms[key] || 0}));
 
-        return(
+        return (
             <div>
                 <NavigationBar/>
                 <header className={"head"}>
@@ -435,22 +437,45 @@ class YourOwnOffer extends Component{
                                         <ul>
                                             <li className="is-active"><a href="#tab-one">Informacje ogólne</a></li>
                                             <li><a href="#tab-two">Podstawowe dane o wycieczce</a></li>
-                                            <li style={this.sectionStyleStepThree()}><a href="#tab-three">Zakwaterowanie</a></li>
-                                            <li style={this.sectionStyleStepFour()}><a href="#tab-four">Atrakcje</a></li>
-                                            <li style={this.sectionStyleStepFive()}><a href="#tab-five">Dodatkowe informacje</a></li>
-                                            <li style={this.sectionStyleStepSix()}><a href="#tab-six" onClick={this.totalCost}>Podsumowanie</a></li>
+                                            <li style={this.sectionStyleStepThree()}><a
+                                                href="#tab-three">Zakwaterowanie</a></li>
+                                            <li style={this.sectionStyleStepFour()}><a href="#tab-four">Atrakcje</a>
+                                            </li>
+                                            <li style={this.sectionStyleStepFive()}><a href="#tab-five">Dodatkowe
+                                                informacje</a></li>
+                                            <li style={this.sectionStyleStepSix()}><a href="#tab-six"
+                                                                                      onClick={this.totalCost}>Podsumowanie</a>
+                                            </li>
                                         </ul>
                                     </nav>
 
-                                    <section className="tab-content is-active " id="tab-one" style={{marginLeft: '10%', marginRight: '10%'}}>
-                                        <p className={"infoOwnOffer"}>Biuro podróży GoTravel oferuje możliwość utorzenia wycieczki według własnych kryteriów. Poniżej znajdują się najważniejsze informacje związane z tą funkcjonalnością.</p>
-                                        <ul style={{fontFamily: 'Century Gothic', fontSize: '17px', textAlign: 'justify', margin: '10px 0'}}>
-                                            <li>Aby prawidłowo utworzyć i zarezerwować samodzielnie utworzoną wycieczkę, należy wcześniej uzupełnić wszytskie dane związane z miejscem zamieszkania oraz numerem telefonu znajdujące się w zakładce mojego profilu. </li>
-                                            <li>W kolejnych krokach należy uzupełnić wszytskie potrzebne informacje dotyczące wycieczki. Aby przejść do kolejnej zakładki, należy uzupełnić wszytskie potrzebne dane w aktywnej zakładce. </li>
-                                            <li>Wszystkie wprowadzone informacje zostaną zestawione w ostatniej zakładce, przed potwierdzeniem rezerwacji należy dokładnie sprawdzić wszystkie dane.</li>
+                                    <section className="tab-content is-active " id="tab-one"
+                                             style={{marginLeft: '10%', marginRight: '10%'}}>
+                                        <p className={"infoOwnOffer"}>Biuro podróży GoTravel oferuje możliwość utorzenia
+                                            wycieczki według własnych kryteriów. Poniżej znajdują się najważniejsze
+                                            informacje związane z tą funkcjonalnością.</p>
+                                        <ul style={{
+                                            fontFamily: 'Century Gothic',
+                                            fontSize: '17px',
+                                            textAlign: 'justify',
+                                            margin: '10px 0'
+                                        }}>
+                                            <li>Aby prawidłowo utworzyć i zarezerwować samodzielnie utworzoną wycieczkę,
+                                                należy wcześniej uzupełnić wszytskie dane związane z miejscem
+                                                zamieszkania oraz numerem telefonu znajdujące się w zakładce mojego
+                                                profilu.
+                                            </li>
+                                            <li>W kolejnych krokach należy uzupełnić wszytskie potrzebne informacje
+                                                dotyczące wycieczki. Aby przejść do kolejnej zakładki, należy uzupełnić
+                                                wszytskie potrzebne dane w aktywnej zakładce.
+                                            </li>
+                                            <li>Wszystkie wprowadzone informacje zostaną zestawione w ostatniej
+                                                zakładce, przed potwierdzeniem rezerwacji należy dokładnie sprawdzić
+                                                wszystkie dane.
+                                            </li>
                                         </ul>
 
-                                        <nav className="tabs"  style={{marginTop: '20%'}}>
+                                        <nav className="tabs" style={{marginTop: '20%'}}>
                                             <ul>
                                                 <li><a href="#tab-two">Dalej</a></li>
                                             </ul>
@@ -458,7 +483,8 @@ class YourOwnOffer extends Component{
 
                                     </section>
 
-                                    <section className="tab-content" id="tab-two" style={{marginLeft: '10%', marginRight: '10%'}}>
+                                    <section className="tab-content" id="tab-two"
+                                             style={{marginLeft: '10%', marginRight: '10%'}}>
                                         <div className={"ownTrip"}>
                                             <p className={"filterNameOwnTrip"}>Kraj: </p>
                                             <select className="form-control search-slt" id="exampleFormControlSelect1"
@@ -483,22 +509,27 @@ class YourOwnOffer extends Component{
                                         </div>
                                         <nav className="tabs" style={{marginTop: '20%'}}>
                                             <ul>
-                                                <li> <a style={{ textDecoration: 'none' }} href="#tab-one">Wstecz</a></li>
-                                                <li  style={this.sectionStyleStepThree()}> <a style={{ textDecoration: 'none' }} href="#tab-three">Dalej</a></li>
+                                                <li><a style={{textDecoration: 'none'}} href="#tab-one">Wstecz</a></li>
+                                                <li style={this.sectionStyleStepThree()}><a
+                                                    style={{textDecoration: 'none'}} href="#tab-three">Dalej</a></li>
                                             </ul>
                                         </nav>
                                     </section>
 
-                                    <section className="tab-content" id="tab-three"  style={{marginLeft: '10%', marginRight: '10%'}}>
+                                    <section className="tab-content" id="tab-three"
+                                             style={{marginLeft: '10%', marginRight: '10%'}}>
 
                                         <div className={"ownTrip"}>
-                                            <p className={"filterNameOwnTrip"}>Zakwaterowanie: <BsInfoCircle  onClick={this.handleShowModal}/></p>
+                                            <p className={"filterNameOwnTrip"}>Zakwaterowanie: <BsInfoCircle
+                                                onClick={this.handleShowModal}/></p>
                                             <select className="form-control search-slt" id="exampleFormControlSelect1"
-                                                    name={"selectedTransport"} onChange={this.handleChangeAccommodation}>
+                                                    name={"selectedTransport"}
+                                                    onChange={this.handleChangeAccommodation}>
 
                                                 <option>Wybierz</option>
                                                 {this.state.accommodations.map(accommodation =>
-                                                    <option key={accommodation.idAccommodation}>{accommodation.nameAccommodation}</option>
+                                                    <option
+                                                        key={accommodation.idAccommodation}>{accommodation.nameAccommodation}</option>
                                                 )}
                                             </select>
                                             <div style={this.typeOfRoomsStep() || {height: '140px'}}>
@@ -508,8 +539,14 @@ class YourOwnOffer extends Component{
                                                             <div className="row g-2 align-items-center">
                                                                 <div className="col w-50">
                                                                     <div className={"form-check"}>
-                                                                        <input className="form-check-input" type="checkbox" value={typeOfRoom.type} id={typeOfRoom.type} name={typeOfRoom.type} checked={this.state.checkedItems[typeOfRoom.type] || false} onChange={this.handleCheckboxChangeTypeOfRooms}/>
-                                                                        <label className="form-check-label" htmlFor={typeOfRoom.type}>{typeOfRoom.type}</label>
+                                                                        <input className="form-check-input"
+                                                                               type="checkbox" value={typeOfRoom.type}
+                                                                               id={typeOfRoom.type}
+                                                                               name={typeOfRoom.type}
+                                                                               checked={this.state.checkedItems[typeOfRoom.type] || false}
+                                                                               onChange={this.handleCheckboxChangeTypeOfRooms}/>
+                                                                        <label className="form-check-label"
+                                                                               htmlFor={typeOfRoom.type}>{typeOfRoom.type}</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -517,11 +554,18 @@ class YourOwnOffer extends Component{
 
                                                         <div className={"col"}>
                                                             <div className="row g-2 align-items-center">
-                                                                <div className="col colReservation w-20" >
-                                                                    <label className="col-form-label">Ilość pokojów</label>
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">Ilość
+                                                                        pokojów</label>
                                                                 </div>
-                                                                <div className="col  w-50" >
-                                                                    <input type="number" min={"0"} className="form-control" placeholder={"0"} style={{width: '10rem'}} aria-describedby="passwordHelpInline" name={typeOfRoom.type} value={this.state.numberOfRooms[typeOfRoom.type] || ''} onChange={this.handleNumberInputChange} />
+                                                                <div className="col  w-50">
+                                                                    <input type="number" min={"0"}
+                                                                           className="form-control" placeholder={"0"}
+                                                                           style={{width: '10rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           name={typeOfRoom.type}
+                                                                           value={this.state.numberOfRooms[typeOfRoom.type] || ''}
+                                                                           onChange={this.handleNumberInputChange}/>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -530,41 +574,55 @@ class YourOwnOffer extends Component{
                                             </div>
                                         </div>
 
-                                            <nav className="tabs" style={{marginTop: '5%'}}>
-                                                <ul>
-                                                    <li> <a style={{ textDecoration: 'none' }} href="#tab-two">Wstecz</a></li>
-                                                    <li  style={this.sectionStyleStepFour()}> <a style={{ textDecoration: 'none' }} href="#tab-four">Dalej</a></li>
-                                                </ul>
-                                            </nav>
+                                        <nav className="tabs" style={{marginTop: '5%'}}>
+                                            <ul>
+                                                <li><a style={{textDecoration: 'none'}} href="#tab-two">Wstecz</a></li>
+                                                <li style={this.sectionStyleStepFour()}><a
+                                                    style={{textDecoration: 'none'}} href="#tab-four">Dalej</a></li>
+                                            </ul>
+                                        </nav>
 
                                         <Modal show={this.state.showModal} onHide={this.handleCloseModal}>
                                             <Modal.Header closeButton>
                                                 <Modal.Title>Zakwaterowanie</Modal.Title>
                                             </Modal.Header>
-                                            <Modal.Body style={{textAlign:'justify'}}>
+                                            <Modal.Body style={{textAlign: 'justify'}}>
                                                 Cena zakwaterowania jest zależna od standardu hotelu.<br/>
                                                 Podane poniżej ceny odnoszą się do jednej osoby. <br/>
                                                 <table className={"table"}>
                                                     <thead>
                                                     <tr>
-                                                        <th scope={"col"} style={{textAlign:'center'}}>Standard</th>
+                                                        <th scope={"col"} style={{textAlign: 'center'}}>Standard</th>
                                                         <tr>
-                                                            <th scope={"col"} style={{textAlign:'center'}}>Rodzaj pokoju</th>
-                                                            <th scope={"col"} style={{textAlign:'center'}}>Cena</th>
+                                                            <th scope={"col"} style={{textAlign: 'center'}}>Rodzaj
+                                                                pokoju
+                                                            </th>
+                                                            <th scope={"col"} style={{textAlign: 'center'}}>Cena</th>
                                                         </tr>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     {this.state.accommodations.map(accommodation =>
-                                                    <tr key={accommodation.idAccommodation}>
-                                                        <th scope={"row"}  style={{fontWeight: 'normal', textAlign:'center'}}>{accommodation.nameAccommodation}</th>
-                                                        {this.state.typeOfRooms.map(typeOfRoom =>
-                                                            <tr key={typeOfRoom.idTypeOfRoom}>
-                                                                <th style={{fontWeight: 'normal', textAlign:'center', width: '80px'}}>{typeOfRoom.type}</th>
-                                                                <td style={{fontWeight: 'normal', textAlign:'center', width: '70px'}}>{accommodation.priceAccommodation + typeOfRoom.roomPrice}</td>
-                                                            </tr>
-                                                        )}
-                                                    </tr>
+                                                        <tr key={accommodation.idAccommodation}>
+                                                            <th scope={"row"} style={{
+                                                                fontWeight: 'normal',
+                                                                textAlign: 'center'
+                                                            }}>{accommodation.nameAccommodation}</th>
+                                                            {this.state.typeOfRooms.map(typeOfRoom =>
+                                                                <tr key={typeOfRoom.idTypeOfRoom}>
+                                                                    <th style={{
+                                                                        fontWeight: 'normal',
+                                                                        textAlign: 'center',
+                                                                        width: '80px'
+                                                                    }}>{typeOfRoom.type}</th>
+                                                                    <td style={{
+                                                                        fontWeight: 'normal',
+                                                                        textAlign: 'center',
+                                                                        width: '70px'
+                                                                    }}>{accommodation.priceAccommodation + typeOfRoom.roomPrice}</td>
+                                                                </tr>
+                                                            )}
+                                                        </tr>
                                                     )}
                                                     </tbody>
                                                 </table>
@@ -577,7 +635,8 @@ class YourOwnOffer extends Component{
                                         </Modal>
                                     </section>
 
-                                    <section className="tab-content" id="tab-four" style={{marginLeft: '10%', marginRight: '10%'}}>
+                                    <section className="tab-content" id="tab-four"
+                                             style={{marginLeft: '10%', marginRight: '10%'}}>
                                         <div className={"ownTrip"}>
                                             <p className={"filterNameOwnTrip"}>Atrakcje:</p>
                                             <div>
@@ -587,8 +646,15 @@ class YourOwnOffer extends Component{
                                                             <div className="row g-2 align-items-center">
                                                                 <div className="col w-50">
                                                                     <div className={"form-check"}>
-                                                                        <input className="form-check-input" type="checkbox" value={attraction.nameAttraction} id={attraction.nameAttraction} name={attraction.nameAttraction} checked={this.state.checkedAttractions[attraction.nameAttraction]} onChange={this.handleCheckboxChangeAttractions}/>
-                                                                        <label className="form-check-label" htmlFor={attraction.nameAttraction}>{attraction.nameAttraction}   -   {attraction.priceAttraction} zł</label>
+                                                                        <input className="form-check-input"
+                                                                               type="checkbox"
+                                                                               value={attraction.nameAttraction}
+                                                                               id={attraction.nameAttraction}
+                                                                               name={attraction.nameAttraction}
+                                                                               checked={this.state.checkedAttractions[attraction.nameAttraction]}
+                                                                               onChange={this.handleCheckboxChangeAttractions}/>
+                                                                        <label className="form-check-label"
+                                                                               htmlFor={attraction.nameAttraction}>{attraction.nameAttraction} - {attraction.priceAttraction} zł</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -600,65 +666,85 @@ class YourOwnOffer extends Component{
 
                                         <nav className="tabs" style={{marginTop: '5%'}}>
                                             <ul>
-                                                <li> <a style={{ textDecoration: 'none' }} href="#tab-three">Wstecz</a></li>
-                                                <li  style={this.sectionStyleStepFive()}> <a style={{ textDecoration: 'none' }} href="#tab-five">Dalej</a></li>
+                                                <li><a style={{textDecoration: 'none'}} href="#tab-three">Wstecz</a>
+                                                </li>
+                                                <li style={this.sectionStyleStepFive()}><a
+                                                    style={{textDecoration: 'none'}} href="#tab-five">Dalej</a></li>
                                             </ul>
                                         </nav>
                                     </section>
 
-                                    <section className="tab-content" id="tab-five"  style={{marginLeft: '10%', marginRight: '10%'}}>
+                                    <section className="tab-content" id="tab-five"
+                                             style={{marginLeft: '10%', marginRight: '10%'}}>
                                         <form className="row gy-2 gx-3 align-items-center">
-                                            <div className={"row mt-4"} >
+                                            <div className={"row mt-4"}>
                                                 <div className={"col"}>
                                                     <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20" >
+                                                        <div className="col colReservation w-20">
                                                             <label className="col-form-label">Liczba dzieci</label>
                                                         </div>
                                                         <div className="col colReservation w-50">
-                                                            <input type="number" className="form-control" min={"0"}  placeholder={"0"} style={{width: '10rem'}} aria-describedby="passwordHelpInline" onChange={this.handleNumberOfChildrenChange} />
+                                                            <input type="number" className="form-control" min={"0"}
+                                                                   placeholder={"0"} style={{width: '10rem'}}
+                                                                   aria-describedby="passwordHelpInline"
+                                                                   onChange={this.handleNumberOfChildrenChange}/>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className={"col"}>
                                                     <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20" >
+                                                        <div className="col colReservation w-20">
                                                             <label className="col-form-label">Liczba dorosłych</label>
                                                         </div>
-                                                        <div className="col colReservation w-50" >
-                                                            <input type="number" className="form-control" min={"0"} placeholder={"0"} style={{width: '10rem'}} aria-describedby="passwordHelpInline"  onChange={this.handleNumberOfAdultsChange}/>
+                                                        <div className="col colReservation w-50">
+                                                            <input type="number" className="form-control" min={"0"}
+                                                                   placeholder={"0"} style={{width: '10rem'}}
+                                                                   aria-describedby="passwordHelpInline"
+                                                                   onChange={this.handleNumberOfAdultsChange}/>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className={"row mt-4"} >
+                                            <div className={"row mt-4"}>
                                                 <div className={"col"}>
                                                     <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20" >
+                                                        <div className="col colReservation w-20">
                                                             <label className="col-form-label">Data wyjazdu</label>
                                                         </div>
                                                         <div className="col colReservation w-50">
-                                                            <input type="date" className="form-control" style={{width: '10rem'}} aria-describedby="passwordHelpInline"  onChange={this.handleChangeDepartureDate}/>
+                                                            <input type="date" className="form-control"
+                                                                   style={{width: '10rem'}}
+                                                                   aria-describedby="passwordHelpInline"
+                                                                   onChange={this.handleChangeDepartureDate}/>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className={"col"}>
                                                     <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20" >
+                                                        <div className="col colReservation w-20">
                                                             <label className="col-form-label">Ilość dni</label>
                                                         </div>
-                                                        <div className="col colReservation w-50" >
-                                                            <input type="number" className="form-control" min={"0"} placeholder={"0"} style={{width: '10rem'}} aria-describedby="passwordHelpInline"  onChange={this.handleNumberOfDaysChange}/>
+                                                        <div className="col colReservation w-50">
+                                                            <input type="number" className="form-control" min={"0"}
+                                                                   placeholder={"0"} style={{width: '10rem'}}
+                                                                   aria-describedby="passwordHelpInline"
+                                                                   onChange={this.handleNumberOfDaysChange}/>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className={"row mt-4"} >
+                                            <div className={"row mt-4"}>
                                                 <div className={"col"}>
                                                     <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20" >
+                                                        <div className="col colReservation w-20">
                                                             <div className={"form-check"}>
-                                                                <input className={"form-check-input"} type={"checkbox"} onChange={(e) => {this.setState({food: e.target.checked})}} style={{marginLeft: '90px'}}/>
-                                                                <label className={"form-check-label"}><span data-bs-toggle="tooltip" title="Wyżywienie obejmuje śniadanie-obiad-kolację. Koszt to 50zł/os na dzień.">Wyżywienie *</span></label>
+                                                                <input className={"form-check-input"} type={"checkbox"}
+                                                                       onChange={(e) => {
+                                                                           this.setState({food: e.target.checked})
+                                                                       }} style={{marginLeft: '90px'}}/>
+                                                                <label className={"form-check-label"}><span
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="Wyżywienie obejmuje śniadanie-obiad-kolację. Koszt to 50zł/os na dzień.">Wyżywienie *</span></label>
                                                             </div>
                                                         </div>
                                                         <div className="col colReservation w-50">
@@ -667,9 +753,9 @@ class YourOwnOffer extends Component{
                                                 </div>
                                                 <div className={"col"}>
                                                     <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20" >
+                                                        <div className="col colReservation w-20">
                                                         </div>
-                                                        <div className="col colReservation w-50" >
+                                                        <div className="col colReservation w-50">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -677,180 +763,284 @@ class YourOwnOffer extends Component{
                                         </form>
                                         <nav className="tabs" style={{marginTop: '10%'}}>
                                             <ul>
-                                                <li> <a style={{ textDecoration: 'none' }} href="#tab-four">Wstecz</a></li>
-                                                <li  style={this.sectionStyleStepSix()}> <a style={{ textDecoration: 'none' }} href="#tab-six" onClick={this.totalCost}>Dalej</a></li>
+                                                <li><a style={{textDecoration: 'none'}} href="#tab-four">Wstecz</a></li>
+                                                <li style={this.sectionStyleStepSix()}><a
+                                                    style={{textDecoration: 'none'}} href="#tab-six"
+                                                    onClick={this.totalCost}>Dalej</a></li>
                                             </ul>
                                         </nav>
                                     </section>
 
-                                    <section className="tab-content" id="tab-six"  style={{marginLeft: '10%', marginRight: '10%',overflowY: 'scroll', height: '500px'}}>
-                                       <div className={"ownTrip"} >
-                                           <div>
-                                               <p>Dane osobowe <section className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'></section></p>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Imię</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.userInfo.firstname} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Nazwisko</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.userInfo.lastname} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Email</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.userInfo.email} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Numer telefonu</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.userInfo.phoneNumber} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Miasto</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.userInfo.city} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Adres</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={'ul.' + this.state.userInfo.street + ' ' + this.state.userInfo.streetNumber + ' ' + this.state.userInfo.zipCode} disabled/>
-                                                   </div>
-                                               </div>
-                                           </div>
-                                           <div className={"mt-4"}>
-                                               <p>Dane wycieczki <section className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'></section></p>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Kraj</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.selectedCountry} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Miasto</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.selectedCity} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Hotel</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.selectedAccommodation} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '600px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '2%'}}>
-                                                       <label className="col-form-label">Pokoje:</label>
-                                                   </div>
-                                                   <div className="colReservation mt-2" style={{width: '500px'}}>
-                                                       {numberInputChangeNames.map(({room, quantity}) =>
-                                                           <div className={"row mt-1"}>
-                                                               <div className={"col"}>
-                                                               <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" key={room}
-                                                                      value={room} disabled/>
-                                                               </div>
-                                                               <div className="col" style={{display: 'flex', alignItems: 'center'}}>
-                                                                   <label>Ilość</label>
-                                                               </div>
-                                                               <div className={"col"}>
-                                                               <input type="text" className="form-control" style={{width: '5rem'}} aria-describedby="passwordHelpInline" key={room}
-                                                                      value={quantity} disabled/>
-                                                               </div>
-                                                           </div>
-                                                       )}
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '2%'}}>
-                                                       <label className="col-form-label">Atrakcje:</label>
-                                                   </div>
-                                                   <div className="colReservation mt-2" style={{width: '200px'}}>
-                                                       {checkedAttractionsName.map(name =>
-                                                           <div className={"mt-1"}>
-                                                                   <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" key={name}
-                                                                          value={name} disabled/>
-                                                           </div>
-                                                       )}
-                                                   </div>
-                                               </div>
-                                           </div>
-                                           <div className={"mt-4"}>
-                                               <p>Informacje dodatkowe <section className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'></section></p>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Liczba dorosłych</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.numberOfAdults} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Liczba dzieci</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.numberOfChildren} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Data wyjazdu</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.departureDate} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Ilość dni</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.state.numberOfDays} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-2" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">Data powrotu</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '20rem'}} aria-describedby="passwordHelpInline" value={this.returnTripFormat(this.state.departureDate)} disabled/>
-                                                   </div>
-                                               </div>
-                                               <div className="row g-1 align-items-center mt-4" style={{width: '300px'}}>
-                                                   <div className="col colReservation" style={{width: '100px', marginRight: '4%'}}>
-                                                       <label className="col-form-label">CAŁKOWITY KOSZT:</label>
-                                                   </div>
-                                                   <div className="col colReservation" style={{width: '200px'}}>
-                                                       <input type="text" className="form-control" style={{width: '10rem'}} aria-describedby="passwordHelpInline" value={this.state.price} disabled/>
-                                                   </div>
-                                               </div>
-                                           </div>
-                                       </div>
-                                        <button className="btn btn-primary reservation mt-4" type="submit" onClick={this.handlePostOwnOffer}
+                                    <section className="tab-content" id="tab-six" style={{
+                                        marginLeft: '10%',
+                                        marginRight: '10%',
+                                        overflowY: 'scroll',
+                                        height: '500px'
+                                    }}>
+                                        <div className={"ownTrip"}>
+                                            <div>
+                                                <p>Dane osobowe <section
+                                                    className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'></section>
+                                                </p>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Imię</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.userInfo.firstname} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Nazwisko</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.userInfo.lastname} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Email</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.userInfo.email} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Numer telefonu</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.userInfo.phoneNumber} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Miasto</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.userInfo.city} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Adres</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={'ul.' + this.state.userInfo.street + ' ' + this.state.userInfo.streetNumber + ' ' + this.state.userInfo.zipCode}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className={"mt-4"}>
+                                                <p>Dane wycieczki <section
+                                                    className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'></section>
+                                                </p>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Kraj</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.selectedCountry} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Miasto</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.selectedCity} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Hotel</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.selectedAccommodation} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '600px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '2%'}}>
+                                                        <label className="col-form-label">Pokoje:</label>
+                                                    </div>
+                                                    <div className="colReservation mt-2" style={{width: '500px'}}>
+                                                        {numberInputChangeNames.map(({room, quantity}) =>
+                                                            <div className={"row mt-1"}>
+                                                                <div className={"col"}>
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           key={room}
+                                                                           value={room} disabled/>
+                                                                </div>
+                                                                <div className="col"
+                                                                     style={{display: 'flex', alignItems: 'center'}}>
+                                                                    <label>Ilość</label>
+                                                                </div>
+                                                                <div className={"col"}>
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '5rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           key={room}
+                                                                           value={quantity} disabled/>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '2%'}}>
+                                                        <label className="col-form-label">Atrakcje:</label>
+                                                    </div>
+                                                    <div className="colReservation mt-2" style={{width: '200px'}}>
+                                                        {checkedAttractionsName.map(name =>
+                                                            <div className={"mt-1"}>
+                                                                <input type="text" className="form-control"
+                                                                       style={{width: '20rem'}}
+                                                                       aria-describedby="passwordHelpInline" key={name}
+                                                                       value={name} disabled/>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className={"mt-4"}>
+                                                <p>Informacje dodatkowe <section
+                                                    className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'></section>
+                                                </p>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Liczba dorosłych</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.numberOfAdults} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Liczba dzieci</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.numberOfChildren} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Data wyjazdu</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.departureDate} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Ilość dni</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.numberOfDays} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Data powrotu</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.returnTripFormat(this.state.departureDate)}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-4"
+                                                     style={{width: '300px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '100px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">CAŁKOWITY KOSZT:</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '10rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.price} disabled/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button className="btn btn-primary reservation mt-4" type="submit"
+                                                onClick={this.handlePostOwnOffer}
                                         >Zarezerwuj
                                         </button>
                                     </section>
@@ -864,4 +1054,5 @@ class YourOwnOffer extends Component{
         )
     }
 }
+
 export default YourOwnOffer;

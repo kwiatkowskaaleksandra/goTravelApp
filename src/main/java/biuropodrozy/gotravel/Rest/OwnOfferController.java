@@ -7,7 +7,10 @@ import biuropodrozy.gotravel.Model.Attraction;
 import biuropodrozy.gotravel.Model.OwnOffer;
 import biuropodrozy.gotravel.Model.OwnOfferTypeOfRoom;
 import biuropodrozy.gotravel.Model.User;
-import biuropodrozy.gotravel.Service.*;
+import biuropodrozy.gotravel.Service.AttractionService;
+import biuropodrozy.gotravel.Service.OwnOfferService;
+import biuropodrozy.gotravel.Service.OwnOfferTypeOfRoomService;
+import biuropodrozy.gotravel.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +24,14 @@ import java.util.*;
 @RequestMapping("/api/ownOffer")
 public class OwnOfferController {
 
+    public static final Logger logger = LoggerFactory.getLogger(OwnOfferController.class);
     private final OwnOfferService ownOfferService;
     private final UserService userService;
     private final AttractionService attractionService;
     private final OwnOfferTypeOfRoomService ownOfferTypeOfRoomService;
 
-    public static final Logger logger = LoggerFactory.getLogger(OwnOfferController.class);
-
     @PostMapping("/addOwnOffer/{username}")
-    ResponseEntity<OwnOffer> createOwnOffer(@PathVariable String username, @RequestBody OwnOffer ownOffer){
+    ResponseEntity<OwnOffer> createOwnOffer(@PathVariable String username, @RequestBody OwnOffer ownOffer) {
         Date localDate = new Date();
         User user = userService.validateAndGetUserByUsername(username);
 
@@ -39,10 +41,10 @@ public class OwnOfferController {
     }
 
     @PostMapping("/addOwnOfferAttractions")
-    public ResponseEntity<?> addAttractionsToOwnOffer( @RequestBody String attractions){
-        OwnOffer ownOffer= ownOfferService.getOwnOfferByIdOwnOffer(ownOfferService.getTopByOrderByIdOwnOffer().getIdOwnOffer());
+    public ResponseEntity<?> addAttractionsToOwnOffer(@RequestBody String attractions) {
+        OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(ownOfferService.getTopByOrderByIdOwnOffer().getIdOwnOffer());
         Set<Attraction> attraction = new HashSet<>();
-        attractions = attractions.replaceAll("\"","");
+        attractions = attractions.replaceAll("\"", "");
         Optional<Attraction> atr = attractionService.getAttractionByNameAttraction(attractions);
         atr.ifPresent(attraction::add);
         ownOffer.getOfferAttraction().addAll(attraction);
@@ -51,12 +53,12 @@ public class OwnOfferController {
     }
 
     @GetMapping("/getByUsername/{username}")
-    ResponseEntity<List<OwnOffer>> getAllByUsername(@PathVariable String username){
+    ResponseEntity<List<OwnOffer>> getAllByUsername(@PathVariable String username) {
         return ResponseEntity.ok(ownOfferService.getAllOwnOfferByUsername(username));
     }
 
     @DeleteMapping("/deleteOwnOffer/{idOwnOffer}")
-    ResponseEntity<?> deleteOwnOffer(@PathVariable Long idOwnOffer){
+    ResponseEntity<?> deleteOwnOffer(@PathVariable Long idOwnOffer) {
         OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(idOwnOffer);
 
         List<OwnOfferTypeOfRoom> ownOfferTypeOfRooms = ownOfferTypeOfRoomService.findByOwnOffer_IdOwnOffer(ownOffer.getIdOwnOffer());

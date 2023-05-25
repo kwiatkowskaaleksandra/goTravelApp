@@ -120,7 +120,7 @@ class Promotion extends Component {
     }
 
 
-    render(){
+    render() {
         return (
 
             <main>
@@ -194,7 +194,8 @@ class Promotion extends Component {
                                                                               style={{
                                                                                   marginTop: '10px',
                                                                                   marginLeft: '2%'
-                                                                              }} variant="top" src={trip.representativePhoto}/>
+                                                                              }} variant="top"
+                                                                              src={trip.representativePhoto}/>
                                                                 </div>
                                                             </div>
 
@@ -234,7 +235,8 @@ class Promotion extends Component {
 
                                                                     <Card.Link
                                                                         className={"seeTheOffer btn btn-primary btn-sm"}
-                                                                        href={"promotions/"+trip.idTrip}>Zobacz ofertę</Card.Link>
+                                                                        href={"promotions/" + trip.idTrip}>Zobacz
+                                                                        ofertę</Card.Link>
                                                                 </Card.Body>
 
                                                             </div>

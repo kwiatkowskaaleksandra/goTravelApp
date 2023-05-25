@@ -1,17 +1,17 @@
-.navbar-brand-menu{
+.navbar-brand-menu {
     margin-left: 40px;
 }
 
-.dropdown-item{
+.dropdown-item {
     height: 130px;
 }
 
-.custom-dropdown-menu{
+.custom-dropdown-menu {
     margin-left: 50px;
     color: black;
 }
 
-.ml-auto{
+.ml-auto {
     font-family: "Comic Sans MS";
 }
 
@@ -20,10 +20,10 @@ a.nav-link.navbar-menu {
 }
 
 .custom-dropdown-menu.dropdown.nav-item.show, a#basic-nav-dropdown {
-    color:black;
+    color: black;
 }
 
-.navbar-menu:hover, .custom-dropdown-menu:hover,.dropdown-item:hover{
+.navbar-menu:hover, .custom-dropdown-menu:hover, .dropdown-item:hover {
     background: #0066f0;
     border-radius: 10px;
     border-color: #0066f0;
@@ -36,7 +36,7 @@ a.nav-link.navbar-menu {
     margin-top: 0;
 }
 
-.dropdown-menu.show{
+.dropdown-menu.show {
     width: 400px;
 }
 
@@ -47,16 +47,16 @@ a.nav-link.navbar-menu {
     margin-top: 0;
 }
 
-.navbar-menu{
+.navbar-menu {
     margin-left: 50px;
 }
 
-.navbar-menu:hover{
+.navbar-menu:hover {
     color: black;
 }
 
 
-.float-right{
+.float-right {
     position: absolute;
     top: 15%;
     right: 0;
@@ -64,27 +64,27 @@ a.nav-link.navbar-menu {
     color: white;
 }
 
-.float-right:hover{
+.float-right:hover {
     color: white;
 }
 
-.navbar-menu-help, a.navbar-menu-help.nav-link{
+.navbar-menu-help, a.navbar-menu-help.nav-link {
     position: absolute;
     top: 2px;
     right: 2%;
     color: #0066f0;
 }
 
-.navbar-menu-help img{
+.navbar-menu-help img {
     margin-right: 5px;
 }
 
-.navbar-menu-help:hover{
+.navbar-menu-help:hover {
     color: #0066f0;
 }
 
 
-.user-info-navbar{
+.user-info-navbar {
     position: absolute;
     top: 35%;
     margin-top: 2.5%;
@@ -93,7 +93,7 @@ a.nav-link.navbar-menu {
 }
 
 
-.logout-navbar{
+.logout-navbar {
     position: absolute;
     top: 10%;
     background-color: #0066f0;

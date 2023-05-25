@@ -22,7 +22,7 @@ public class PhotoController {
     private final PhotoService photoService;
 
     @GetMapping("/{idTrip}")
-    ResponseEntity<List<Photo>> getAllPhotoByIdTrip(@PathVariable Long idTrip){
+    ResponseEntity<List<Photo>> getAllPhotoByIdTrip(@PathVariable Long idTrip) {
         return ResponseEntity.ok(photoService.getPhotosByIdTrip(idTrip));
     }
 

@@ -1,9 +1,9 @@
-.head{
+.head {
     margin-top: 30px;
     flex-direction: row;
 }
 
-.input-group-text{
+.input-group-text {
     width: 35%;
     justify-content: center;
 }

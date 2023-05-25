@@ -11,7 +11,7 @@ import {MdOutlineFoodBank} from 'react-icons/md'
 import {FaRegPaperPlane} from 'react-icons/fa'
 import Button from 'react-bootstrap/Button';
 
-class AllInclusive extends Component{
+class AllInclusive extends Component {
     state = {
         trips: [],
         photos: [],
@@ -194,7 +194,8 @@ class AllInclusive extends Component{
                                                                               style={{
                                                                                   marginTop: '10px',
                                                                                   marginLeft: '2%'
-                                                                              }} variant="top" src={trip.representativePhoto}/>
+                                                                              }} variant="top"
+                                                                              src={trip.representativePhoto}/>
                                                                 </div>
                                                             </div>
 
@@ -234,7 +235,8 @@ class AllInclusive extends Component{
 
                                                                     <Card.Link
                                                                         className={"seeTheOffer btn btn-primary btn-sm"}
-                                                                        href={"allInclusive/"+trip.idTrip}>Zobacz ofertę</Card.Link>
+                                                                        href={"allInclusive/" + trip.idTrip}>Zobacz
+                                                                        ofertę</Card.Link>
                                                                 </Card.Body>
 
                                                             </div>

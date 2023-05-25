@@ -25,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    public static final String USER = "USER";
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
@@ -36,7 +37,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
                 .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority(USER)
-                .requestMatchers("/public/**", "/auth/**","/gotravel/**").permitAll()
+                .requestMatchers("/public/**", "/auth/**", "/gotravel/**").permitAll()
                 .requestMatchers("/api/users/getUser/*").permitAll()
                 .requestMatchers("/api/users/update/*").permitAll()
                 .requestMatchers("/api/users/updatePassword/*").permitAll()
@@ -99,7 +100,5 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    public static final String USER = "USER";
 
 }

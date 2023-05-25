@@ -11,13 +11,13 @@
 
 }
 
-body{
+body {
     background-image: url("../../assets/image/background.jpg");
     background-repeat: no-repeat;
     background-size: cover;
 }
 
-input#floatingInput{
+input#floatingInput {
     width: 100%;
     height: 50px;
     margin-block-end: 20px;
@@ -26,6 +26,6 @@ input#floatingInput{
     font-family: "Comic Sans MS";
 }
 
-label, h5{
+label, h5 {
     font-family: "Comic Sans MS";
 }

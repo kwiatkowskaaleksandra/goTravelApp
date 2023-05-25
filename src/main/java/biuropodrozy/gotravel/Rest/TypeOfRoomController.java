@@ -22,12 +22,12 @@ public class TypeOfRoomController {
     private final TypeOfRoomService typeOfRoomService;
 
     @GetMapping("/all")
-    ResponseEntity<List<TypeOfRoom>> getAllTypesOfRooms(){
+    ResponseEntity<List<TypeOfRoom>> getAllTypesOfRooms() {
         return ResponseEntity.ok(typeOfRoomService.getAllTypeOfRoom());
     }
 
     @GetMapping("/{idTypeOfRoom}")
-    ResponseEntity<TypeOfRoom> getTypeOfRoom(@PathVariable int idTypeOfRoom){
+    ResponseEntity<TypeOfRoom> getTypeOfRoom(@PathVariable int idTypeOfRoom) {
         return ResponseEntity.ok(typeOfRoomService.getTypeOfRoom(idTypeOfRoom));
     }
 

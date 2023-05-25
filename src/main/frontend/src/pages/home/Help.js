@@ -1,7 +1,8 @@
 import '../../others/NavigationBar.css'
-function Help(){
 
-    return(
+function Help() {
+
+    return (
         <div>
             <p>help</p>
         </div>

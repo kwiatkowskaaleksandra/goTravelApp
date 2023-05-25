@@ -12,7 +12,7 @@ import {FaRegPaperPlane} from 'react-icons/fa'
 import Button from 'react-bootstrap/Button';
 
 
-class Exotic extends Component{
+class Exotic extends Component {
 
     state = {
         trips: [],
@@ -196,7 +196,8 @@ class Exotic extends Component{
                                                                               style={{
                                                                                   marginTop: '10px',
                                                                                   marginLeft: '2%'
-                                                                              }} variant="top" src={trip.representativePhoto}/>
+                                                                              }} variant="top"
+                                                                              src={trip.representativePhoto}/>
                                                                 </div>
                                                             </div>
 
@@ -236,7 +237,8 @@ class Exotic extends Component{
 
                                                                     <Card.Link
                                                                         className={"seeTheOffer btn btn-primary btn-sm"}
-                                                                        href={"exotics/"+trip.idTrip}>Zobacz ofertę</Card.Link>
+                                                                        href={"exotics/" + trip.idTrip}>Zobacz
+                                                                        ofertę</Card.Link>
                                                                 </Card.Body>
 
                                                             </div>

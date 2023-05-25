@@ -11,7 +11,7 @@ import {MdOutlineFoodBank} from 'react-icons/md'
 import {FaRegPaperPlane} from 'react-icons/fa'
 import Button from 'react-bootstrap/Button';
 
-class FamilyTrip extends Component{
+class FamilyTrip extends Component {
 
     state = {
         trips: [],
@@ -195,7 +195,8 @@ class FamilyTrip extends Component{
                                                                               style={{
                                                                                   marginTop: '10px',
                                                                                   marginLeft: '2%'
-                                                                              }} variant="top" src={trip.representativePhoto}/>
+                                                                              }} variant="top"
+                                                                              src={trip.representativePhoto}/>
                                                                 </div>
                                                             </div>
 
@@ -235,7 +236,8 @@ class FamilyTrip extends Component{
 
                                                                     <Card.Link
                                                                         className={"seeTheOffer btn btn-primary btn-sm"}
-                                                                        href={"familyTrips/"+trip.idTrip}>Zobacz ofertę</Card.Link>
+                                                                        href={"familyTrips/" + trip.idTrip}>Zobacz
+                                                                        ofertę</Card.Link>
                                                                 </Card.Body>
 
                                                             </div>

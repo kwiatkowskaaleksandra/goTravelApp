@@ -33,11 +33,11 @@ class SearchedTrips extends Component {
     componentDidMount() {
         // const Auth = this.context
         //  const trip = Auth.getTrips()
-      //  this.handleGetTransports()
+        //  this.handleGetTransports()
 
         this.handleSetIds()
         this.handleGetTrips()
-this.handleSetFilters()
+        this.handleSetFilters()
     }
 
     handleSetIds = () => {
@@ -56,20 +56,20 @@ this.handleSetFilters()
         orderApi.getTransports().then(res => {
             this.setState({transports: res.data})
             res.data.map(tran => {
-            if(this.state.selectedTransportId !== 0 && this.state.selectedTransport.trim() === ""){
-                if(this.state.selectedTransportId === tran.idTransport){
-                    this.setState({selectedTransport: tran.nameTransport})
+                if (this.state.selectedTransportId !== 0 && this.state.selectedTransport.trim() === "") {
+                    if (this.state.selectedTransportId === tran.idTransport) {
+                        this.setState({selectedTransport: tran.nameTransport})
+                    }
                 }
-            }
-        })
+            })
         })
 
         orderApi.getCountries().then(res => {
             this.setState({countries: res.data})
 
             res.data.map(country => {
-                if(this.state.selectedCountryId !==0 && this.state.selectedCountry.trim() === ""){
-                    if(this.state.selectedCountryId === country.idCountry){
+                if (this.state.selectedCountryId !== 0 && this.state.selectedCountry.trim() === "") {
+                    if (this.state.selectedCountryId === country.idCountry) {
                         this.setState({selectedCountry: country.nameCountry})
                     }
                 }
@@ -173,10 +173,12 @@ this.handleSetFilters()
                                     <p className={"filtrName"}>Ilosć dni: </p>
                                     <span className="input-group-text">Od:</span>
                                     <input type="number" className="form-control" aria-label="Cena od" placeholder="0"
-                                           name={"numberOfDaysMin"} onChange={this.handleChangeNumberOfDaysMin} value={this.state.numberOfDaysMin}/>
+                                           name={"numberOfDaysMin"} onChange={this.handleChangeNumberOfDaysMin}
+                                           value={this.state.numberOfDaysMin}/>
                                     <span className="input-group-text">Do:</span>
                                     <input type="number" className="form-control" aria-label="Cena do" placeholder="0"
-                                           name={"numberOfDaysMax"} onChange={this.handleChangeNumberOfDaysMax} value={this.state.numberOfDaysMax}/>
+                                           name={"numberOfDaysMax"} onChange={this.handleChangeNumberOfDaysMax}
+                                           value={this.state.numberOfDaysMax}/>
                                 </div>
 
                                 <div className={"mb-3"}>
@@ -210,7 +212,7 @@ this.handleSetFilters()
                                 <section>
                                     <div>
                                         {this.state.trips.map(tr =>
-                                            <Card key={tr.idTrip}  on>
+                                            <Card key={tr.idTrip} on>
 
                                                 <div className={"d-flex justify-content-around"}>
                                                     <div className={"container"}>
@@ -222,7 +224,8 @@ this.handleSetFilters()
                                                                               style={{
                                                                                   marginTop: '10px',
                                                                                   marginLeft: '2%'
-                                                                              }} variant="top" src={tr.representativePhoto}/>
+                                                                              }} variant="top"
+                                                                              src={tr.representativePhoto}/>
 
                                                                 </div>
                                                             </div>
@@ -263,7 +266,8 @@ this.handleSetFilters()
 
                                                                     <Card.Link
                                                                         className={"seeTheOffer btn btn-primary btn-sm"}
-                                                                        href={"lastMinute/"+tr.idTrip}>Zobacz ofertę</Card.Link>
+                                                                        href={"lastMinute/" + tr.idTrip}>Zobacz
+                                                                        ofertę</Card.Link>
                                                                 </Card.Body>
 
                                                             </div>

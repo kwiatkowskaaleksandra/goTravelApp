@@ -23,13 +23,15 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
 
+    public static final String TOKEN_TYPE = "JWT";
+    public static final String TOKEN_ISSUER = "order-api";
+    public static final String TOKEN_AUDIENCE = "order-app";
     @Value("${gotravel.app.jwtSecret}")
     private String jwtSecret;
-
     @Value("${gotravel.app.jwtExpirationMs}")
     private Long jwtExpirationMs;
 
-    public String generate(Authentication authentication){
+    public String generate(Authentication authentication) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
         List<String> roles = user.getAuthorities()
@@ -40,7 +42,7 @@ public class TokenProvider {
         byte[] signingKey = jwtSecret.getBytes();
 
         return Jwts.builder()
-                .setHeaderParam("typ",TOKEN_TYPE)
+                .setHeaderParam("typ", TOKEN_TYPE)
                 .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
                 .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(jwtExpirationMs).toInstant()))
                 .setIssuedAt(java.util.Date.from(ZonedDateTime.now().toInstant()))
@@ -78,8 +80,4 @@ public class TokenProvider {
         }
         return Optional.empty();
     }
-
-    public static final String TOKEN_TYPE = "JWT";
-    public static final String TOKEN_ISSUER = "order-api";
-    public static final String TOKEN_AUDIENCE = "order-app";
 }

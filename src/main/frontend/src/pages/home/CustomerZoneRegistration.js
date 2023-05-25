@@ -26,14 +26,14 @@ class CustomerZoneRegistration extends Component {
     componentDidMount() {
         const Auth = this.context
         const isLoggedIn = Auth.userIsAuthenticated()
-        this.setState({ isLoggedIn })
+        this.setState({isLoggedIn})
     }
 
     handleInputChange = (e, {name, value}) => {
-        this.setState({ [name]: value })
+        this.setState({[name]: value})
     }
 
-    onChangeCheckBox = (e, data) =>{
+    onChangeCheckBox = (e, data) => {
         const acceptanceOfPolicy = data.checked
         this.setState({acceptanceOfPolicy})
     }
@@ -41,7 +41,7 @@ class CustomerZoneRegistration extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
 
-        const { username, password, password2, firstname, lastname, email, acceptanceOfPolicy } = this.state
+        const {username, password, password2, firstname, lastname, email, acceptanceOfPolicy} = this.state
         if (!(username && password && password2 && firstname && lastname && email)) {
             this.setState({
                 isError: true,
@@ -50,7 +50,7 @@ class CustomerZoneRegistration extends Component {
             return
         }
 
-        if(password!==password2){
+        if (password !== password2) {
             this.setState({
                 isError: true,
                 errorMessage: 'Podane hasła różnią się od siebie.'
@@ -58,7 +58,7 @@ class CustomerZoneRegistration extends Component {
             return
         }
 
-        if(!acceptanceOfPolicy){
+        if (!acceptanceOfPolicy) {
             this.setState({
                 isError: true,
                 errorMessage: 'Proszę zaakceptować regulamin.'
@@ -66,15 +66,15 @@ class CustomerZoneRegistration extends Component {
             return
         }
 
-        const user = { username, password, firstname, lastname, email }
+        const user = {username, password, firstname, lastname, email}
         orderApi.signup(user)
             .then(response => {
-         //       const { accessToken } = response.data
-          //      const data = parseJwt(accessToken)
-          //      const user = { data, accessToken }
+                //       const { accessToken } = response.data
+                //      const data = parseJwt(accessToken)
+                //      const user = { data, accessToken }
 
-               // const Auth = this.context
-             //   Auth.userLogin(user)
+                // const Auth = this.context
+                //   Auth.userLogin(user)
 
                 this.setState({
                     username: '',
@@ -83,7 +83,7 @@ class CustomerZoneRegistration extends Component {
                     isError: false,
                     errorMessage: ''
                 })
-                window.location.href="/customerZone/login"
+                window.location.href = "/customerZone/login"
             })
             .catch(error => {
                 handleLogError(error)
@@ -104,9 +104,9 @@ class CustomerZoneRegistration extends Component {
     }
 
     render() {
-        const { isLoggedIn, isError, errorMessage } = this.state
+        const {isLoggedIn, isError, errorMessage} = this.state
         if (isLoggedIn) {
-            return <Navigate to='/' />
+            return <Navigate to='/'/>
         } else {
             return (
                 <body className="img js-fullheight">
@@ -120,42 +120,53 @@ class CustomerZoneRegistration extends Component {
                                         <h5 className="card-title text-center mb-5 fw-light fs-5">Zarejestruj się</h5>
                                         <Form onSubmit={this.handleSubmit}>
 
-                                        <Form.Field>
+                                            <Form.Field>
                                                 <label>Imię</label>
-                                                <Form.Input fluid autoFocus type="text" id="floatingInput" placeholder="imię" name="firstname" onChange={this.handleInputChange}/>
-                                        </Form.Field>
+                                                <Form.Input fluid autoFocus type="text" id="floatingInput"
+                                                            placeholder="imię" name="firstname"
+                                                            onChange={this.handleInputChange}/>
+                                            </Form.Field>
 
                                             <Form.Field>
                                                 <label>Nazwisko</label>
-                                                <Form.Input fluid type="text" id="floatingInput" placeholder="nazwisko" name="lastname" onChange={this.handleInputChange}/>
+                                                <Form.Input fluid type="text" id="floatingInput" placeholder="nazwisko"
+                                                            name="lastname" onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
                                                 <label>Nazwa użytkownika</label>
-                                                <Form.Input fluid type="text" id="floatingInput" placeholder="nazwa użytkownika" name="username" onChange={this.handleInputChange}/>
+                                                <Form.Input fluid type="text" id="floatingInput"
+                                                            placeholder="nazwa użytkownika" name="username"
+                                                            onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
                                                 <label>Hasło</label>
-                                                <Form.Input fluid type="password" id="floatingInput" placeholder="hasło" name="password" onChange={this.handleInputChange}/>
+                                                <Form.Input fluid type="password" id="floatingInput" placeholder="hasło"
+                                                            name="password" onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
                                                 <label>Powtórz hasło</label>
-                                                <Form.Input fluid type="password" id="floatingInput" placeholder="hasło" name="password2" onChange={this.handleInputChange}/>
+                                                <Form.Input fluid type="password" id="floatingInput" placeholder="hasło"
+                                                            name="password2" onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
                                                 <label>Email</label>
-                                                <Form.Input fluid type="text" id="floatingInput" placeholder="email" name="email" onChange={this.handleInputChange}/>
+                                                <Form.Input fluid type="text" id="floatingInput" placeholder="email"
+                                                            name="email" onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
-                                                <Checkbox toggle label={'Akceptuję postanowienia polityki prywatności.'} onClick={(e, data) => this.onChangeCheckBox(e,data)}/>
+                                                <Checkbox toggle label={'Akceptuję postanowienia polityki prywatności.'}
+                                                          onClick={(e, data) => this.onChangeCheckBox(e, data)}/>
                                             </Form.Field>
 
                                             <div className="d-grid">
-                                                <button className="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Zarejestruj się</button>
+                                                <button className="btn btn-primary btn-login text-uppercase fw-bold"
+                                                        type="submit">Zarejestruj się
+                                                </button>
                                             </div>
 
                                             <hr className="my-4"></hr>

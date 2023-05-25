@@ -22,7 +22,7 @@ public class CityController {
     private final CityService cityService;
 
     @GetMapping("/all/{idCountry}")
-    ResponseEntity<List<City>> filterByCountry(@PathVariable int idCountry){
+    ResponseEntity<List<City>> filterByCountry(@PathVariable int idCountry) {
         return ResponseEntity.ok(cityService.getCitiesByCountry_IdCountry(idCountry));
     }
 }

@@ -35,7 +35,7 @@ public class Reservation {
 
     private double totalPrice;
 
-   @OneToMany(mappedBy = "reservation")
+    @OneToMany(mappedBy = "reservation")
     private Set<ReservationsTypeOfRoom> typeOfRoomReservation;
 
     @ManyToOne

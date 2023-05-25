@@ -2,9 +2,9 @@ import React, {Component, useContext} from "react";
 
 const AuthContext = React.createContext();
 
-class AuthProvider extends Component{
+class AuthProvider extends Component {
     state = {
-        user : null
+        user: null
     }
 
     componentDidMount() {
@@ -18,13 +18,13 @@ class AuthProvider extends Component{
 
     userIsAuthenticated = () => {
         let user = localStorage.getItem('user')
-        if(!user){
+        if (!user) {
             return false;
         }
         user = JSON.parse(user)
 
-       //jeśli token użytkownika wygasł, wyloguj użytkownika
-        if(Date.now() > user.data.exp *1000){
+        //jeśli token użytkownika wygasł, wyloguj użytkownika
+        if (Date.now() > user.data.exp * 1000) {
             this.userLogout()
             return false
         }
@@ -42,12 +42,12 @@ class AuthProvider extends Component{
     }
 
     render() {
-        const { children } = this.props
-        const { user } = this.state
-        const { getUser, userIsAuthenticated, userLogin, userLogout } = this
+        const {children} = this.props
+        const {user} = this.state
+        const {getUser, userIsAuthenticated, userLogin, userLogout} = this
 
         return (
-            <AuthContext.Provider value={{ user, getUser, userIsAuthenticated, userLogin, userLogout, }}>
+            <AuthContext.Provider value={{user, getUser, userIsAuthenticated, userLogin, userLogout,}}>
                 {children}
             </AuthContext.Provider>
         )
@@ -60,5 +60,5 @@ export function useAuth() {
     return useContext(AuthContext)
 }
 
-export { AuthProvider }
+export {AuthProvider}
 

@@ -8,7 +8,7 @@ import {MdMarkEmailUnread} from "react-icons/md";
 import {HiHome} from "react-icons/hi"
 
 function Footer() {
-    return(
+    return (
         <MDBFooter bgColor='light' className='text-center text-lg-start text-muted'>
             <section className='d-flex justify-content-center justify-content-lg-between p-4 border-bottom'></section>
 
@@ -17,7 +17,8 @@ function Footer() {
                     <MDBRow className='mt-3'>
                         <MDBCol md="3" lg="4" xl="3" className='mx-auto mb-4'>
                             <h6 className='text-uppercase fw-bold mb-4'>
-                                <MDBIcon className="me-3" > <img alt="" src={logo} width="170" height="183" className="d-inline-block align top"/></MDBIcon>
+                                <MDBIcon className="me-3"> <img alt="" src={logo} width="170" height="183"
+                                                                className="d-inline-block align top"/></MDBIcon>
                             </h6>
                         </MDBCol>
 
@@ -72,7 +73,7 @@ function Footer() {
                         <MDBCol md="4" lg="3" xl="3" className='mx-auto mb-md-0 mb-4'>
                             <h6 className='text-uppercase fw-bold mb-4'>KONTAKT</h6>
                             <p>
-                                <HiHome/> Warszawa,  10012, US
+                                <HiHome/> Warszawa, 10012, US
                             </p>
                             <p>
                                 <MdMarkEmailUnread/> callcenter@gotravel.pl
@@ -87,7 +88,7 @@ function Footer() {
                 </MDBContainer>
             </section>
             <section className='d-flex justify-content-center justify-content-lg-between p-4 border-bottom'></section>
-            <div className='text-center p-4' >
+            <div className='text-center p-4'>
                 © 2023 <b> Go Travel Poland Sp. z o.o.</b>
             </div>
             <section className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'></section>

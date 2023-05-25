@@ -51,7 +51,7 @@ class Login extends Component {
                     isLoggedIn: true,
                     isError: false
                 })
-                window.location.href="/customerHome"
+                window.location.href = "/customerHome"
             })
             .catch(error => {
                 handleLogError(error)

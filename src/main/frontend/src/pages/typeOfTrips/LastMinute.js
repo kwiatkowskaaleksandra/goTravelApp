@@ -183,7 +183,7 @@ class LastMinute extends Component {
                                 <section>
                                     <div>
                                         {this.state.trips.map(tr =>
-                                            <Card key={tr.idTrip}  on>
+                                            <Card key={tr.idTrip} on>
 
                                                 <div className={"d-flex justify-content-around"}>
                                                     <div className={"container"}>
@@ -195,7 +195,8 @@ class LastMinute extends Component {
                                                                               style={{
                                                                                   marginTop: '10px',
                                                                                   marginLeft: '2%'
-                                                                              }} variant="top" src={tr.representativePhoto}/>
+                                                                              }} variant="top"
+                                                                              src={tr.representativePhoto}/>
 
                                                                 </div>
                                                             </div>
@@ -236,7 +237,8 @@ class LastMinute extends Component {
 
                                                                     <Card.Link
                                                                         className={"seeTheOffer btn btn-primary btn-sm"}
-                                                                        href={"lastMinute/"+tr.idTrip}>Zobacz ofertę</Card.Link>
+                                                                        href={"lastMinute/" + tr.idTrip}>Zobacz
+                                                                        ofertę</Card.Link>
                                                                 </Card.Body>
 
                                                             </div>

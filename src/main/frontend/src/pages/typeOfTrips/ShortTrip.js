@@ -11,7 +11,7 @@ import {MdOutlineFoodBank} from 'react-icons/md'
 import {FaRegPaperPlane} from 'react-icons/fa'
 import Button from 'react-bootstrap/Button';
 
-class ShortTrip extends Component{
+class ShortTrip extends Component {
     state = {
         trips: [],
         photos: [],
@@ -194,7 +194,8 @@ class ShortTrip extends Component{
                                                                               style={{
                                                                                   marginTop: '10px',
                                                                                   marginLeft: '2%'
-                                                                              }} variant="top" src={trip.representativePhoto}/>
+                                                                              }} variant="top"
+                                                                              src={trip.representativePhoto}/>
                                                                 </div>
                                                             </div>
 
@@ -234,7 +235,8 @@ class ShortTrip extends Component{
 
                                                                     <Card.Link
                                                                         className={"seeTheOffer btn btn-primary btn-sm"}
-                                                                        href={"shortTrips/"+trip.idTrip}>Zobacz ofertę</Card.Link>
+                                                                        href={"shortTrips/" + trip.idTrip}>Zobacz
+                                                                        ofertę</Card.Link>
                                                                 </Card.Body>
 
                                                             </div>

@@ -3,7 +3,8 @@ package biuropodrozy.gotravel.Repository;/*
  * @author kola
  */
 
-import biuropodrozy.gotravel.Model.*;
+import biuropodrozy.gotravel.Model.Transport;
+import biuropodrozy.gotravel.Model.Trip;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +31,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     List<Trip> findByTypeOfTripAndPriceBetween(String typeOfTrip, double minPrice, double maxPrice);
 
     List<Trip> findByTypeOfTripAndNumberOfDaysBetween(String typeOfTrip, int minDays, int maxDays);
+
     List<Trip> findByNumberOfDaysBetween(int minDays, int maxDays);
 
     List<Trip> findByTripCity_Country_IdCountryAndTripTransportAndNumberOfDaysBetween(int idCountry, Optional<Transport> tripTransport, int minDays, int maxDays);

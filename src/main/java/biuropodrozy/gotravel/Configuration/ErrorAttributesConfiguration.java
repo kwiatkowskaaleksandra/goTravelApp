@@ -2,6 +2,7 @@ package biuropodrozy.gotravel.Configuration;/*
  * @project gotravel
  * @author kola
  */
+
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class ErrorAttributesConfiguration {
 
     @Bean
-    public ErrorAttributes errorAttributes(){
+    public ErrorAttributes errorAttributes() {
         return new DefaultErrorAttributes() {
             @Override
             public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
