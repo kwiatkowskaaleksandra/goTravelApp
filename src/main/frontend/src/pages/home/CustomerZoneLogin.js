@@ -119,8 +119,6 @@ class Login extends Component {
         return this.state.twoFA ? {"display": "none"} : {"display": "block"}
     }
 
-//TODO: zapiętaj hasło i zapomnialem hasło
-
     render() {
         const {isLoggedIn, isError} = this.state
         if (isLoggedIn) {
@@ -152,20 +150,10 @@ class Login extends Component {
                                                             onChange={this.handleInputChange}/>
                                             </Form.Field>
 
-                                            <div className="form-check mb-3">
-                                                <input className="form-check-input" type="checkbox" value=""
-                                                       id="rememberPasswordCheck"/>
-                                                <label className="form-check-label" htmlFor="rememberPasswordCheck">Zapamiętaj
-                                                    hasło</label>
-                                            </div>
-
                                             <div className="d-grid">
                                                 <button className="btn btn-primary btn-login text-uppercase fw-bold"
                                                         type="submit">Zaloguj się
                                                 </button>
-                                            </div>
-                                            <div className="d-grid mb-2">
-                                                <a href={"#!"}>Zapomniałem hasła</a>
                                             </div>
 
                                             <hr className="my-4"></hr>

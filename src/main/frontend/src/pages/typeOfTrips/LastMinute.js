@@ -32,8 +32,6 @@ class LastMinute extends Component {
 
 
     componentDidMount() {
-        // const Auth = this.context
-        //  const trip = Auth.getTrips()
 
         this.handleGetTrips()
         this.handleGetTransports()

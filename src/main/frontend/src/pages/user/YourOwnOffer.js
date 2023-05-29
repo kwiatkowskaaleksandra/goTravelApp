@@ -913,7 +913,7 @@ class YourOwnOffer extends Component {
                                                     </div>
                                                     <div className="colReservation mt-2" style={{width: '500px'}}>
                                                         {numberInputChangeNames.map(({room, quantity}) =>
-                                                            <div className={"row mt-1"}>
+                                                            <div className={"row mt-1"} key={room}>
                                                                 <div className={"col"}>
                                                                     <input type="text" className="form-control"
                                                                            style={{width: '20rem'}}
@@ -944,7 +944,7 @@ class YourOwnOffer extends Component {
                                                     </div>
                                                     <div className="colReservation mt-2" style={{width: '200px'}}>
                                                         {checkedAttractionsName.map(name =>
-                                                            <div className={"mt-1"}>
+                                                            <div className={"mt-1"} key={name}>
                                                                 <input type="text" className="form-control"
                                                                        style={{width: '20rem'}}
                                                                        aria-describedby="passwordHelpInline" key={name}
