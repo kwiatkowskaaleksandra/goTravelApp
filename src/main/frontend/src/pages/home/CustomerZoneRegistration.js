@@ -6,6 +6,7 @@ import {orderApi} from '../../others/OrderApi'
 import {handleLogError} from '../../others/Helpers'
 import './CustomerZoneRegistration.css'
 import {Nav} from "react-bootstrap"
+import axios from "axios";
 
 class CustomerZoneRegistration extends Component {
     static contextType = AuthContext
@@ -68,8 +69,15 @@ class CustomerZoneRegistration extends Component {
         }
 
         const user = {username, password, firstname, lastname, email}
-        orderApi.signup(user)
-            .then(() => {
+
+        orderApi.csrf().then(res => {
+            axios.post("http://localhost:8080/gotravel/signup", user, {
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }}).then(() => {
                 this.setState({
                     username: '',
                     password: '',
@@ -79,22 +87,23 @@ class CustomerZoneRegistration extends Component {
                 })
                 window.location.href = "/customerZone/login"
             })
-            .catch(error => {
-                handleLogError(error)
-                if (error.response && error.response.data) {
-                    const errorData = error.response.data
-                    let errorMessage = 'Pola zostały błędnie uzupełnione.'
-                    if (errorData.status === 409) {
-                        errorMessage = errorData.message
-                    } else if (errorData.status === 400) {
-                        errorMessage = errorData.errors[0].defaultMessage
+                .catch(error => {
+                    handleLogError(error)
+                    if (error.response && error.response.data) {
+                        const errorData = error.response.data
+                        let errorMessage = 'Pola zostały błędnie uzupełnione.'
+                        if (errorData.status === 409) {
+                            errorMessage = errorData.message
+                        } else if (errorData.status === 400) {
+                            errorMessage = errorData.errors[0].defaultMessage
+                        }
+                        this.setState({
+                            isError: true,
+                            errorMessage
+                        })
                     }
-                    this.setState({
-                        isError: true,
-                        errorMessage
-                    })
-                }
-            })
+                })
+        })
     }
 
     render() {

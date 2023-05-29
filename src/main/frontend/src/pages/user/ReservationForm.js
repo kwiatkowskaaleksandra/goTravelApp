@@ -9,6 +9,7 @@ import {orderApi} from "../../others/OrderApi";
 import Button from "react-bootstrap/Button";
 import {handleLogError} from "../../others/Helpers";
 import {Message} from "semantic-ui-react";
+import axios from "axios";
 
 class ReservationForm extends Component {
 
@@ -54,7 +55,7 @@ class ReservationForm extends Component {
                 })
             })
         }
-        this.setState({idTripSelected: document.location.href.split("/").pop()})
+        this.state.idTripSelected = document.location.href.split("/").pop()
         this.handleGetTrip()
         this.handleGetTypeOfRoom()
     }
@@ -94,39 +95,73 @@ class ReservationForm extends Component {
             this.setState({isError: true, errorMessage: "Proszę wskazać do rezerwacji ilość oraz rodzaj pokoi."})
             return;
         }
-        orderApi.postNewReservation(this.state.username, this.state.idTripSelected, reservation).then(() => {
 
-            if (this.state.singleRoom !== 0) {
-                const reservationsTypOfRooms = {numberOfRoom: this.state.singleRoom}
-                orderApi.postReservationsTypOfRooms(1, reservationsTypOfRooms).then(() => {
-                })
-            }
-            if (this.state.twoPersonRoom !== 0) {
-                const reservationsTypOfRooms = {numberOfRoom: this.state.singleRoom}
-                orderApi.postReservationsTypOfRooms(2, reservationsTypOfRooms).then(() => {
-                })
-            }
-            if (this.state.roomWithTwoSingleBeds !== 0) {
-                const reservationsTypOfRooms = {numberOfRoom: this.state.singleRoom}
-                orderApi.postReservationsTypOfRooms(3, reservationsTypOfRooms).then(() => {
-                })
-            }
-            if (this.state.tripleRoom !== 0) {
-                const reservationsTypOfRooms = {numberOfRoom: this.state.singleRoom}
-                orderApi.postReservationsTypOfRooms(4, reservationsTypOfRooms).then(() => {
-                })
-            }
-            if (this.state.apartment !== 0) {
-                const reservationsTypOfRooms = {numberOfRoom: this.state.singleRoom}
-                orderApi.postReservationsTypOfRooms(5, reservationsTypOfRooms).then(() => {
-                })
-            }
 
-            window.location.href = "/"
-        }).catch(error => {
-            handleLogError(error)
-            const errorData = error.response.data
-            this.setState({isError: true, errorMessage: errorData.message})
+        orderApi.csrf().then(res => {
+            axios.post("http://localhost:8080/api/reservations/addReservation/" + this.state.username + "/" + this.state.idTripSelected, reservation, {
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }
+            }).then(() => {
+                if (this.state.singleRoom !== 0) {
+                    const reservationsTypOfRooms = {numberOfRoom: this.state.singleRoom}
+                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 1, reservationsTypOfRooms, {
+                        withCredentials: true,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': res.data.token
+                        }}).then(() => {})
+                }
+                if (this.state.twoPersonRoom !== 0) {
+                    const reservationsTypOfRooms = {numberOfRoom: this.state.twoPersonRoom}
+                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 2, reservationsTypOfRooms, {
+                        withCredentials: true,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': res.data.token
+                        }}).then(() => {})
+                }
+                if (this.state.roomWithTwoSingleBeds !== 0) {
+                    const reservationsTypOfRooms = {numberOfRoom: this.state.roomWithTwoSingleBeds}
+                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 3, reservationsTypOfRooms, {
+                        withCredentials: true,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': res.data.token
+                        }}).then(() => {})
+                }
+                if (this.state.tripleRoom !== 0) {
+                    const reservationsTypOfRooms = {numberOfRoom: this.state.tripleRoom}
+                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 4, reservationsTypOfRooms, {
+                        withCredentials: true,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': res.data.token
+                        }}).then(() => {})
+                }
+                if (this.state.apartment !== 0) {
+                    const reservationsTypOfRooms = {numberOfRoom: this.state.apartment}
+                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 5, reservationsTypOfRooms, {
+                        withCredentials: true,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': res.data.token
+                        }}).then(() => {})
+                }
+                window.location.href = "/"
+            }).catch(error => {
+                handleLogError(error)
+                const errorData = error.response.data
+                this.setState({isError: true, errorMessage: errorData.message})
+            })
         })
     }
 

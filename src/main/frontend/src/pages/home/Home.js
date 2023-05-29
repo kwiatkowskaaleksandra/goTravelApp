@@ -82,8 +82,6 @@ class Home extends Component {
             const textArr2 = textArr[1].split(" dni")
             this.setState({numberOfDaysMin: textArr[0], numberOfDaysMax: textArr2[0]})
         }
-
-
     }
 
     handleClickSearch = () => {

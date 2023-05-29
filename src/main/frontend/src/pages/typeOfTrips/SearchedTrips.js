@@ -41,12 +41,10 @@ class SearchedTrips extends Component {
         const url = window.location.href
         const urlArr = url.split(/[\s/]+/)
 
-        this.setState({
-            numberOfDaysMax: urlArr[6],
-            numberOfDaysMin: urlArr[5],
-            selectedTransportId: parseInt(urlArr[4]),
-            selectedCountryId: parseInt(urlArr[3])
-        })
+        this.state.selectedCountryId = parseInt(urlArr[3])
+        this.state.selectedTransportId = parseInt(urlArr[4])
+        this.state.numberOfDaysMin = urlArr[5]
+        this.state.numberOfDaysMax = urlArr[6]
 
     }
 

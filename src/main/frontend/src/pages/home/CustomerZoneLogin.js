@@ -6,6 +6,7 @@ import {orderApi} from '../../others/OrderApi'
 import {handleLogError, parseJwt} from '../../others/Helpers'
 import './CustomerZoneLogin.css'
 import {Nav} from "react-bootstrap"
+import axios from "axios";
 
 class Login extends Component {
 
@@ -39,10 +40,25 @@ class Login extends Component {
             return
         }
 
-        orderApi.findUser(username, password).then(response => {
-            if(response.data === false){
-                orderApi.authenticate(username, password)
-                    .then(response => {
+       orderApi.csrf().then(res => {
+
+            axios.post("http://localhost:8080/gotravel/findUser", {username, password}, {
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }
+            }).then(response => {
+                if(response.data === false){
+                    axios.post("http://localhost:8080/gotravel/authenticate",{username, password}, {
+                        withCredentials: true,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': res.data.token
+                        }
+                    }).then(response => {
 
                         const {accessToken} = response.data
                         const data = parseJwt(accessToken)
@@ -58,15 +74,14 @@ class Login extends Component {
                             isLoggedIn: true,
                             isError: false
                         })
-                    })
-                    .catch(error => {
+                    }).catch(error => {
                         handleLogError(error)
                         this.setState({isError: true})
                     })
-            }
-            else{
-                this.setState({twoFA: true})
-            }
+                }else{
+                    this.setState({twoFA: true})
+                }
+            })
         })
     }
 
@@ -80,34 +95,50 @@ class Login extends Component {
             return
         }
 
-        orderApi.verify(username, totp).then(response => {
-            if(response.data === true){
-                orderApi.authenticate(username, password).then(r => {
-                    const {accessToken} = r.data
-                    const data = parseJwt(accessToken)
-                    const user = {data, accessToken}
+        orderApi.csrf().then(res => {
+            axios.post("http://localhost:8080/gotravel/verify", {username, totp},{
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }}
+            ).then(response => {
+                console.log("asdsadsd "+ response.data)
+                if(response.data === true){
+                    axios.post("http://localhost:8080/gotravel/authenticate",{username, password}, {
+                        withCredentials: true,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': res.data.token
+                        }
+                    }).then(response => {
 
-                    const Auth = this.context
-                    Auth.userLogin(user)
+                        const {accessToken} = response.data
+                        const data = parseJwt(accessToken)
+                        const user = {data, accessToken}
 
-                    this.setState({
-                        username: '',
-                        password: '',
-                        totp: 0,
-                        isLoggedIn: true,
-                        isError: false
-                    })
+                        const Auth = this.context
+                        Auth.userLogin(user)
 
-                })
-                    .catch(error => {
+                        this.setState({
+                            username: '',
+                            password: '',
+                            totp: 0,
+                            isLoggedIn: true,
+                            isError: false
+                        })
+                    }).catch(error => {
                         handleLogError(error)
-                        console.log(error)
                         this.setState({isError: true})
                     })
 
-            }else{
-                this.setState({isError: true})
-            }
+                }else{
+                    this.setState({isError: true})
+                }
+            })
+
         })
     }
 

@@ -13,6 +13,7 @@ import {handleLogError} from "../../others/Helpers";
 import Button from "react-bootstrap/Button";
 import {Checkbox, Message} from "semantic-ui-react";
 import {IoTrashBin} from "react-icons/io5";
+import axios from "axios";
 
 class MyProfile extends Component {
 
@@ -104,30 +105,39 @@ class MyProfile extends Component {
             using2FA: this.state.using2FA
         }
 
-        orderApi.putUserUpdate(this.state.usernameID, userDetails).then((res) => {
-            const Auth = this.context
 
-            if(this.state.using2FA === true){
-                if(res.data !== ""){
-                    this.setState({qrCode: res.data, verifyButtonShow: true})
+        orderApi.csrf().then(res => {
+            axios.put("http://localhost:8080/api/users/update/"+this.state.usernameID, userDetails, {
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }}).then((res) => {
+                const Auth = this.context
+
+                if(this.state.using2FA === true){
+                    if(res.data !== ""){
+                        this.setState({qrCode: res.data, verifyButtonShow: true})
+                    }
                 }
-            }
-            else{
-                Auth.userLogout()
-                window.location.href = "/"
-            }
-        }).catch(error => {
-            handleLogError(error)
-            const errorData = error.response.data
-            this.handleShowModal()
-            let errorMessage = 'Pola zostały błędnie uzupełnione.'
-            if (errorData.status === 409) {
-                errorMessage = errorData.message
-            } else if (errorData.status === 400) {
-                errorMessage = errorData.errors[0].defaultMessage
-            }
-            this.setState({isError: true, errorMessage: errorMessage})
-        })
+                else{
+                    Auth.userLogout()
+                    window.location.href = "/"
+                }
+            }).catch(error => {
+                handleLogError(error)
+                const errorData = error.response.data
+                this.handleShowModal()
+                let errorMessage = 'Pola zostały błędnie uzupełnione.'
+                if (errorData.status === 409) {
+                    errorMessage = errorData.message
+                } else if (errorData.status === 400) {
+                    errorMessage = errorData.errors[0].defaultMessage
+                }
+                this.setState({isError: true, errorMessage: errorMessage})
+            })
+            })
     }
 
     savePassword = () => {
@@ -138,21 +148,30 @@ class MyProfile extends Component {
             newPassword2: this.state.passwordNew2
         }
 
-        orderApi.putUserPasswordUpdate(this.state.usernameID, passwords).then(() => {
-            const Auth = this.context
-            Auth.userLogout()
-            window.location.href = "/"
-        }).catch(error => {
-            handleLogError(error)
-            const errorData = error.response.data
-            this.handleShowModal()
-            let errorMessage = 'Pola zostały błędnie uzupełnione.'
-            if (errorData.status === 409) {
-                errorMessage = errorData.message
-            } else if (errorData.status === 400) {
-                errorMessage = errorData.errors[0].defaultMessage
-            }
-            this.setState({isError: true, errorMessage: errorMessage})
+        orderApi.csrf().then(res => {
+            axios.put("http://localhost:8080/api/users/updatePassword/" + this.state.usernameID, passwords, {
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }
+            }).then(() => {
+                const Auth = this.context
+                Auth.userLogout()
+                window.location.href = "/"
+            }).catch(error => {
+                handleLogError(error)
+                const errorData = error.response.data
+                this.handleShowModal()
+                let errorMessage = 'Pola zostały błędnie uzupełnione.'
+                if (errorData.status === 409) {
+                    errorMessage = errorData.message
+                } else if (errorData.status === 400) {
+                    errorMessage = errorData.errors[0].defaultMessage
+                }
+                this.setState({isError: true, errorMessage: errorMessage})
+            })
         })
     }
 
@@ -160,12 +179,22 @@ class MyProfile extends Component {
 
         this.showModalDelete()
 
-        orderApi.deleteUser(this.state.usernameID).then(() => {
-            const Auth = this.context
-            Auth.userLogout()
-            handleLogError("konto usuniete")
-            window.location.href = "/"
+        orderApi.csrf().then(res => {
+            axios.delete("http://localhost:8080/api/users/deleteUser/"+this.state.usernameID,{
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }}
+            ).then(() => {
+                const Auth = this.context
+                Auth.userLogout()
+                handleLogError("konto usuniete")
+                window.location.href = "/"
+            })
         })
+
     }
 
     handleCloseModal = () => {
@@ -198,16 +227,35 @@ class MyProfile extends Component {
     }
 
     deleteOwnOffer = (id) => {
-        orderApi.deleteOwnOffer(id).then(() => {
-            window.location.reload()
+        orderApi.csrf().then(res => {
+            axios.delete("http://localhost:8080/api/ownOffer/deleteOwnOffer/" + id, {
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }
+            }).then(() => {
+                window.location.reload()
+            })
         })
     }
 
     deleteReservation = (id) => {
-        orderApi.deleteReservation(id).then(() => {
-            window.location.reload()
+        orderApi.csrf().then(res => {
+            axios.delete("http://localhost:8080/api/reservations/deleteReservation/" + id, {
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }
+            }).then(() => {
+                window.location.reload()
+            })
         })
     }
+
     verifyButtonShowStyle = () => {
         return this.state.verifyButtonShow ? {"display": "block"} : {"display": "none"}
     }

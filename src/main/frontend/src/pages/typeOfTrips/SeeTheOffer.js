@@ -9,6 +9,7 @@ import {RiHotelLine} from "react-icons/ri";
 import Carousel from "react-bootstrap/Carousel";
 import AuthContext from "../../others/AuthContext";
 import Button from "react-bootstrap/Button";
+import axios from "axios";
 
 
 class SeeTheOffer extends Component {
@@ -50,8 +51,7 @@ class SeeTheOffer extends Component {
                 })
             })
         }
-
-        this.setState({idTripSelected:  document.location.href.split("/").pop()})
+        this.state.idTripSelected = document.location.href.split("/").pop()
         this.handleGetTrip()
         this.handleGetOpinion()
         this.handleGetPhoto()
@@ -74,10 +74,19 @@ class SeeTheOffer extends Component {
 
     handlePostOpinion = () => {
         const opinion = {description: this.state.opinionDesc}
-        orderApi.postNewOpinion(this.state.userId, this.state.idTripSelected, opinion).then(() => {
-            this.handleGetOpinion()
-            this.setState({opinionDesc: ''})
-            window.location.reload()
+
+        orderApi.csrf().then(res => {
+            axios.post("http://localhost:8080/api/opinions/addOpinion/"+this.state.userId+"/"+ this.state.idTripSelected, opinion, {
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
+                }}).then(() => {
+                this.handleGetOpinion()
+                this.setState({opinionDesc: ''})
+                window.location.reload()
+            })
         })
     }
 
@@ -157,10 +166,22 @@ class SeeTheOffer extends Component {
     }
 
     handleDeleteOpinion = (id) => {
-        orderApi.deleteOpinion(id).then(() => {
-            this.handleGetOpinion()
-            window.location.reload()
+
+        orderApi.csrf().then(res => {
+            axios.delete("http://localhost:8080/api/opinions/deleteOpinion/" + id, {
+                    withCredentials: true,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': res.data.token
+                    }
+                }
+            ).then(() => {
+                this.handleGetOpinion()
+                window.location.reload()
+            })
         })
+
     }
 
     render() {

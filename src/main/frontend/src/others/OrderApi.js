@@ -5,7 +5,6 @@ import axios from "axios";
 
 export const orderApi = {
     authenticate,
-    signup,
     getUserInfo,
     getTrips,
     getPhotos,
@@ -18,60 +17,21 @@ export const orderApi = {
     getOpinionsByIdTrip,
     getAttractions,
     getSearchedTrips,
-    postNewOpinion,
-    deleteOpinion,
     getAllTypeOfRoom,
-    postNewReservation,
     getReservationByUser,
-    postReservationsTypOfRooms,
-    putUserUpdate,
-    putUserPasswordUpdate,
-    deleteUser,
     getAllAttractions,
-    postOwnOffer,
-    postOwnOfferTypOfRooms,
-    postAttractionOwnOffer,
     getOwnOffersByUsername,
-    deleteOwnOffer,
-    deleteReservation,
-    verify,
-    findUser
+    csrf
 }
 
-function deleteReservation(idReservation) {
-    return instance.delete("/api/reservations/deleteReservation/" + idReservation)
-}
-
-function deleteOwnOffer(idOwnOffer) {
-    return instance.delete("/api/ownOffer/deleteOwnOffer/" + idOwnOffer)
+function csrf(){
+    return instance.get("/csrf", {
+        withCredentials: true
+    })
 }
 
 function getOwnOffersByUsername(username) {
     return instance.get("/api/ownOffer/getByUsername/" + username);
-}
-
-function postAttractionOwnOffer(attractions) {
-    return instance.post("/api/ownOffer/addOwnOfferAttractions", attractions, {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-}
-
-function postOwnOfferTypOfRooms(idTypeOfRoom, ownOfferTypeOfRoom) {
-    return instance.post("/api/ownOfferTypOfRooms/addOwnOfferTypeOfRooms/" + idTypeOfRoom, ownOfferTypeOfRoom, {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-}
-
-function postOwnOffer(username, ownOffer) {
-    return instance.post("/api/ownOffer/addOwnOffer/" + username, ownOffer, {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
 }
 
 function getAllAttractions() {
@@ -90,56 +50,8 @@ function getReservationByUser(username) {
     return instance.get("/api/reservations/getReservationByUser/" + username);
 }
 
-function deleteUser(username) {
-    return instance.delete("/api/users/deleteUser/" + username)
-}
-
-function putUserPasswordUpdate(username, passwords) {
-    return instance.put("/api/users/updatePassword/" + username, passwords, {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-}
-
-function putUserUpdate(username, userDetails) {
-    return instance.put("/api/users/update/" + username, userDetails, {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-}
-
-function postReservationsTypOfRooms(idTypeOfRoom, reservationTypeOfRoom) {
-    return instance.post("/api/reservationsTypOfRooms/addReservationsTypOfRooms/" + idTypeOfRoom, reservationTypeOfRoom, {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-}
-
-function postNewReservation(username, idTrip, reservation) {
-    return instance.post("/api/reservations/addReservation/" + username + '/' + idTrip, reservation, {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-}
-
 function getAllTypeOfRoom() {
     return instance.get("/api/typeOfRoom/all")
-}
-
-function deleteOpinion(idOpinion) {
-    return instance.delete("/api/opinions/deleteOpinion/" + idOpinion)
-}
-
-function postNewOpinion(idUser, idTrip, opinion) {
-    return instance.post("/api/opinions/addOpinion/" + idUser + "/" + idTrip, opinion, {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    })
 }
 
 function getSearchedTrips(idCountry, typeOfTransport, minDays, maxDays) {
@@ -178,27 +90,9 @@ function getTripsByFilters(typeOfTrip, idCountry, typeOfTransport, minPrice, max
     return instance.get('/api/trips/findByFilters/' + typeOfTrip + '/' + idCountry + '/' + typeOfTransport + '/' + minPrice + '/' + maxPrice + '/' + minDays + '/' + maxDays)
 }
 
-function verify(username, totp) {
-    return instance.post("/gotravel/verify", {username, totp},{
-        headers: {'Content-type': 'application/json'}
-    })
-}
-
-function findUser(username, password) {
-    return instance.post('/gotravel/findUser', {username, password}, {
-        headers: {'Content-type': 'application/json'}
-    })
-}
-
 function authenticate(username, password) {
-    return instance.post('/gotravel/authenticate', {username, password}, {
-        headers: {'Content-type': 'application/json'}
-    })
-}
-
-function signup(user) {
-    return instance.post('/gotravel/signup', user, {
-        headers: {'Content-type': 'application/json'}
+    return instance.post('/api/authenticate', {username, password}, {
+        headers: { 'Content-type': 'application/json'}
     })
 }
 

@@ -8,6 +8,7 @@ import {orderApi} from "../../others/OrderApi";
 import {BsInfoCircle} from "react-icons/bs";
 import Button from "react-bootstrap/Button";
 import {handleLogError} from "../../others/Helpers";
+import axios from "axios";
 
 
 class YourOwnOffer extends Component {
@@ -365,28 +366,49 @@ class YourOwnOffer extends Component {
         }
 
 
-        orderApi.postOwnOffer(this.state.userUsername, ownOffer).then(() => {
-            numberInputChangeNames.map(({room, quantity}) => {
-                const ownOfferTypeOfRooms = {
-                    numberOfRoom: quantity
+        orderApi.csrf().then(res => {
+            axios.post("http://localhost:8080/api/ownOffer/addOwnOffer/" + this.state.userUsername, ownOffer,{
+                withCredentials: true,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': res.data.token
                 }
-                if (quantity !== 0) {
-                    orderApi.postOwnOfferTypOfRooms(room, ownOfferTypeOfRooms).then(() => {
-                    })
-                }
-            })
-
-            checkedAttractionsName.map(atr => {
-                orderApi.postAttractionOwnOffer(atr).then(() => {
+            }).then(() => {
+                numberInputChangeNames.map(({room, quantity}) => {
+                    const ownOfferTypeOfRooms = {
+                        numberOfRoom: quantity
+                    }
+                    if (quantity !== 0) {
+                        axios.post("http://localhost:8080/api/ownOfferTypOfRooms/addOwnOfferTypeOfRooms/" + room, ownOfferTypeOfRooms,{
+                            withCredentials: true,
+                            headers: {
+                                'Access-Control-Allow-Origin': '*',
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': res.data.token
+                            }
+                        }).then(() => {})
+                    }
                 })
-            })
 
-            window.location.href = "/"
-        }).catch(error => {
-            handleLogError(error)
-            const errorData = error.response.data
-            console.log("ERROR: " + errorData.message)
-            this.setState({isError: true, errorMessage: errorData.message})
+                checkedAttractionsName.map(atr => {
+
+                    axios.post("http://localhost:8080/api/ownOffer/addOwnOfferAttractions", atr,{
+                        withCredentials: true,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': res.data.token
+                        }
+                    }).then(() => {})
+                })
+                window.location.href = "/"
+            }).catch(error => {
+                handleLogError(error)
+                const errorData = error.response.data
+                console.log("ERROR: " + errorData.message)
+                this.setState({isError: true, errorMessage: errorData.message})
+            })
         })
     }
 

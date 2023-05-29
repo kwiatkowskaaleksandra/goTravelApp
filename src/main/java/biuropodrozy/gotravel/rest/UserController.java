@@ -110,16 +110,14 @@ public class UserController {
             existingUser.setStreet(user.getStreet());
             existingUser.setStreetNumber(user.getStreetNumber());
             existingUser.setZipCode(user.getZipCode());
-            if(!existingUser.isUsing2FA()){
-                if(user.isUsing2FA()){
-                    existingUser.setUsing2FA(true);
-                    String secret = totpService.generateSecret();
-                    existingUser.setSecret2FA(secret);
-                    token = totpService.generateQRUrl(existingUser);
-                }else{
-                    existingUser.setUsing2FA(false);
-                    existingUser.setSecret2FA(null);
-                }
+            if(existingUser.isUsing2FA() && !user.isUsing2FA()){
+                existingUser.setUsing2FA(false);
+                existingUser.setSecret2FA(null);
+            }else if(!existingUser.isUsing2FA() && user.isUsing2FA()){
+                existingUser.setUsing2FA(true);
+                String secret = totpService.generateSecret();
+                existingUser.setSecret2FA(secret);
+                token = totpService.generateQRUrl(existingUser);
             }
             userService.saveUser(existingUser);
             return token;
