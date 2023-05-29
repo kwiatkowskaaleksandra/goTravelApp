@@ -150,10 +150,6 @@ function getAttractions(idTrip) {
     return instance.get("/api/attractions/" + idTrip)
 }
 
-function getTripsAndPhotosByTypeOfTrip(typeOfTrip) {
-    return instance.get("/api/photos/" + typeOfTrip)
-}
-
 function getOpinionsByIdTrip(idTrip) {
     return instance.get("/api/opinions/" + idTrip)
 }

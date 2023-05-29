@@ -54,9 +54,7 @@ class ReservationForm extends Component {
                 })
             })
         }
-
-        this.state.idTripSelected = document.location.href.split("/").pop()
-
+        this.setState({idTripSelected: document.location.href.split("/").pop()})
         this.handleGetTrip()
         this.handleGetTypeOfRoom()
     }
