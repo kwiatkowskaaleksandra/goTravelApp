@@ -8,6 +8,7 @@ import biuropodrozy.gotravel.Mapper.UserMapper;
 import biuropodrozy.gotravel.Model.*;
 import biuropodrozy.gotravel.Rest.dto.UserDto;
 import biuropodrozy.gotravel.Security.CustomUserDetails;
+import biuropodrozy.gotravel.Security.TotpService;
 import biuropodrozy.gotravel.Service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -39,10 +41,13 @@ public class UserController {
     private final OpinionService opinionService;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private TotpService totpService;
+
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @GetMapping("/me")
-    public UserDto getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        return userMapper.toUserDto(userService.validateAndGetUserByUsername(currentUser.getUsername()));
+    public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        return userService.validateAndGetUserByUsername(currentUser.getUsername());
     }
 
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
@@ -88,8 +93,9 @@ public class UserController {
 
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @PutMapping("/update/{username}")
-    public UserDto updateUser(@PathVariable String username, @Valid @RequestBody User user) {
+    public String updateUser(@PathVariable String username, @Valid @RequestBody User user) {
         User existingUser = userService.validateAndGetUserByUsername(username);
+        String token = "";
         if (user.getZipCode().length() != 5) {
             throw new UserException("Kod pocztowy musi zawierać pięć cyfr.");
         } else if (user.getPhoneNumber().length() != 9) {
@@ -104,8 +110,19 @@ public class UserController {
             existingUser.setStreet(user.getStreet());
             existingUser.setStreetNumber(user.getStreetNumber());
             existingUser.setZipCode(user.getZipCode());
-
-            return userMapper.toUserDto(userService.saveUser(existingUser));
+            if(!existingUser.isUsing2FA()){
+                if(user.isUsing2FA()){
+                    existingUser.setUsing2FA(true);
+                    String secret = totpService.generateSecret();
+                    existingUser.setSecret2FA(secret);
+                    token = totpService.generateQRUrl(existingUser);
+                }else{
+                    existingUser.setUsing2FA(false);
+                    existingUser.setSecret2FA(null);
+                }
+            }
+            userService.saveUser(existingUser);
+            return token;
         }
     }
 
@@ -126,7 +143,6 @@ public class UserController {
             existingUser.setPassword(passwordEncoder.encode(password.getNewPassword()));
             return userService.saveUser(existingUser);
         }
-
     }
 
 }

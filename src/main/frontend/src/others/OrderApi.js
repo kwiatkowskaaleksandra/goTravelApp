@@ -34,6 +34,8 @@ export const orderApi = {
     getOwnOffersByUsername,
     deleteOwnOffer,
     deleteReservation,
+    verify,
+    findUser
 }
 
 function deleteReservation(idReservation) {
@@ -178,6 +180,18 @@ function getTransports() {
 
 function getTripsByFilters(typeOfTrip, idCountry, typeOfTransport, minPrice, maxPrice, minDays, maxDays) {
     return instance.get('/api/trips/findByFilters/' + typeOfTrip + '/' + idCountry + '/' + typeOfTransport + '/' + minPrice + '/' + maxPrice + '/' + minDays + '/' + maxDays)
+}
+
+function verify(username, totp) {
+    return instance.post("/gotravel/verify", {username, totp},{
+        headers: {'Content-type': 'application/json'}
+    })
+}
+
+function findUser(username, password) {
+    return instance.post('/gotravel/findUser', {username, password}, {
+        headers: {'Content-type': 'application/json'}
+    })
 }
 
 function authenticate(username, password) {

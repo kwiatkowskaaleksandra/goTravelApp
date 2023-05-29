@@ -8,13 +8,16 @@ import './CustomerZoneLogin.css'
 import {Nav} from "react-bootstrap"
 
 class Login extends Component {
+
     static contextType = AuthContext
 
     state = {
         username: '',
         password: '',
         isLoggedIn: false,
-        isError: false
+        isError: false,
+        twoFA: false,
+        totp: 0,
     }
 
     componentDidMount() {
@@ -36,27 +39,84 @@ class Login extends Component {
             return
         }
 
-        orderApi.authenticate(username, password)
-            .then(response => {
-                const {accessToken} = response.data
-                const data = parseJwt(accessToken)
-                const user = {data, accessToken}
+        orderApi.findUser(username, password).then(response => {
+            if(response.data === false){
+                orderApi.authenticate(username, password)
+                    .then(response => {
 
-                const Auth = this.context
-                Auth.userLogin(user)
+                        const {accessToken} = response.data
+                        const data = parseJwt(accessToken)
+                        const user = {data, accessToken}
 
-                this.setState({
-                    username: '',
-                    password: '',
-                    isLoggedIn: true,
-                    isError: false
+                        const Auth = this.context
+                        Auth.userLogin(user)
+
+                        this.setState({
+                            username: '',
+                            password: '',
+                            totp: 0,
+                            isLoggedIn: true,
+                            isError: false
+                        })
+                    })
+                    .catch(error => {
+                        handleLogError(error)
+                        this.setState({isError: true})
+                    })
+            }
+            else{
+                this.setState({twoFA: true})
+            }
+        })
+    }
+
+    handleSubmitVerify = (e) => {
+        e.preventDefault()
+
+        const {username, password, totp} = this.state
+
+        if(totp === 0){
+            this.setState({isError: true})
+            return
+        }
+
+        orderApi.verify(username, totp).then(response => {
+            if(response.data === true){
+                orderApi.authenticate(username, password).then(r => {
+                    const {accessToken} = r.data
+                    const data = parseJwt(accessToken)
+                    const user = {data, accessToken}
+
+                    const Auth = this.context
+                    Auth.userLogin(user)
+
+                    this.setState({
+                        username: '',
+                        password: '',
+                        totp: 0,
+                        isLoggedIn: true,
+                        isError: false
+                    })
+
                 })
-                window.location.href = "/customerHome"
-            })
-            .catch(error => {
-                handleLogError(error)
+                    .catch(error => {
+                        handleLogError(error)
+                        console.log(error)
+                        this.setState({isError: true})
+                    })
+
+            }else{
                 this.setState({isError: true})
-            })
+            }
+        })
+    }
+
+    verifyStyleOn = () => {
+        return this.state.twoFA ? {"display": "block"} : {"display": "none"}
+    }
+
+    verifyStyleOff = () => {
+        return this.state.twoFA ? {"display": "none"} : {"display": "block"}
     }
 
 //TODO: zapiętaj hasło i zapomnialem hasło
@@ -68,10 +128,9 @@ class Login extends Component {
         } else {
             return (
                 <body className="img js-fullheight">
-
                 <main id={"content"}>
 
-                    <div className="container">
+                    <div className="container" style={this.verifyStyleOff()}>
                         <div className="row">
                             <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
                                 <div className="card border-0 shadow rounded-3 my-5">
@@ -120,6 +179,40 @@ class Login extends Component {
                                             {isError && <Message negative>Nazwa użytkownika lub hasło są
                                                 nieprawidłowe!</Message>}
                                         </Form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={this.verifyStyleOn()}>
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                                    <div className="card border-0 shadow rounded-3 my-5">
+                                        <div className="card-body p-4 p-sm-5">
+                                            <h5 className="card-title text-center mb-5 fw-light fs-5">Proszę podać 6-cyfrowy kod z aplikacji autentykatora </h5>
+                                            <Form onSubmit={this.handleSubmitVerify}>
+
+                                                <Form.Field>
+                                                    <label>2FA kod:</label>
+                                                    <Form.Input fluid autoFocus type="text" id="floatingInput"
+                                                                placeholder="kod" name="totp"
+                                                                onChange={this.handleInputChange}/>
+                                                </Form.Field>
+
+
+                                                <div className="d-grid">
+                                                    <button className="btn btn-primary btn-login text-uppercase fw-bold"
+                                                            type="submit">Zaloguj się
+                                                    </button>
+                                                </div>
+
+
+                                                <hr className="my-4"></hr>
+
+                                                {isError && <Message negative>Błąd!</Message>}
+                                            </Form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

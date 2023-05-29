@@ -3,5 +3,6 @@ package biuropodrozy.gotravel.Rest.dto;/*
  * @author kola
  */
 
+
 public record AuthResponse(String accessToken) {
 }

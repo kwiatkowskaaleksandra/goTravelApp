@@ -6,8 +6,10 @@ package biuropodrozy.gotravel.Service.ServiceImpl;/*
 import biuropodrozy.gotravel.Exception.UserNotFoundException;
 import biuropodrozy.gotravel.Model.User;
 import biuropodrozy.gotravel.Repository.UserRepository;
+import biuropodrozy.gotravel.Security.TotpService;
 import biuropodrozy.gotravel.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+
 
     @Override
     public List<User> getUsers() {
@@ -59,4 +63,8 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long idUser) {
         return userRepository.findUserById(idUser);
     }
+
+
+
+
 }

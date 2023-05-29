@@ -1,7 +1,7 @@
 import NavigationBar from "../../others/NavigationBar";
 import Footer from "../../others/Footer";
 import React, {Component} from "react";
-import {Container, Modal} from "react-bootstrap";
+import {Container, Modal,} from "react-bootstrap";
 import "./MyProfile.css"
 import AuthContext from "../../others/AuthContext";
 import {orderApi} from "../../others/OrderApi";
@@ -11,7 +11,7 @@ import {HiOutlineClipboardDocumentList} from "react-icons/hi2";
 import {MdOutlineDeleteSweep} from "react-icons/md";
 import {handleLogError} from "../../others/Helpers";
 import Button from "react-bootstrap/Button";
-import {Message} from "semantic-ui-react";
+import {Checkbox, Message} from "semantic-ui-react";
 import {IoTrashBin} from "react-icons/io5";
 
 class MyProfile extends Component {
@@ -39,9 +39,13 @@ class MyProfile extends Component {
         errorMessage: '',
         showModal: false,
         showModalDelete: false,
+        showModalVerify: false,
         passwordOld: '',
         passwordNew: '',
-        passwordNew2: ''
+        passwordNew2: '',
+        using2FA: false,
+        qrCode: "",
+        verifyButtonShow: false
     }
 
     componentDidMount() {
@@ -50,6 +54,7 @@ class MyProfile extends Component {
 
         if (user != null) {
             this.setState({isUserLogin: true})
+
             orderApi.getUserInfo(user).then(res => {
                 this.setState({
                     userInfo: res.data,
@@ -63,7 +68,9 @@ class MyProfile extends Component {
                     street: res.data.street,
                     streetNumber: res.data.streetNumber,
                     zipCode: res.data.zipCode,
+                    using2FA: res.data.using2FA
                 })
+
                 this.handleGetReservations(res.data.username)
                 this.handleGetOwnOffers(res.data.username)
             })
@@ -73,14 +80,12 @@ class MyProfile extends Component {
 
     handleGetOwnOffers = (username) => {
         orderApi.getOwnOffersByUsername(username).then(res => {
-            console.log(res.data)
             this.setState({ownOffers: res.data})
         })
     }
 
     handleGetReservations = (username) => {
         orderApi.getReservationByUser(username).then(res => {
-            console.log(res.data)
             this.setState({reservations: res.data})
         })
     }
@@ -96,12 +101,21 @@ class MyProfile extends Component {
             street: this.state.street,
             streetNumber: this.state.streetNumber,
             zipCode: this.state.zipCode,
+            using2FA: this.state.using2FA
         }
 
-        orderApi.putUserUpdate(this.state.usernameID, userDetails).then(() => {
+        orderApi.putUserUpdate(this.state.usernameID, userDetails).then((res) => {
             const Auth = this.context
-            Auth.userLogout()
-            window.location.href = "/"
+
+            if(this.state.using2FA === true){
+                if(res.data !== ""){
+                    this.setState({qrCode: res.data, verifyButtonShow: true})
+                }
+            }
+            else{
+                Auth.userLogout()
+                window.location.href = "/"
+            }
         }).catch(error => {
             handleLogError(error)
             const errorData = error.response.data
@@ -171,6 +185,18 @@ class MyProfile extends Component {
         this.setState({showModalDelete: false});
     };
 
+    handleCloseModalVerify = () => {
+        this.setState({showModalVerify: false});
+    };
+
+    handleShowModalVerify = () => {
+        this.setState({showModalVerify: true});
+    }
+
+    showVerifyModal = () => {
+        this.handleShowModalVerify()
+    }
+
     deleteOwnOffer = (id) => {
         orderApi.deleteOwnOffer(id).then(() => {
             window.location.reload()
@@ -182,11 +208,13 @@ class MyProfile extends Component {
             window.location.reload()
         })
     }
+    verifyButtonShowStyle = () => {
+        return this.state.verifyButtonShow ? {"display": "block"} : {"display": "none"}
+    }
 
     render() {
         const tabs = document.querySelectorAll(".my-tabs .tabs li");
         const sections = document.querySelectorAll(".my-tabs .tab-content");
-
 
         tabs.forEach(tab => {
             tab.addEventListener("click", e => {
@@ -315,9 +343,16 @@ class MyProfile extends Component {
                                                        }} placeholder={this.state.userInfo.zipCode}/>
                                             </div>
 
+                                            <div className="input-group mb-3 w-75">
+                                                <Checkbox toggle label={'Włącz logowanie dwufazowe'} checked={this.state.using2FA} onClick={(e, data) => this.setState({using2FA: data.checked})}/>
+                                            </div>
+                                            <div className="input-group mb-3 w-75 d-flex justify-content-center" style={{alignContent:'center', textAlign: 'center'}}>
+                                            <p className="btn btn-primary w-25"  style={this.verifyButtonShowStyle()}
+                                                    onClick={this.showVerifyModal}>Pokaż kod QR
+                                            </p>
+                                            </div>
                                         </form>
-                                        <button className="btn btn-primary reservation w-25" type="submit"
-                                                onClick={this.save}>Zapisz zmiany
+                                        <button className="btn btn-primary reservation w-25" type="submit" onClick={this.save}>Zapisz zmiany
                                         </button>
                                         <label>* Po zmianie danych, zostaniesz automatycznie wylogowany.</label>
                                     </section>
@@ -467,6 +502,20 @@ class MyProfile extends Component {
 
                                 </div>
                             </div>
+
+                            <Modal show={this.state.showModalVerify} onHide={this.handleCloseModalVerify}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Włączenie weryfikacji dwufazowej</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <Modal.Body>
+                                        Zeskanują poniższy kod QR za pomocą aplikacji autentykatora. Kod QR będzie pokazany tylko raz!
+                                        <img alt={"qr code"} src={this.state.qrCode} />
+                                    </Modal.Body>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                </Modal.Footer>
+                            </Modal>
 
                             <Modal show={this.state.showModal} onHide={this.handleCloseModal}>
                                 <Modal.Header closeButton>

@@ -54,4 +54,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<OwnOffer> ownOffers;
 
+    private boolean using2FA;
+    private String secret2FA;
+
 }

@@ -11,3 +11,7 @@
 label#floatingInputValue {
     font-family: unset;
 }
+
+p.btn.btn-primary.w-25{
+    font-family: "Comic Sans MS";
+}

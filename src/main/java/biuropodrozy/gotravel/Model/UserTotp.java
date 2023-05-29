@@ -1,4 +1,4 @@
-package biuropodrozy.gotravel.Rest.dto;/*
+package biuropodrozy.gotravel.Model;/*
  * @project gotravel
  * @author kola
  */
@@ -7,12 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class LoginRequest {
-
+public class UserTotp {
     @NotBlank
-    private String username;
-
+    String username;
     @NotBlank
-    private String password;
-
+    int totp;
 }

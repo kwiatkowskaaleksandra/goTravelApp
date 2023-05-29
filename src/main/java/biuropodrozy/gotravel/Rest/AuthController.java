@@ -6,14 +6,19 @@ package biuropodrozy.gotravel.Rest;/*
 import biuropodrozy.gotravel.Exception.DuplicatedUserInfoException;
 import biuropodrozy.gotravel.Exception.UserSignUpException;
 import biuropodrozy.gotravel.Model.User;
+import biuropodrozy.gotravel.Model.UserTotp;
 import biuropodrozy.gotravel.Rest.dto.AuthResponse;
 import biuropodrozy.gotravel.Rest.dto.LoginRequest;
 import biuropodrozy.gotravel.Rest.dto.SignUpRequest;
 import biuropodrozy.gotravel.Security.TokenProvider;
+import biuropodrozy.gotravel.Security.TotpService;
 import biuropodrozy.gotravel.Security.WebSecurityConfig;
 import biuropodrozy.gotravel.Service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/gotravel")
@@ -31,10 +37,25 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
 
+    @Autowired
+    private TotpService totpService;
+
     @PostMapping("/authenticate")
     public AuthResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         String token = authenticateAndGetToken(loginRequest.getUsername(), loginRequest.getPassword());
         return new AuthResponse(token);
+    }
+
+   @PostMapping("/findUser")
+    public boolean findUser(@Valid @RequestBody LoginRequest loginRequest){
+        User user = userService.validateAndGetUserByUsername(loginRequest.getUsername());
+        return user.isUsing2FA();
+    }
+
+    @PostMapping("/verify")
+    public boolean verifyCode(@NotEmpty @RequestBody UserTotp userTotp){
+        User user = userService.validateAndGetUserByUsername(userTotp.getUsername());
+        return totpService.verifyCode(user.getSecret2FA(), userTotp.getTotp());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -69,6 +90,8 @@ public class AuthController {
         user.setLastname(signUpRequest.getLastname());
         user.setEmail(signUpRequest.getEmail());
         user.setRole(WebSecurityConfig.USER);
+        user.setUsing2FA(false);
+        user.setSecret2FA(null);
         return user;
     }
 }

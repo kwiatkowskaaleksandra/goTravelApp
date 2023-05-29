@@ -17,6 +17,7 @@ class CustomerZoneRegistration extends Component {
         firstname: '',
         lastname: '',
         email: '',
+
         isLoggedIn: false,
         isError: false,
         errorMessage: '',
@@ -68,14 +69,7 @@ class CustomerZoneRegistration extends Component {
 
         const user = {username, password, firstname, lastname, email}
         orderApi.signup(user)
-            .then(response => {
-                //       const { accessToken } = response.data
-                //      const data = parseJwt(accessToken)
-                //      const user = { data, accessToken }
-
-                // const Auth = this.context
-                //   Auth.userLogin(user)
-
+            .then(() => {
                 this.setState({
                     username: '',
                     password: '',
@@ -173,8 +167,7 @@ class CustomerZoneRegistration extends Component {
 
                                             <div className="d-grid mb-2">
                                                 <Nav.Link as={Link} to={"/customerZone/login"}
-                                                          className="btn btn-primary btn-login text-uppercase fw-bold"> Masz
-                                                    już konto ?</Nav.Link>
+                                                          className="btn btn-primary btn-login text-uppercase fw-bold"> Masz już konto ?</Nav.Link>
                                             </div>
 
                                         </Form>
