@@ -22,6 +22,7 @@ public class OwnOfferTypeOfRoomController {
     private final OwnOfferService ownOfferService;
     private final TypeOfRoomService typeOfRoomService;
 
+
     @PostMapping("/addOwnOfferTypeOfRooms/{nameTypeOfRoom}")
     ResponseEntity<OwnOfferTypeOfRoom> createNew(@PathVariable String nameTypeOfRoom, @RequestBody OwnOfferTypeOfRoom ownOfferTypeOfRoom) {
 
