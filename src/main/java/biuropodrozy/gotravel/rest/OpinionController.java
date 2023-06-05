@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class OpinionController {
 
         User user = userService.getUserById(idUser);
         Trip trip = tripService.getTripByIdTrip(idTrip);
-        Date localDate = new Date();
+        LocalDate localDate = LocalDate.now();
         opinion.setUser(user);
         opinion.setDate(localDate);
         opinion.setTrip(trip);
@@ -49,7 +49,6 @@ public class OpinionController {
 
     @DeleteMapping("/deleteOpinion/{idOpinion}")
     ResponseEntity<?> deleteOpinion(@PathVariable int idOpinion) {
-
         Opinion opinion = opinionService.getOpinionByIdOpinion(idOpinion);
         opinionService.deleteOpinion(opinion);
 

@@ -24,7 +24,7 @@ public class OwnOffer {
     private Long idOwnOffer;
 
     @Temporal(TemporalType.DATE)
-    private Date dateOfReservation;
+    private LocalDate dateOfReservation;
 
     private int numberOfChildren;
 

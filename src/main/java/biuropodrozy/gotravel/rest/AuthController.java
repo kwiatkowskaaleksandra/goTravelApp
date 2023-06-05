@@ -36,7 +36,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
-
+    private static final int PASSWORD_MIN_LENGTH = 5;
     @Autowired
     private TotpService totpService;
 
@@ -67,8 +67,11 @@ public class AuthController {
         if (userService.hasUserWithEmail(signUpRequest.getEmail())) {
             throw new DuplicatedUserInfoException(String.format("Użytkownik o adresie email %s już istnieje.", signUpRequest.getEmail()));
         }
-        if (signUpRequest.getPassword().length() < 5) {
+        if (signUpRequest.getPassword().length() < PASSWORD_MIN_LENGTH) {
             throw new UserSignUpException("Hasło powinno się składać z co najmniej 5 znaków.");
+        }
+        if(!signUpRequest.getEmail().matches("(.*)@(.*)")){
+            throw new UserSignUpException("Podano zły adres email.");
         }
 
         userService.saveUser(mapSignUpRequestToUser(signUpRequest));
@@ -77,12 +80,12 @@ public class AuthController {
         return new AuthResponse(token);
     }
 
-    private String authenticateAndGetToken(String username, String password) {
+    public String authenticateAndGetToken(String username, String password) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         return tokenProvider.generate(authentication);
     }
 
-    private User mapSignUpRequestToUser(SignUpRequest signUpRequest) {
+    public User mapSignUpRequestToUser(SignUpRequest signUpRequest) {
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
@@ -92,6 +95,7 @@ public class AuthController {
         user.setRole(WebSecurityConfig.USER);
         user.setUsing2FA(false);
         user.setSecret2FA(null);
+        System.out.println(user);
         return user;
     }
 }

@@ -5,6 +5,7 @@ package biuropodrozy.gotravel.service;/*
 
 
 import biuropodrozy.gotravel.model.User;
+import biuropodrozy.gotravel.rest.dto.SignUpRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,5 @@ public interface UserService {
     void deleteUser(User user);
 
     User getUserById(Long idUser);
-
 
 }

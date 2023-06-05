@@ -6,6 +6,9 @@ import './Footer.css'
 import {BsFillTelephoneInboundFill} from "react-icons/bs";
 import {MdMarkEmailUnread} from "react-icons/md";
 import {HiHome} from "react-icons/hi"
+import rodo from '../assets/RODO.pdf'
+import privacyPolicy from '../assets/POLITYKA_PRYWATNOŚCI.pdf'
+
 
 function Footer() {
     return (
@@ -25,22 +28,22 @@ function Footer() {
                         <MDBCol md="2" lg="2" xl="2" className='mx-auto mb-4'>
                             <h6 className='text-uppercase fw-bold mb-4'>O NAS</h6>
                             <p>
-                                <a href='src/main/frontend/src/misc/Footer#!' className='text-reset'>
+                                <a href='/contact' className='text-reset'>
                                     Kontakt
                                 </a>
                             </p>
                             <p>
-                                <a href='src/main/frontend/src/misc/Footer#!' className='text-reset'>
+                                <a href='/about' className='text-reset'>
                                     O Go Travel
                                 </a>
                             </p>
                             <p>
-                                <a href='src/main/frontend/src/misc/Footer#!' className='text-reset'>
+                                <a href={rodo} className='text-reset'>
                                     RODO
                                 </a>
                             </p>
                             <p>
-                                <a href='src/main/frontend/src/misc/Footer#!' className='text-reset'>
+                                <a href={privacyPolicy} className='text-reset'>
                                     Polityka prywatności
                                 </a>
                             </p>
@@ -49,23 +52,13 @@ function Footer() {
                         <MDBCol md="3" lg="2" xl="2" className='mx-auto mb-4'>
                             <h6 className='text-uppercase fw-bold mb-4'>DLA KLIENTÓW</h6>
                             <p>
-                                <a href='src/main/frontend/src/misc/Footer#!' className='text-reset'>
-                                    Lista hoteli
-                                </a>
-                            </p>
-                            <p>
-                                <a href='src/main/frontend/src/misc/Footer#!' className='text-reset'>
+                                <a href='/airlines' className='text-reset'>
                                     Lista lotnisk
                                 </a>
                             </p>
                             <p>
-                                <a href='src/main/frontend/src/misc/Footer#!' className='text-reset'>
+                                <a href='/insurance' className='text-reset'>
                                     Ubezpieczenia
-                                </a>
-                            </p>
-                            <p>
-                                <a href='src/main/frontend/src/misc/Footer#!' className='text-reset'>
-                                    Pomoc
                                 </a>
                             </p>
                         </MDBCol>
@@ -73,13 +66,13 @@ function Footer() {
                         <MDBCol md="4" lg="3" xl="3" className='mx-auto mb-md-0 mb-4'>
                             <h6 className='text-uppercase fw-bold mb-4'>KONTAKT</h6>
                             <p>
-                                <HiHome/> Warszawa, 10012, US
+                                <HiHome/> ul. Wesoła 76A, Kielce
                             </p>
                             <p>
-                                <MdMarkEmailUnread/> callcenter@gotravel.pl
+                                <MdMarkEmailUnread/> biuro.pomocy@gotravel.pl
                             </p>
                             <p>
-                                <BsFillTelephoneInboundFill/> + 41 780 23 32<br/><p/>
+                                <BsFillTelephoneInboundFill/> +48 555 666 777<br/><p/>
                                 <center>codziennie w godzinach 8:00 - 22:00</center>
 
                             </p>

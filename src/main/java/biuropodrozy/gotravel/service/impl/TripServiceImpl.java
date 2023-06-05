@@ -46,12 +46,12 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<Trip> getTripsByTypeOfTripAndTripTransport(String typeOfTrip, Optional<Transport> tripTransport) {
+    public List<Trip> getTripsByTypeOfTripAndTripTransport(String typeOfTrip, Transport tripTransport) {
         return tripRepository.findByTypeOfTripAndTripTransport(typeOfTrip, tripTransport);
     }
 
     @Override
-    public List<Trip> getTripsByTripTransport(Optional<Transport> tripTransport) {
+    public List<Trip> getTripsByTripTransport(Transport tripTransport) {
         return tripRepository.findByTripTransport(tripTransport);
     }
 
@@ -71,12 +71,12 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<Trip> getTripsByTripCity_Country_IdCountryAndTripTransportAndNumberOfDaysBetween(int idCountry, Optional<Transport> tripTransport, int minDays, int maxDays) {
+    public List<Trip> getTripsByTripCity_Country_IdCountryAndTripTransportAndNumberOfDaysBetween(int idCountry, Transport tripTransport, int minDays, int maxDays) {
         return tripRepository.findByTripCity_Country_IdCountryAndTripTransportAndNumberOfDaysBetween(idCountry, tripTransport, minDays, maxDays);
     }
 
     @Override
-    public List<Trip> getTripsByTypeOfTripAndTripCity_Country_IdCountryAndTripTransportAndPriceBetweenAndNumberOfDaysBetween(String typeOfTrip, int idCountry, Optional<Transport> tripTransport, double minPrice, double maxPrice, int minDays, int maxDays) {
+    public List<Trip> getTripsByTypeOfTripAndTripCity_Country_IdCountryAndTripTransportAndPriceBetweenAndNumberOfDaysBetween(String typeOfTrip, int idCountry, Transport tripTransport, double minPrice, double maxPrice, int minDays, int maxDays) {
         return tripRepository.findByTypeOfTripAndTripCity_Country_IdCountryAndTripTransportAndPriceBetweenAndNumberOfDaysBetween(typeOfTrip, idCountry, tripTransport, minPrice, maxPrice, minDays, maxDays);
     }
 

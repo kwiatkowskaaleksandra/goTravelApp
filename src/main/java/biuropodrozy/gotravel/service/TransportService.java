@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface TransportService {
 
-    Optional<Transport> getTransportById(int idTransport);
+    Transport getTransportById(int idTransport);
 
     List<Transport> getAllTransports();
 }

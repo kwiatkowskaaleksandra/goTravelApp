@@ -21,9 +21,9 @@ public interface TripService {
 
     List<Trip> getTripsByTripCity_Country_IdCountry(int idCountry);
 
-    List<Trip> getTripsByTypeOfTripAndTripTransport(String typeOfTrip, Optional<Transport> tripTransport);
+    List<Trip> getTripsByTypeOfTripAndTripTransport(String typeOfTrip, Transport tripTransport);
 
-    List<Trip> getTripsByTripTransport(Optional<Transport> tripTransport);
+    List<Trip> getTripsByTripTransport(Transport tripTransport);
 
     List<Trip> getTripsByTypeOfTripAndPriceBetween(String typeOfTrip, double minPrice, double maxPrice);
 
@@ -31,8 +31,8 @@ public interface TripService {
 
     List<Trip> getTripsByNumberOfDaysBetween(int minDays, int maxDays);
 
-    List<Trip> getTripsByTripCity_Country_IdCountryAndTripTransportAndNumberOfDaysBetween(int idCountry, Optional<Transport> tripTransport, int minDays, int maxDays);
+    List<Trip> getTripsByTripCity_Country_IdCountryAndTripTransportAndNumberOfDaysBetween(int idCountry, Transport tripTransport, int minDays, int maxDays);
 
-    List<Trip> getTripsByTypeOfTripAndTripCity_Country_IdCountryAndTripTransportAndPriceBetweenAndNumberOfDaysBetween(String typeOfTrip, int idCountry, Optional<Transport> tripTransport, double minPrice, double maxPrice, int minDays, int maxDays);
+    List<Trip> getTripsByTypeOfTripAndTripCity_Country_IdCountryAndTripTransportAndPriceBetweenAndNumberOfDaysBetween(String typeOfTrip, int idCountry, Transport tripTransport, double minPrice, double maxPrice, int minDays, int maxDays);
 
 }

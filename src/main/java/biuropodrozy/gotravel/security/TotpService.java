@@ -16,10 +16,10 @@ import java.security.SecureRandom;
 public class TotpService {
 
     private static final String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
-
+    private static final int BYTE = 10;
     public String generateSecret() {
         Base32 base32 = new Base32();
-        byte[] bytes = new byte[10];
+        byte[] bytes = new byte[BYTE];
         new SecureRandom().nextBytes(bytes);
         return base32.encodeAsString(bytes);
     }

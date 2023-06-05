@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -24,7 +23,7 @@ public class Reservation {
     private Long idReservation;
 
     @Temporal(TemporalType.DATE)
-    private Date dateOfReservation;
+    private LocalDate dateOfReservation;
 
     private int numberOfChildren;
 

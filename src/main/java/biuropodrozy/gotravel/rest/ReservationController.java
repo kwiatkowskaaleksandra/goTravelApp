@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,6 +32,8 @@ public class ReservationController {
     private final UserService userService;
     private final ReservationsTypeOfRoomService reservationsTypeOfRoomService;
     private final TripService tripService;
+    private static final int HALF_PRICE = 5;
+    private static final LocalDate DATE_DEFAULT = LocalDate.of(1970, 1, 1);
 
     @GetMapping("/getReservation/{idReservation}")
     ResponseEntity<Reservation> getReservationByIdReservation(@PathVariable Long idReservation) {
@@ -51,13 +52,13 @@ public class ReservationController {
         User user = userService.validateAndGetUserByUsername(username);
         Trip trip = tripService.getTripByIdTrip(idTrip);
 
-        Date localDate = new Date();
+        LocalDate localDate = LocalDate.now();
         reservation.setUser(user);
         reservation.setDateOfReservation(localDate);
         reservation.setTrip(trip);
         reservation.setIdReservation(reservationService.getTopByOrderByIdReservation().getIdReservation() + 1);
 
-        double price = reservation.getNumberOfAdults() * trip.getPrice() + reservation.getNumberOfChildren() * (trip.getPrice() / 2);
+        double price = reservation.getNumberOfAdults() * trip.getPrice() + reservation.getNumberOfChildren() * (trip.getPrice() / HALF_PRICE);
         reservation.setTotalPrice(price);
 
         if (reservation.getNumberOfChildren() == 0 && reservation.getNumberOfAdults() == 0) {
@@ -65,7 +66,7 @@ public class ReservationController {
         } else if (reservation.getNumberOfChildren() != 0 && reservation.getNumberOfAdults() == 0) {
             throw new ReservationException("Osoby poniżej 18 roku życia nie mogą podróżować bez dorosłego opiekuna.");
         }
-        if (reservation.getDepartureDate().equals(LocalDate.of(1970, 1, 1))) {
+        if (reservation.getDepartureDate().equals(LocalDate.of(DATE_DEFAULT.getYear(), DATE_DEFAULT.getMonth(), DATE_DEFAULT.getDayOfMonth()))) {
             throw new ReservationException("Proszę podać datę wyjazdu.");
         }
         if (user.getUsername() == null || user.getEmail() == null || user.getStreet() == null || user.getCity() == null || user.getZipCode() == null || user.getLastname() == null

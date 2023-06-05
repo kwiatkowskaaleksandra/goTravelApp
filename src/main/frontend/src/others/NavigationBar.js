@@ -92,12 +92,7 @@ function NavigationBar() {
                     <Nav.Link as={Link} to={"/yourOwnOffer"} className="navbar-menu">KREATOR WYCIECZEK</Nav.Link>
                     <Nav.Link as={Link} to={"/customerZone/login"} className="btn btn-primary btn-sm float-right"
                               style={enterMenuStyle()}>STREFA KLIENTA</Nav.Link>
-                    <Nav.Link as={Link} to={"/help"} className="navbar-menu-help"> <img alt="" src={phone} width="25"
-                                                                                        height="25"/>41 780 23
-                        32</Nav.Link>
-                    <Nav.Link as={Link} to={"/help"} className="navbar-menu-help"> <img alt="" src={phone} width="25"
-                                                                                        height="25"/>41 780 23
-                        32</Nav.Link>
+                    <Nav.Link className="navbar-menu-help"> <img alt="" src={phone} width="25" height="25"/>+48 555 666 777</Nav.Link>
 
 
                     <Nav.Link as={Link} to={"/myProfile"} style={logoutMenuStyle()}

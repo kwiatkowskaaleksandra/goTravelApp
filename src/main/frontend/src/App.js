@@ -21,14 +21,16 @@ import SearchedTrips from "./pages/typeOfTrips/SearchedTrips";
 import ReservationForm from './pages/user/ReservationForm'
 import MyProfile from "./pages/user/MyProfile";
 import YourOwnOffer from "./pages/user/YourOwnOffer";
+import Contact from "./others/footerLinks/Contact";
+import About from "./others/footerLinks/About";
+import Airlines from "./others/footerLinks/Airlines";
+import Insurance from "./others/footerLinks/Insurance";
 
 function App() {
     return (
         <AuthProvider>
             <Router>
-
                 <div>
-
                     <Routes>
                         <Route path='/' element={<Home/>}/>
                         <Route path='/customerZone/login' element={<Login/>}/>
@@ -58,6 +60,10 @@ function App() {
                         <Route path={"/myProfile"} element={<PrivateRoute><MyProfile/></PrivateRoute>}/>
                         <Route path={"/yourOwnOffer"} element={<PrivateRoute><YourOwnOffer/></PrivateRoute>}/>
 
+                        <Route path={"/contact"} element={<Contact/>}/>
+                        <Route path={"/about"} element={<About/>}/>
+                        <Route path={"/airlines"} element={<Airlines/>}/>
+                        <Route path={"/insurance"} element={<Insurance/>}/>
                     </Routes>
 
                 </div>

@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping("/api/attractions")
 public class AttractionController {
 
-    public static final Logger logger = LoggerFactory.getLogger(AttractionController.class);
     private final AttractionService attractionService;
 
     @GetMapping("/{idTrip}")

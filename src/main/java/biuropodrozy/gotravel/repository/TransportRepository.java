@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface TransportRepository extends JpaRepository<Transport, Integer> {
 
-    Optional<Transport> findByIdTransport(int idTransport);
+    Transport findByIdTransport(int idTransport);
 
     List<Transport> findAll();
 

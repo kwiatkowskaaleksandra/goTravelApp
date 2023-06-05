@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -23,7 +23,7 @@ public class Opinion {
 
     private String description;
 
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "idUser")

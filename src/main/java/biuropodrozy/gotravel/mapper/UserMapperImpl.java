@@ -5,6 +5,8 @@ package biuropodrozy.gotravel.mapper;/*
 
 import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.rest.dto.UserDto;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service

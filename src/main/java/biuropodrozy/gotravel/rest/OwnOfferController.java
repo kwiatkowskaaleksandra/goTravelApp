@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class OwnOfferController {
 
     @PostMapping("/addOwnOffer/{username}")
     ResponseEntity<OwnOffer> createOwnOffer(@PathVariable String username, @RequestBody OwnOffer ownOffer) {
-        Date localDate = new Date();
+        LocalDate localDate = LocalDate.now();
         User user = userService.validateAndGetUserByUsername(username);
 
         ownOffer.setUser(user);

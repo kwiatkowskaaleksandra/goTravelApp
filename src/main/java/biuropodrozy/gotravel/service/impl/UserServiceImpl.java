@@ -6,8 +6,15 @@ package biuropodrozy.gotravel.service.impl;/*
 import biuropodrozy.gotravel.exception.UserNotFoundException;
 import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.repository.UserRepository;
+import biuropodrozy.gotravel.rest.dto.SignUpRequest;
+import biuropodrozy.gotravel.security.TokenProvider;
+import biuropodrozy.gotravel.security.WebSecurityConfig;
 import biuropodrozy.gotravel.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +25,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-
 
     @Override
     public List<User> getUsers() {
@@ -44,7 +49,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User validateAndGetUserByUsername(String username) {
         return getUserByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(String.format("Nie ma użytkownika o nazwie: %s", username)));
+                .orElseThrow(() ->
+                        new UserNotFoundException(String.format("Nie ma użytkownika o nazwie: %s", username))
+                );
     }
 
     @Override
@@ -61,8 +68,5 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long idUser) {
         return userRepository.findUserById(idUser);
     }
-
-
-
 
 }

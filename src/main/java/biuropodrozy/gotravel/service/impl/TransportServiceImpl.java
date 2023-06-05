@@ -19,7 +19,7 @@ public class TransportServiceImpl implements TransportService {
     private final TransportRepository transportRepository;
 
     @Override
-    public Optional<Transport> getTransportById(int idTransport) {
+    public Transport getTransportById(int idTransport) {
         return transportRepository.findByIdTransport(idTransport);
     }
 

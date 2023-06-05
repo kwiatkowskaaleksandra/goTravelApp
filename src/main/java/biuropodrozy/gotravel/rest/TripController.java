@@ -27,6 +27,8 @@ public class TripController {
     public static final Logger logger = LoggerFactory.getLogger(TripController.class);
     private final TripService tripService;
     private final TransportService transportService;
+    private static final int MAX_PRICE = 100000000;
+    private static final int MAX_DAYS = 10000;
 
     @GetMapping("/{idTrip}")
     ResponseEntity<Trip> readTripById(@PathVariable Long idTrip) {
@@ -43,16 +45,16 @@ public class TripController {
                                                                     @PathVariable(required = false) int minDays, @PathVariable(required = false) int maxDays) {
 
         if (idCountry != 0 && typeOfTransport != 0 && minDays != 0 && maxDays != 0) {
-            Optional<Transport> current = transportService.getTransportById(typeOfTransport);
+            Transport current = transportService.getTransportById(typeOfTransport);
             return ResponseEntity.ok(tripService.getTripsByTripCity_Country_IdCountryAndTripTransportAndNumberOfDaysBetween(idCountry, current, minDays, maxDays));
         } else if (idCountry != 0) {
             return ResponseEntity.ok(tripService.getTripsByTripCity_Country_IdCountry(idCountry));
         } else if (typeOfTransport != 0) {
-            Optional<Transport> current = transportService.getTransportById(typeOfTransport);
+            Transport current = transportService.getTransportById(typeOfTransport);
             return ResponseEntity.ok(tripService.getTripsByTripTransport(current));
         } else if (minDays != 0 || maxDays != 0) {
             if (minDays != 0 && maxDays == 0) {
-                return ResponseEntity.ok(tripService.getTripsByNumberOfDaysBetween(minDays, 10000));
+                return ResponseEntity.ok(tripService.getTripsByNumberOfDaysBetween(minDays, MAX_DAYS));
             } else {
                 return ResponseEntity.ok(tripService.getTripsByNumberOfDaysBetween(0, maxDays));
             }
@@ -68,22 +70,22 @@ public class TripController {
 
 
         if (idCountry != 0 && typeOfTransport != 0 && minPrice != 0 && maxPrice != 0 && minDays != 0 && maxDays != 0) {
-            Optional<Transport> current = transportService.getTransportById(typeOfTransport);
+            Transport current = transportService.getTransportById(typeOfTransport);
             return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndTripCity_Country_IdCountryAndTripTransportAndPriceBetweenAndNumberOfDaysBetween(typeOfTrip, idCountry, current, minPrice, maxPrice, minDays, maxDays));
         } else if (idCountry != 0) {
             return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndTripCity_Country_IdCountry(typeOfTrip, idCountry));
         } else if (typeOfTransport != 0) {
-            Optional<Transport> current = transportService.getTransportById(typeOfTransport);
+            Transport current = transportService.getTransportById(typeOfTransport);
             return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndTripTransport(typeOfTrip, current));
         } else if (minPrice != 0 || maxPrice != 0) {
             if (minPrice != 0 && maxPrice == 0) {
-                return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndPriceBetween(typeOfTrip, minPrice, 100000000));
+                return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndPriceBetween(typeOfTrip, minPrice, MAX_PRICE));
             } else {
                 return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndPriceBetween(typeOfTrip, 0, maxPrice));
             }
         } else if (minDays != 0 || maxDays != 0) {
             if (minDays != 0 && maxDays == 0) {
-                return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndNumberOfDaysBetween(typeOfTrip, minDays, 10000));
+                return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndNumberOfDaysBetween(typeOfTrip, minDays, MAX_DAYS));
             } else {
                 return ResponseEntity.ok(tripService.getTripsByTypeOfTripAndNumberOfDaysBetween(typeOfTrip, 0, maxDays));
             }

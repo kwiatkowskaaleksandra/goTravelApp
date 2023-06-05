@@ -6,10 +6,13 @@ package biuropodrozy.gotravel.security;/*
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.codec.Utf8;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@NoArgsConstructor
 public class TokenProvider {
 
     public static final String TOKEN_TYPE = "JWT";

@@ -14,15 +14,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static biuropodrozy.gotravel.configuration.SwaggerConfiguration.BEARER_KEY_SECURITY_SCHEME;
 
@@ -31,7 +28,6 @@ import static biuropodrozy.gotravel.configuration.SwaggerConfiguration.BEARER_KE
 @RequestMapping("/api/users")
 public class UserController {
 
-    public static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
     private final ReservationService reservationService;
     private final OwnOfferService ownOfferService;
@@ -41,6 +37,10 @@ public class UserController {
     private final OpinionService opinionService;
     private final PasswordEncoder passwordEncoder;
 
+    private static final int ZIP_CODE_LENGTH = 5;
+    private static final int PHONE_NUMBER_LENGTH = 9;
+    private static final int PASSWORD_MIN_LENGTH = 5;
+
     @Autowired
     private TotpService totpService;
 
@@ -48,14 +48,6 @@ public class UserController {
     @GetMapping("/me")
     public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         return userService.validateAndGetUserByUsername(currentUser.getUsername());
-    }
-
-    @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
-    @GetMapping
-    public List<UserDto> getUsers() {
-        return userService.getUsers().stream()
-                .map(userMapper::toUserDto)
-                .collect(Collectors.toList());
     }
 
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
@@ -73,14 +65,14 @@ public class UserController {
         opinions.forEach(opinionService::deleteOpinion);
 
         List<Reservation> reservations = reservationService.getReservationByIdUser(user.getId());
-        reservations.forEach(reservation -> {
+        reservations.forEach((Reservation reservation) -> {
             List<ReservationsTypeOfRoom> reservationsTypeOfRooms = reservationsTypeOfRoomService.findByReservation_IdReservation(reservation.getIdReservation());
             reservationsTypeOfRooms.forEach((reservationsTypeOfRoomService::deleteReservationsTypeOfRoom));
             reservationService.deleteReservation(reservation);
         });
 
         List<OwnOffer> ownOffers = ownOfferService.getAllOwnOfferByUsername(username);
-        ownOffers.forEach(offer -> {
+        ownOffers.forEach((OwnOffer offer) -> {
             List<OwnOfferTypeOfRoom> ownOfferTypeOfRooms = ownOfferTypeOfRoomService.findByOwnOffer_IdOwnOffer(offer.getIdOwnOffer());
             ownOfferTypeOfRooms.forEach((ownOfferTypeOfRoomService::deleteOwnOfferTypeOfRoom));
             ownOfferService.deleteOwnOffer(offer);
@@ -96,10 +88,16 @@ public class UserController {
     public String updateUser(@PathVariable String username, @Valid @RequestBody User user) {
         User existingUser = userService.validateAndGetUserByUsername(username);
         String token = "";
-        if (user.getZipCode().length() != 5) {
+        if(user.getUsername() == null || user.getLastname() == null|| user.getFirstname() == null || user.getEmail() == null || user.getPhoneNumber() == null || user.getCity() == null
+                || user.getStreet() == null || user.getStreetNumber() == null || user.getZipCode() == null) {
+            throw new UserException("Wszystkie dane powinny zostać uzupełnione.");
+        }
+        else if (user.getZipCode().length() != ZIP_CODE_LENGTH) {
             throw new UserException("Kod pocztowy musi zawierać pięć cyfr.");
-        } else if (user.getPhoneNumber().length() != 9) {
+        } else if (user.getPhoneNumber().length() != PHONE_NUMBER_LENGTH) {
             throw new UserException("Numer telefonu musi zawierać dziewięć cyfr.");
+        } else if (!user.getEmail().matches("(.*)@(.*)")) {
+            throw new UserException("Błedny adres email.");
         } else {
             existingUser.setUsername(user.getUsername());
             existingUser.setFirstname(user.getFirstname());
@@ -135,7 +133,7 @@ public class UserController {
             throw new UserException("Nowe hasło należy poprawnie wpisać dwukrotnie.");
         } else if (passwordEncoder.matches(password.getNewPassword(), existingUser.getPassword())) {
             throw new UserException("Nowe hasło musi się różnić od poprzedniego.");
-        } else if (password.getNewPassword().length() < 5) {
+        } else if (password.getNewPassword().length() < PASSWORD_MIN_LENGTH) {
             throw new UserException("Hasło powinno mieć więcej niż 5 znaków.");
         } else {
             existingUser.setPassword(passwordEncoder.encode(password.getNewPassword()));
