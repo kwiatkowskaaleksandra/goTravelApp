@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.security;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.security;
 
 import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.service.UserService;
@@ -15,12 +12,22 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The UserDetailsService implementation
+ */
 @RequiredArgsConstructor
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserService userService;
 
+    /**
+     * Get detailed user information based on the given username.
+     *
+     * @param username the username
+     * @return the user details
+     * @throws UsernameNotFoundException the UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.getUserByUsername(username)
@@ -29,6 +36,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return mapUserToCustomUserDetails(user, authorities);
     }
 
+    /**
+     * Mapping user to custom user details.
+     *
+     * @param user the user
+     * @param authorities the authorities
+     * @return the custom user details
+     */
     private CustomUserDetails mapUserToCustomUserDetails(User user, List<SimpleGrantedAuthority> authorities) {
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails.setId(user.getId());

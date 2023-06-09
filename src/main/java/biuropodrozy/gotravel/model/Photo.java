@@ -1,14 +1,13 @@
-package biuropodrozy.gotravel.model;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * The type Photo.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

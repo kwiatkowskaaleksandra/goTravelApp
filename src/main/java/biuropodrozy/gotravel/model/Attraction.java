@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.model;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -10,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+
+/**
+ * The type Attraction.
+ */
 
 @Data
 @NoArgsConstructor

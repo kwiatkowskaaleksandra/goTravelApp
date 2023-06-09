@@ -1,8 +1,4 @@
-package biuropodrozy.gotravel.rest;/*
- * @project gotravel
- * @author kola
- */
-
+package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.model.Opinion;
 import biuropodrozy.gotravel.model.Trip;
@@ -17,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The type Opinion controller.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/opinions")
@@ -28,12 +27,27 @@ public class OpinionController {
 
     private final TripService tripService;
 
+
+    /**
+     * Get all opinions by id trip response entity.
+     *
+     * @param idTrip the id trip
+     * @return the list of opinions response entity
+     */
     @GetMapping("/{idTrip}")
     ResponseEntity<List<Opinion>> getAllOpinionByIdTrip(@PathVariable Long idTrip) {
         return ResponseEntity.ok(opinionService.getOpinionsByIdTrip(idTrip));
     }
 
 
+    /**
+     * Create new opinion response entity.
+     *
+     * @param idUser the id user
+     * @param idTrip the id trip
+     * @param opinion the opinion
+     * @return the response entity
+     */
     @PostMapping("/addOpinion/{idUser}/{idTrip}")
     ResponseEntity<Opinion> createOpinion(@PathVariable Long idUser, @PathVariable Long idTrip, @RequestBody Opinion opinion) {
 
@@ -47,6 +61,12 @@ public class OpinionController {
         return ResponseEntity.ok(opinionService.saveOpinion(opinion));
     }
 
+    /**
+     * Delete opinion by id response entity.
+     *
+     * @param idOpinion the id opinion
+     * @return the response entity
+     */
     @DeleteMapping("/deleteOpinion/{idOpinion}")
     ResponseEntity<?> deleteOpinion(@PathVariable int idOpinion) {
         Opinion opinion = opinionService.getOpinionByIdOpinion(idOpinion);

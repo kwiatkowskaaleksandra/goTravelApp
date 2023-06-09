@@ -1,8 +1,4 @@
-package biuropodrozy.gotravel.rest;/*
- * @project gotravel
- * @author kola
- */
-
+package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.model.Transport;
 import biuropodrozy.gotravel.service.TransportService;
@@ -14,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * The type Transport controller.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/transport")
@@ -21,6 +20,11 @@ public class TransportController {
 
     private final TransportService transportService;
 
+    /**
+     * Read all Transports response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping(value = "/all")
     ResponseEntity<List<Transport>> readAllTransports() {
         return ResponseEntity.ok(transportService.getAllTransports());

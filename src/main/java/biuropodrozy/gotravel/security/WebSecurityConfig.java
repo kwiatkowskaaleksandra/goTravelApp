@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.security;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +20,9 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-
+/**
+ * The type Web security config.
+ */
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -32,11 +31,25 @@ public class WebSecurityConfig {
     public static final String USER = "USER";
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
+    /**
+     * AuthenticationManager configuration.
+     *
+     * @param authenticationConfiguration the authenticationConfiguration
+     * @return the authentication manager
+     * @throws Exception the exception
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Security filter chain.
+     *
+     * @param http the http
+     * @return the security filter chain
+     * @throws Exception the exception
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -66,11 +79,21 @@ public class WebSecurityConfig {
     }
 
 
+    /**
+     * B crypt password encoder.
+     *
+     * @return the b crypt password encoder
+     */
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Sets the header name that the CsrfToken is expected to appear on and the header that the response will contain the CsrfToken.
+     *
+     * @return The HttpSessionCsrfTokenRepository repository
+     */
     private CsrfTokenRepository csrfTokenRepository() {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
         repository.setHeaderName("X-CSRF-TOKEN");

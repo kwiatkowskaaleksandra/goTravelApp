@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.rest;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.exception.DuplicatedUserInfoException;
 import biuropodrozy.gotravel.exception.UserSignUpException;
@@ -26,6 +23,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * The type Auth controller.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -40,24 +40,48 @@ public class AuthController {
     @Autowired
     private TotpService totpService;
 
+    /**
+     * User login.
+     *
+     * @param loginRequest the login request
+     * @return the auth response
+     */
     @PostMapping("/authenticate")
     public AuthResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         String token = authenticateAndGetToken(loginRequest.getUsername(), loginRequest.getPassword());
         return new AuthResponse(token);
     }
 
+    /**
+     * Checking if the user is using 2FA.
+     *
+     * @param loginRequest the login request
+     * @return true or false
+     */
    @PostMapping("/findUser")
     public boolean findUser(@Valid @RequestBody LoginRequest loginRequest){
         User user = userService.validateAndGetUserByUsername(loginRequest.getUsername());
         return user.isUsing2FA();
     }
 
+    /**
+     * Checking if the user has entered the correct verification code 2FA.
+     *
+     * @param userTotp the user totp
+     * @return true or false
+     */
     @PostMapping("/verify")
     public boolean verifyCode(@NotEmpty @RequestBody UserTotp userTotp){
         User user = userService.validateAndGetUserByUsername(userTotp.getUsername());
         return totpService.verifyCode(user.getSecret2FA(), userTotp.getTotp());
     }
 
+    /**
+     * New user registration.
+     *
+     * @param signUpRequest the signup request
+     * @return the auth response
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
     public AuthResponse signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
@@ -80,11 +104,24 @@ public class AuthController {
         return new AuthResponse(token);
     }
 
+    /**
+     * User authentication and get token.
+     *
+     * @param username the username
+     * @param password the password
+     * @return token
+     */
     public String authenticateAndGetToken(String username, String password) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         return tokenProvider.generate(authentication);
     }
 
+    /**
+     * Mapping new user from signup request to user
+     *
+     * @param signUpRequest the signup request
+     * @return the user
+     */
     public User mapSignUpRequestToUser(SignUpRequest signUpRequest) {
         User user = new User();
         user.setUsername(signUpRequest.getUsername());

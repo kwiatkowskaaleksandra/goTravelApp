@@ -1,16 +1,20 @@
-package biuropodrozy.gotravel.mapper;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.mapper;
 
 import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.rest.dto.UserDto;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * The UserMapper implementation.
+ */
 @Service
 public class UserMapperImpl implements UserMapper {
+
+    /**
+     * Transfer user to userDto.
+     * @param user the user
+     * @return the user dto
+     */
     @Override
     public UserDto toUserDto(User user) {
         if (user == null) {

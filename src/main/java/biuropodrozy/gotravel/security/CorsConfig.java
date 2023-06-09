@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.security;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +9,19 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
+/**
+ * This class is responsible for cors configuration source.
+ */
+
 @Configuration
 public class CorsConfig {
 
+    /**
+     * Cors configuration source.
+     *
+     * @param allowedOrigins the allowed origins
+     * @return the cors configuration source
+     */
     @Bean
     public CorsFilter corsFilter(@Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

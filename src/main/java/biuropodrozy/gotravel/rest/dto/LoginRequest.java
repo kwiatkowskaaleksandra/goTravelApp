@@ -1,12 +1,12 @@
-package biuropodrozy.gotravel.rest.dto;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.rest.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * The type login request.
+ */
 @Data
 @AllArgsConstructor
 public class LoginRequest {

@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.service.impl;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.service.impl;
 
 import biuropodrozy.gotravel.model.Transport;
 import biuropodrozy.gotravel.repository.TransportRepository;
@@ -10,19 +7,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * The Transport service implementation.
+ */
 @RequiredArgsConstructor
 @Service
 public class TransportServiceImpl implements TransportService {
 
     private final TransportRepository transportRepository;
 
+    /**
+     * Get transport by id transport.
+     *
+     * @param idTransport the id transport
+     * @return the transport
+     */
     @Override
     public Transport getTransportById(int idTransport) {
         return transportRepository.findByIdTransport(idTransport);
     }
 
+    /**
+     * Get all transports.
+     *
+     * @return list of transports
+     */
     @Override
     public List<Transport> getAllTransports() {
         return transportRepository.findAll();

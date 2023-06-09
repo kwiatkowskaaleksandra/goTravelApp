@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.rest;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.exception.UserException;
 import biuropodrozy.gotravel.mapper.UserMapper;
@@ -23,6 +20,9 @@ import java.util.List;
 
 import static biuropodrozy.gotravel.configuration.SwaggerConfiguration.BEARER_KEY_SECURITY_SCHEME;
 
+/**
+ * The type User controller.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/users")
@@ -44,18 +44,36 @@ public class UserController {
     @Autowired
     private TotpService totpService;
 
+    /**
+     * Get current user response entity.
+     *
+     * @param currentUser the current user
+     * @return the user response entity
+     */
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @GetMapping("/me")
     public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         return userService.validateAndGetUserByUsername(currentUser.getUsername());
     }
 
+    /**
+     * Get user by username response entity.
+     *
+     * @param username the username
+     * @return the user dto response entity
+     */
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @GetMapping("/{username}")
     public UserDto getUser(@PathVariable String username) {
         return userMapper.toUserDto(userService.validateAndGetUserByUsername(username));
     }
 
+    /**
+     * Delete user response entity.
+     *
+     * @param username the username
+     * @return the response entity
+     */
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @DeleteMapping("/deleteUser/{username}")
     public UserDto deleteUser(@PathVariable String username) {
@@ -82,7 +100,13 @@ public class UserController {
         return userMapper.toUserDto(user);
     }
 
-
+    /**
+     * Update user info response entity.
+     *
+     * @param username the username
+     * @param user the user
+     * @return the response entity
+     */
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @PutMapping("/update/{username}")
     public String updateUser(@PathVariable String username, @Valid @RequestBody User user) {
@@ -122,6 +146,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Update password response entity.
+     *
+     * @param username the username
+     * @param password the password
+     * @return the user response entity
+     */
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @PutMapping("/updatePassword/{username}")
     public User updatePassword(@PathVariable String username, @Valid @RequestBody Password password) {

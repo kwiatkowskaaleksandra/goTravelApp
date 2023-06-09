@@ -1,27 +1,22 @@
-package biuropodrozy.gotravel.security;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.codec.Utf8;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+/**
+ * This class is responsible for generating and verifying JWT tokens.
+ */
 @Slf4j
 @Component
 @NoArgsConstructor
@@ -35,6 +30,12 @@ public class TokenProvider {
     @Value("${gotravel.app.jwtExpirationMs}")
     private Long jwtExpirationMs;
 
+    /**
+     * Generates a JWT based on user authentication.
+     *
+     * @param authentication the authentication
+     * @return generated jwt token
+     */
     public String generate(Authentication authentication) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
@@ -56,6 +57,12 @@ public class TokenProvider {
                 .compact();
     }
 
+    /**
+     * Validates the JWT token.
+     *
+     * @param token the token
+     * @return an optional Jws object containing a verified JWT
+     */
     public Optional<Jws<Claims>> validateTokenAndGetJws(String token) {
         try {
             byte[] signingKey = jwtSecret.getBytes();

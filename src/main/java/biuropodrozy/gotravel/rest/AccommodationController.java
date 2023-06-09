@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.rest;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.model.Accommodation;
 import biuropodrozy.gotravel.service.AccommodationService;
@@ -13,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * The type Accommodation controller.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/accommodations")
@@ -20,6 +20,11 @@ public class AccommodationController {
 
     private final AccommodationService accommodationService;
 
+    /**
+     * Read all accommodations response entity.
+     *
+     * @return the list of accommodations response entity
+     */
     @GetMapping("/all")
     ResponseEntity<List<Accommodation>> readAllAccommodations() {
         return ResponseEntity.ok(accommodationService.getAllAccommodations());

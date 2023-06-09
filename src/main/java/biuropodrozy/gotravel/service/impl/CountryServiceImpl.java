@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.service.impl;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.service.impl;
 
 import biuropodrozy.gotravel.model.Country;
 import biuropodrozy.gotravel.repository.CountryRepository;
@@ -11,12 +8,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * The Country service implementation.
+ */
 @RequiredArgsConstructor
 @Service
 public class CountryServiceImpl implements CountryService {
 
     private final CountryRepository countryRepository;
 
+    /**
+     * Getl all countries.
+     *
+     * @return list of countries.
+     */
     @Override
     public List<Country> getAllCountries() {
         return countryRepository.findAll();

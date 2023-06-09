@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.security;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,6 +18,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * This class is responsible for filtering requests and checking if the token is valid.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -31,6 +31,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final TokenProvider tokenProvider;
 
+    /**
+     * This method is responsible for filtering requests and checking if the token is valid.
+     *
+     * @param request the request
+     * @param response the response
+     * @param filterChain the filterChain
+     * @throws ServletException the ServletException
+     * @throws IOException the IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -49,6 +58,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * This method retrieves the jwt from http servlet request.
+     *
+     * @param request the request
+     * @return token
+     */
     private Optional<String> getJwtFromRequest(HttpServletRequest request) {
         String tokenHeader = request.getHeader(TOKEN_HEADER);
         if (StringUtils.hasText(tokenHeader) && tokenHeader.startsWith(TOKEN_PREFIX)) {

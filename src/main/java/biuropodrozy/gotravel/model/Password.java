@@ -1,11 +1,11 @@
-package biuropodrozy.gotravel.model;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+/**
+ * The type Password.
+ */
 @Data
 public class Password {
 

@@ -1,8 +1,4 @@
-package biuropodrozy.gotravel.rest;/*
- * @project gotravel
- * @author kola
- */
-
+package biuropodrozy.gotravel.rest;
 import biuropodrozy.gotravel.model.Photo;
 import biuropodrozy.gotravel.service.PhotoService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * The type Photo controller.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/photos")
@@ -21,6 +20,12 @@ public class PhotoController {
 
     private final PhotoService photoService;
 
+    /**
+     * Get all photos by id trip response entity.
+     *
+     * @param idTrip the id trip
+     * @return the list of photos response entity
+     */
     @GetMapping("/{idTrip}")
     ResponseEntity<List<Photo>> getAllPhotoByIdTrip(@PathVariable Long idTrip) {
         return ResponseEntity.ok(photoService.getPhotosByIdTrip(idTrip));

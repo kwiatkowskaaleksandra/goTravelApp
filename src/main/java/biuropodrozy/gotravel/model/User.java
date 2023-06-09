@@ -1,7 +1,4 @@
-package biuropodrozy.gotravel.model;/*
- * @project gotravel
- * @author kola
- */
+package biuropodrozy.gotravel.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -12,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
+/**
+ * The type User.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
