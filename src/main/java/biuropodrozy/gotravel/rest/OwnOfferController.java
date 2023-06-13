@@ -55,13 +55,15 @@ public class OwnOfferController {
      */
     @PostMapping("/addOwnOfferAttractions")
     public ResponseEntity<?> addAttractionsToOwnOffer(@RequestBody String attractions) {
-        OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(ownOfferService.getTopByOrderByIdOwnOffer().getIdOwnOffer());
-        Set<Attraction> attraction = new HashSet<>();
-        attractions = attractions.replaceAll("\"", "");
-        Optional<Attraction> atr = attractionService.getAttractionByNameAttraction(attractions);
-        atr.ifPresent(attraction::add);
-        ownOffer.getOfferAttraction().addAll(attraction);
-        ownOfferService.saveOwnOffer(ownOffer);
+        if(ownOfferService.getTopByOrderByIdOwnOffer() != null){
+            OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(ownOfferService.getTopByOrderByIdOwnOffer().getIdOwnOffer());
+            Set<Attraction> attraction = new HashSet<>();
+            attractions = attractions.replaceAll("\"", "");
+            Optional<Attraction> atr = attractionService.getAttractionByNameAttraction(attractions);
+            atr.ifPresent(attraction::add);
+            ownOffer.getOfferAttraction().addAll(attraction);
+            ownOfferService.saveOwnOffer(ownOffer);
+        }
         return ResponseEntity.ok().build();
     }
 

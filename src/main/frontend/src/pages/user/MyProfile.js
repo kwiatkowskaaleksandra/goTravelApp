@@ -405,7 +405,7 @@ class MyProfile extends Component {
                                         <label>* Po zmianie danych, zostaniesz automatycznie wylogowany.</label>
                                     </section>
 
-                                    <section className="tab-content" id="tab-two">
+                                    <section className="tab-content" id="tab-two" style={{height: "300px"}}>
 
 
                                         <form className="form-floating row gy-2 gx-3"
@@ -439,7 +439,7 @@ class MyProfile extends Component {
                                         <label>* Po zmianie danych, zostaniesz automatycznie wylogowany.</label>
                                     </section>
 
-                                    <section className="tab-content" id="tab-three">
+                                    <section className="tab-content" id="tab-three" style={{height: "300px"}}>
 
                                         <table className={"table"}>
                                             <thead>
@@ -486,7 +486,7 @@ class MyProfile extends Component {
 
                                     </section>
 
-                                    <section className="tab-content" id="tab-four">
+                                    <section className="tab-content" id="tab-four" style={{height: "300px"}}>
 
                                         <table className={"table"}>
                                             <thead>

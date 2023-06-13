@@ -75,7 +75,11 @@ public class ReservationController {
         reservation.setUser(user);
         reservation.setDateOfReservation(localDate);
         reservation.setTrip(trip);
-        reservation.setIdReservation(reservationService.getTopByOrderByIdReservation().getIdReservation() + 1);
+        if(reservationService.getTopByOrderByIdReservation() != null){
+            reservation.setIdReservation(reservationService.getTopByOrderByIdReservation().getIdReservation() + 1);
+        }else{
+            reservation.setIdReservation(1L) ;
+        }
 
         double price = reservation.getNumberOfAdults() * trip.getPrice() + reservation.getNumberOfChildren() * (trip.getPrice() / HALF_PRICE);
         reservation.setTotalPrice(price);

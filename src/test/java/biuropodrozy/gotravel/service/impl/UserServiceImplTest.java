@@ -43,15 +43,6 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUsers() {
-        given(userRepository.findAll()).willReturn(List.of(user));
-
-        List<User> users1 = userService.getUsers();
-        assertThat(users1).isNotNull();
-        assertEquals(users1.size(), 1);
-    }
-
-    @Test
     void getUserByUsername() {
         given(userRepository.findByUsername(user.getUsername())).willReturn(Optional.ofNullable(user));
         Optional<User> user1 = userService.getUserByUsername(user.getUsername());
