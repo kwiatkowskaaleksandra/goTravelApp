@@ -1,128 +1,93 @@
 # GoTravel
+> Aplikacja webowa obsługująca klienta biura podróży.
 
-## Getting started
+## Spis treści
+* [Cel projektu](#cel-projektu)
+* [Technologia](#technologia)
+* [Funkcjonalności](#funkcjonalności)
+* [Bezpieczeństwo](#bezpieczeństwo)
+* [Testy jednostkowe](#testy-jednostkowe)
+* [Screenshots](#screenshots)
+* [Endpointy](#endpointy)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it
-easy? [Use the template at the bottom](#editing-this-readme)!
+## Cel projektu
+Celem projektu jest stworzenie aplikacji webowej z interfejsem graficznym, która będzie obsługiwać interakcje z użytkownikiem i komunikować się z serwerem REST w celu pobierania i przetwarzania danych. Aplikacja jest przeznaczona dla klientów biura podróży do przeglądania i rezerwowania ofert wycieczek.
 
-## Add your files
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file)
-  or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line)
-  or push an existing Git repository with the following command:
+## Technologia
+Backend
+- Java 17
+- Spring Boot 3.0.5
+- Baza danych MySql
 
-```
-cd existing_repo
-git remote add origin https://orkan.tu.kielce.pl/gitlab/kola/gotravel.git
-git branch -M master
-git push -uf origin master
-```
+Frontend
+- React.js 18.2.0
 
-## Integrate with your tools
+## Funkcjonalności
+Funkcjonalności zostały podzielone dla dwóch typów klientów: niezalogowanych oraz zalogowanych.
 
-- [ ] [Set up project integrations](https://orkan.tu.kielce.pl/gitlab/kola/gotravel/-/settings/integrations)
+Funkcjonalności dla klienta niezalogowanego:
+- Założenie nowego konta;
+- Zalogowanie się;
+- Przeglądanie ofert wycieczek (z podziałem na kategorie takie jak: last minute, promocje, egzotyka, długi pobyt, rejsy, krótki urlop, all inclusive, wakacje z dziećmi.
+- Wyszukiwanie ofert (po polach takich jak państwo, długość trwania wyjazdu, rodzaj transportu);
+- Filtrowanie ofert (po polach takich jak rodzaj transportu, ilość dni, kraj oraz przedział cenowy);
 
-## Collaborate with your team
+Funkcjonalności dla klienta zalogowanego:
+- Przeglądanie ofert wycieczek (z podziałem na kategorie takie jak: last minute, promocje, egzotyka, długi pobyt, rejsy, krótki urlop, all inclusive, wakacje z dziećmi.
+- Wyszukiwanie ofert (po polach takich jak państwo, długość trwania wyjazdu, rodzaj transportu);
+- Filtrowanie ofert (po polach takich jak rodzaj transportu, ilość dni, kraj oraz przedział cenowy);
+- Rezerwacja wycieczki;
+- Generowanie własnej wycieczki (wybór miejsca, zakwaterowania, atrakcji, itp.);
+- Dodanie/usuwanie opinii do wycieczki;
+- Usunięcie rezerwacji;
+- Edycja danych użytkownika, zmiana hasła, usunięcie konta;
+- Włączenie/wyłączenie logowania dwufazowego;
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## Bezpieczeństwo
+Zostały wykorzystane tokeny JWT, których ważność wygasa po określonym czasie. W kontekście uwierzytelniania i autoryzacji, JWT pozwala na bezpieczne przechowywanie informacji o użytkowniku, które można następnie wykorzystać do weryfikacji tożsamości oraz udzielania dostępu do zasobów. 
+Hasła do kont użytkowników są szyfrowane i zapisane do bazy danych jako tekst niejawny. Jako koder został wykorzystany BCryptPsswordEncoder. 
+Logowanie dwufazowe wykorzystuje algorytm TOTP (Time-Based One-Time Password). TOTP to algorytm generowania jednorazowych haseł (OTP), które są ważne przez krótki okres czasu, 30 sekund. TOTP jest oparty na algorytmie HMAC-Based One-Time Password (HOTP) i jest szeroko stosowany w takich usługach, jak Google Authenticator, Microsoft Authenticator czy Authy.
+Aplikcja została zabezpieczona przed atakami:
+- XSS
+- SQL Injection
+- CSRF
 
-## Test and Deploy
+## Testy jednostkowe
+Aplikacja została przetestowana pod kątem jakości i poprawności kodu z wykorzystaniem JUnit 5 i Mockito. Pokrycie testowe wyniosło 80% wszystkich linii kodu.
+![wynik testow](./img/testy.png)
 
-Use the built-in continuous integration in GitLab.
+## Screenshots
+Widok strony głównej aplikacji widoczny dla użytkownika niezalogowanego
+![strona glowna](./img/strona_glowna.png)
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+Formularz rejestracji
+![rejestracja](./img/rejestracja.png)
 
-***
+Formularz logowania
+![logowanie](./img/logowanie.png)
 
-# Editing this README
+Wprowadzenie kodu autentykacyjny
+![2fa](./img/2fa.png)
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to
-structure it however you want - this is just a starting point!). Thank you
-to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Wyświetlenie ofert wycieczek z kategorii last minute 
+![wyswietlenie_ofert](./img/wyswietlenie_ofert.png)
 
-## Suggestions for a good README
+Szczegóły wycieczki
+![szczegoly](./img/szczegoly.png)
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are
-suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long
-is better than too short. If you think your README is too long, consider utilizing another form of documentation rather
-than cutting out information.
+Rezerwacja wycieczki
+![rezerwacja](./img/rezerwacja.png)
 
-## Name
+Wyświetlenie rezerwacji
+![wyswietlenie_rezerwacji](./img/wyswietlenie_rezerwacji.png)
 
-Choose a self-explaining name for your project.
+Edycja danych
+![edycja_danych](./img/edycja_danych.png)
 
-## Description
+Kreator wycieczek
+![kreator_wycieczki](./img/kreator_wycieczki.png)
 
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be
-unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your
-project, this is a good place to list differentiating factors.
-
-## Badges
-
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the
-project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see
-GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew.
-However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing
-specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a
-specific context like a particular programming language version or operating system or has dependencies that have to be
-installed manually, also add a Requirements subsection.
-
-## Usage
-
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of
-usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably
-include in the README.
-
-## Support
-
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address,
-etc.
-
-## Roadmap
-
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started.
-Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps
-explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce
-the likelihood that the changes inadvertently break something. Having instructions for running tests is especially
-helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-
-Show your appreciation to those who have contributed to the project.
-
-## License
-
-For open source projects, say how it is licensed.
-
-## Project status
-
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has
-slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or
-owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Endpointy
+https://documenter.getpostman.com/view/21395963/2s93z6cPAm
