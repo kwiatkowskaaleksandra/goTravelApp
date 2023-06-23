@@ -15,7 +15,14 @@ import java.security.SecureRandom;
 @Service
 public class TotpService {
 
+    /**
+     * Prefix for generating QR codes using the Google Chart API.
+     */
     private static final String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
+
+    /**
+     * Byte value used in calculations.
+     */
     private static final int BYTE = 10;
 
     /**
@@ -36,7 +43,7 @@ public class TotpService {
      * @param user the user
      * @return the string
      */
-    public String generateQRUrl(User user) {
+    public String generateQRUrl(final User user) {
         return QR_PREFIX + URLEncoder.encode(String.format(
                         "otpauth://totp/%s:%s?secret=%s&issuer=%s",
                         "SpringSecurity",
@@ -53,7 +60,7 @@ public class TotpService {
      * @param code   the code
      * @return the boolean
      */
-    public boolean verifyCode(String secret, int code) {
+    public boolean verifyCode(final String secret, final int code) {
         Totp totp = new Totp(secret);
         return totp.verify(String.valueOf(code));
     }

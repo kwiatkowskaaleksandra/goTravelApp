@@ -64,14 +64,4 @@ class AttractionServiceImplTest {
         assertEquals(Optional.ofNullable(attraction), attractionOptional);
 
     }
-
-    @Test
-    void getByOwnOffers_idOwnOffer() {
-        OwnOffer offer = new OwnOffer();
-        offer.setIdOwnOffer(1L);
-
-        given(attractionRepository.findByOwnOffers_idOwnOffer(1L)).willReturn(List.of(attraction));
-        List<Attraction> attractionList = attractionService.getByOwnOffers_idOwnOffer(1L);
-        assertEquals(List.of(attraction), attractionList);
-    }
 }

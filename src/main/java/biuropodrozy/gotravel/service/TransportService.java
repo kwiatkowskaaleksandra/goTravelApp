@@ -10,14 +10,6 @@ import java.util.List;
 public interface TransportService {
 
     /**
-     * Get transport by id transport.
-     *
-     * @param idTransport the id transport
-     * @return the transport
-     */
-    Transport getTransportById(int idTransport);
-
-    /**
      * Get all transports.
      *
      * @return list of transports

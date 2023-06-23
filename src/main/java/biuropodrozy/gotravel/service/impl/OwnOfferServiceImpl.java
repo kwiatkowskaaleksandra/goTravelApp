@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class OwnOfferServiceImpl implements OwnOfferService {
 
+    /**
+     * Repository interface for managing own offers.
+     */
     private final OwnOfferRepository ownOfferRepository;
 
     /**
@@ -24,7 +27,7 @@ public class OwnOfferServiceImpl implements OwnOfferService {
      * @return the own offer
      */
     @Override
-    public OwnOffer saveOwnOffer(OwnOffer ownOffer) {
+    public OwnOffer saveOwnOffer(final OwnOffer ownOffer) {
         return ownOfferRepository.save(ownOffer);
     }
 
@@ -35,7 +38,7 @@ public class OwnOfferServiceImpl implements OwnOfferService {
      * @return the own offer
      */
     @Override
-    public OwnOffer getOwnOfferByIdOwnOffer(Long idOffer) {
+    public OwnOffer getOwnOfferByIdOwnOffer(final Long idOffer) {
         return ownOfferRepository.findByIdOwnOffer(idOffer);
     }
 
@@ -56,17 +59,17 @@ public class OwnOfferServiceImpl implements OwnOfferService {
      * @return the own offers
      */
     @Override
-    public List<OwnOffer> getAllOwnOfferByUsername(String username) {
+    public List<OwnOffer> getAllOwnOfferByUsername(final String username) {
         return ownOfferRepository.findByUser_Username(username);
     }
 
     /**
-     * Delete own offer
+     * Delete own offer.
      *
      * @param ownOffer the own offer
      */
     @Override
-    public void deleteOwnOffer(OwnOffer ownOffer) {
+    public void deleteOwnOffer(final OwnOffer ownOffer) {
         ownOfferRepository.delete(ownOffer);
     }
 }

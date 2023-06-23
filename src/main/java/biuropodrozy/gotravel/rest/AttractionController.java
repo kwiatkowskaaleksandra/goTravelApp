@@ -19,6 +19,9 @@ import java.util.List;
 @RequestMapping("/api/attractions")
 public class AttractionController {
 
+    /**
+     * The AttractionService instance used for handling attraction-related operations.
+     */
     private final AttractionService attractionService;
 
     /**
@@ -28,7 +31,7 @@ public class AttractionController {
      * @return the list of attractions' response entity
      */
     @GetMapping("/{idTrip}")
-    ResponseEntity<List<Attraction>> readAllTrips(@PathVariable Long idTrip) {
+    ResponseEntity<List<Attraction>> readAllTrips(@PathVariable final Long idTrip) {
         return ResponseEntity.ok(attractionService.getAllByTrips_idTrip(idTrip));
     }
 

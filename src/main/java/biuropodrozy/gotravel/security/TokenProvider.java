@@ -1,6 +1,12 @@
 package biuropodrozy.gotravel.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.NoArgsConstructor;
@@ -22,11 +28,30 @@ import java.util.UUID;
 @NoArgsConstructor
 public class TokenProvider {
 
+    /**
+     * Token type for JWT.
+     */
     public static final String TOKEN_TYPE = "JWT";
+
+    /**
+     * Token issuer for JWT.
+     */
     public static final String TOKEN_ISSUER = "order-api";
+
+    /**
+     * Token audience for JWT.
+     */
     public static final String TOKEN_AUDIENCE = "order-app";
+
+    /**
+     * Secret key for JWT generation and validation.
+     */
     @Value("${gotravel.app.jwtSecret}")
     private String jwtSecret;
+
+    /**
+     * Expiration time for JWT (in milliseconds).
+     */
     @Value("${gotravel.app.jwtExpirationMs}")
     private Long jwtExpirationMs;
 
@@ -36,7 +61,7 @@ public class TokenProvider {
      * @param authentication the authentication
      * @return generated jwt token
      */
-    public String generate(Authentication authentication) {
+    public String generate(final Authentication authentication) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
         byte[] signingKey = jwtSecret.getBytes();
@@ -63,7 +88,7 @@ public class TokenProvider {
      * @param token the token
      * @return an optional Jws object containing a verified JWT
      */
-    public Optional<Jws<Claims>> validateTokenAndGetJws(String token) {
+    public Optional<Jws<Claims>> validateTokenAndGetJws(final String token) {
         try {
             byte[] signingKey = jwtSecret.getBytes();
 

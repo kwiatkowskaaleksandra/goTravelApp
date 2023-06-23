@@ -12,18 +12,33 @@ import lombok.Data;
 @AllArgsConstructor
 public class SignUpRequest {
 
+    /**
+     * User's username.
+     */
     @NotBlank
     private String username;
 
+    /**
+     * User's password.
+     */
     @NotBlank
     private String password;
 
+    /**
+     * User's first name.
+     */
     @NotBlank
     private String firstname;
 
+    /**
+     * User's last name.
+     */
     @NotBlank
     private String lastname;
 
+    /**
+     * User's email address.
+     */
     @Email
     private String email;
 

@@ -11,9 +11,15 @@ import lombok.Data;
 @AllArgsConstructor
 public class LoginRequest {
 
+    /**
+     * The username provided in the login request.
+     */
     @NotBlank
     private String username;
 
+    /**
+     * The password provided in the login request.
+     */
     @NotBlank
     private String password;
 

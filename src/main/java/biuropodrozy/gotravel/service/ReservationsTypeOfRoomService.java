@@ -10,7 +10,7 @@ import java.util.List;
 public interface ReservationsTypeOfRoomService {
 
     /**
-     * Save new reservation type of room
+     * Save new reservation type of room.
      *
      * @param reservationsTypeOfRoom reservation type of room
      * @return the reservation type of room

@@ -8,7 +8,11 @@ import biuropodrozy.gotravel.service.ReservationsTypeOfRoomService;
 import biuropodrozy.gotravel.service.TypeOfRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * The type Reservations type of room controller.
@@ -18,8 +22,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/reservationsTypOfRooms")
 public class ReservationsTypeOfRoomController {
 
+    /**
+     * Service for managing reservations of type of room.
+     */
     private final ReservationsTypeOfRoomService reservationsTypeOfRoomService;
+
+    /**
+     * Service for managing reservations.
+     */
     private final ReservationService reservationService;
+
+    /**
+     * Service for managing types of room.
+     */
     private final TypeOfRoomService typeOfRoomService;
 
     /**
@@ -30,7 +45,8 @@ public class ReservationsTypeOfRoomController {
      * @return the response entity
      */
     @PostMapping("/addReservationsTypOfRooms/{idTypeOfRoom}")
-    ResponseEntity<ReservationsTypeOfRoom> createNew(@PathVariable int idTypeOfRoom, @RequestBody ReservationsTypeOfRoom reservationsTypeOfRoom) {
+    ResponseEntity<ReservationsTypeOfRoom> createNew(@PathVariable final int idTypeOfRoom,
+                                                     @RequestBody final ReservationsTypeOfRoom reservationsTypeOfRoom) {
 
         Reservation reservation = reservationService.getReservationsByIdReservation(reservationService.getTopByOrderByIdReservation().getIdReservation());
         reservationsTypeOfRoom.setReservation(reservation);

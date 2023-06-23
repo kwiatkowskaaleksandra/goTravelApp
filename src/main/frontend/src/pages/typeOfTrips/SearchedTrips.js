@@ -168,21 +168,18 @@ class SearchedTrips extends Component {
 
                                 <div className="input-group mb-3">
                                     <p className={"filtrName"}>Ilosć dni: </p>
-                                    <span className="input-group-text">Od:</span>
+                                    <span className="input-group-text" style={{width: '3rem', height: "3rem"}}>Od:</span>
                                     <input type="number" className="form-control" aria-label="Cena od" placeholder="0"
-                                           name={"numberOfDaysMin"} onChange={this.handleChangeNumberOfDaysMin}
-                                           value={this.state.numberOfDaysMin}/>
-                                    <span className="input-group-text">Do:</span>
+                                           name={"numberOfDaysMin"} onChange={this.handleChangeNumberOfDaysMin} style={{width: '3rem',  height: "3rem"}}/>
+                                    <span className="input-group-text" style={{width: '3rem',  height: "3rem"}}>Do:</span>
                                     <input type="number" className="form-control" aria-label="Cena do" placeholder="0"
-                                           name={"numberOfDaysMax"} onChange={this.handleChangeNumberOfDaysMax}
-                                           value={this.state.numberOfDaysMax}/>
+                                           name={"numberOfDaysMax"} onChange={this.handleChangeNumberOfDaysMax} style={{width: '3rem',  height: "3rem"}}/>
                                 </div>
 
                                 <div className={"mb-3"}>
                                     <p className={"filtrName"}>Kraj</p>
                                     <select className="form-control search-slt" id="exampleFormControlSelect1"
                                             name={"selectedCountry"} onChange={this.handleChangeCountry}>
-                                        <option disabled selected value>{this.state.selectedCountry}</option>
                                         <option value={this.state.selectedCountry}>Wybierz</option>
                                         {this.state.countries.map(country =>
                                             <option key={country.idCountry}>{country.nameCountry}</option>
@@ -191,10 +188,10 @@ class SearchedTrips extends Component {
                                 </div>
 
                                 <div className="input-group mb-3">
-                                    <span className="input-group-text">Cena od:</span>
+                                    <span className="input-group-text" style={{width: "80px"}}>Cena od:</span>
                                     <input type="number" className="form-control" aria-label="Cena od" placeholder="0"
                                            name={"priceMin"} onChange={this.handleChangePriceMin}/>
-                                    <span className="input-group-text">Cena do:</span>
+                                    <span className="input-group-text" style={{width: "80px"}}>Cena do:</span>
                                     <input type="number" className="form-control" aria-label="Cena do" placeholder="0"
                                            name={"priceMax"} onChange={this.handleChangePriceMax}/>
                                 </div>

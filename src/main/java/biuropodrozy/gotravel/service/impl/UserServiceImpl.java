@@ -16,6 +16,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    /**
+     * The UserRepository instance used for accessing and manipulating user data.
+     */
     private final UserRepository userRepository;
 
     /**
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService {
      * @return the user
      */
     @Override
-    public Optional<User> getUserByUsername(String username) {
+    public Optional<User> getUserByUsername(final String username) {
         return userRepository.findByUsername(username);
     }
 
@@ -36,7 +39,7 @@ public class UserServiceImpl implements UserService {
      * @return true or false
      */
     @Override
-    public boolean hasUserWithUsername(String username) {
+    public boolean hasUserWithUsername(final String username) {
         return userRepository.existsByUsername(username);
     }
 
@@ -47,7 +50,7 @@ public class UserServiceImpl implements UserService {
      * @return true or false
      */
     @Override
-    public boolean hasUserWithEmail(String email) {
+    public boolean hasUserWithEmail(final String email) {
         return userRepository.existsByEmail(email);
     }
 
@@ -58,7 +61,7 @@ public class UserServiceImpl implements UserService {
      * @return the user
      */
     @Override
-    public User validateAndGetUserByUsername(String username) {
+    public User validateAndGetUserByUsername(final String username) {
         return getUserByUsername(username)
                 .orElseThrow(() ->
                         new UserNotFoundException(String.format("Nie ma użytkownika o nazwie: %s", username))
@@ -72,7 +75,7 @@ public class UserServiceImpl implements UserService {
      * @return the user
      */
     @Override
-    public User saveUser(User user) {
+    public User saveUser(final User user) {
         return userRepository.save(user);
     }
 
@@ -82,7 +85,7 @@ public class UserServiceImpl implements UserService {
      * @param user the user
      */
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(final User user) {
         userRepository.delete(user);
     }
 
@@ -93,7 +96,7 @@ public class UserServiceImpl implements UserService {
      * @return the user
      */
     @Override
-    public User getUserById(Long idUser) {
+    public User getUserById(final Long idUser) {
         return userRepository.findUserById(idUser);
     }
 

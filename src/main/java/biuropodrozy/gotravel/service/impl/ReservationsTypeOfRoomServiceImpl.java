@@ -15,16 +15,19 @@ import java.util.List;
 @Service
 public class ReservationsTypeOfRoomServiceImpl implements ReservationsTypeOfRoomService {
 
+    /**
+     * Repository interface for managing reservations of type of room.
+     */
     private final ReservationsTypeOfRoomRepository reservationsTypeOfRoomRepository;
 
     /**
-     * Save new reservation type of room
+     * Save new reservation type of room.
      *
      * @param reservationsTypeOfRoom reservation type of room
      * @return the reservation type of room
      */
     @Override
-    public ReservationsTypeOfRoom saveReservationsTypeOfRoom(ReservationsTypeOfRoom reservationsTypeOfRoom) {
+    public ReservationsTypeOfRoom saveReservationsTypeOfRoom(final ReservationsTypeOfRoom reservationsTypeOfRoom) {
         return reservationsTypeOfRoomRepository.save(reservationsTypeOfRoom);
     }
 
@@ -35,7 +38,7 @@ public class ReservationsTypeOfRoomServiceImpl implements ReservationsTypeOfRoom
      * @return list of reservation type of rooms
      */
     @Override
-    public List<ReservationsTypeOfRoom> findByReservation_IdReservation(Long id) {
+    public List<ReservationsTypeOfRoom> findByReservation_IdReservation(final Long id) {
         return reservationsTypeOfRoomRepository.findByReservation_IdReservation(id);
     }
 
@@ -45,7 +48,7 @@ public class ReservationsTypeOfRoomServiceImpl implements ReservationsTypeOfRoom
      * @param reservationsTypeOfRoom the reservation type of room
      */
     @Override
-    public void deleteReservationsTypeOfRoom(ReservationsTypeOfRoom reservationsTypeOfRoom) {
+    public void deleteReservationsTypeOfRoom(final ReservationsTypeOfRoom reservationsTypeOfRoom) {
         reservationsTypeOfRoomRepository.delete(reservationsTypeOfRoom);
     }
 }

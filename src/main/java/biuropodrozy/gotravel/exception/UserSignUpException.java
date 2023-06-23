@@ -14,7 +14,7 @@ public class UserSignUpException extends RuntimeException {
      *
      * @param message the message
      */
-    public UserSignUpException(String message) {
+    public UserSignUpException(final String message) {
         super(message);
     }
 }

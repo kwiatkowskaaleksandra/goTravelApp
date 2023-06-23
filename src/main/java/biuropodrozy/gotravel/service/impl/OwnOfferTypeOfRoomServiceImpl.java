@@ -15,16 +15,19 @@ import java.util.List;
 @Service
 public class OwnOfferTypeOfRoomServiceImpl implements OwnOfferTypeOfRoomService {
 
+    /**
+     * Repository interface for managing own offer type of rooms.
+     */
     private final OwnOfferTypeOfRoomRepository ownOfferTypeOfRoomRepository;
 
     /**
-     * Save new own offer type of rooms
+     * Save new own offer type of rooms.
      *
      * @param ownOfferTypeOfRoom the own offer type of rooms
      * @return the own offer type of rooms
      */
     @Override
-    public OwnOfferTypeOfRoom saveOwnOfferTypeOfRoom(OwnOfferTypeOfRoom ownOfferTypeOfRoom) {
+    public OwnOfferTypeOfRoom saveOwnOfferTypeOfRoom(final OwnOfferTypeOfRoom ownOfferTypeOfRoom) {
         return ownOfferTypeOfRoomRepository.save(ownOfferTypeOfRoom);
     }
 
@@ -35,17 +38,17 @@ public class OwnOfferTypeOfRoomServiceImpl implements OwnOfferTypeOfRoomService 
      * @return list of own offer type of rooms
      */
     @Override
-    public List<OwnOfferTypeOfRoom> findByOwnOffer_IdOwnOffer(Long id) {
+    public List<OwnOfferTypeOfRoom> findByOwnOffer_IdOwnOffer(final Long id) {
         return ownOfferTypeOfRoomRepository.findByOwnOffer_IdOwnOffer(id);
     }
 
     /**
-     * Delete own offer type of rooms
+     * Delete own offer type of rooms.
      *
      * @param ownOfferTypeOfRoom the own offer type of rooms
      */
     @Override
-    public void deleteOwnOfferTypeOfRoom(OwnOfferTypeOfRoom ownOfferTypeOfRoom) {
+    public void deleteOwnOfferTypeOfRoom(final OwnOfferTypeOfRoom ownOfferTypeOfRoom) {
         ownOfferTypeOfRoomRepository.delete(ownOfferTypeOfRoom);
     }
 }

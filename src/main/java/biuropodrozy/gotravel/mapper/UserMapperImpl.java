@@ -16,7 +16,7 @@ public class UserMapperImpl implements UserMapper {
      * @return the user dto
      */
     @Override
-    public UserDto toUserDto(User user) {
+    public UserDto toUserDto(final User user) {
         if (user == null) {
             return null;
         }

@@ -14,7 +14,7 @@ public class DuplicatedUserInfoException extends RuntimeException {
      *
      * @param message the message
      */
-    public DuplicatedUserInfoException(String message) {
+    public DuplicatedUserInfoException(final String message) {
         super(message);
     }
 }

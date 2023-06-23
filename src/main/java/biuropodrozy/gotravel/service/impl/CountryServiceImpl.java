@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class CountryServiceImpl implements CountryService {
 
+    /**
+     * The CountryRepository instance used for accessing and manipulating country data.
+     */
     private final CountryRepository countryRepository;
 
     /**

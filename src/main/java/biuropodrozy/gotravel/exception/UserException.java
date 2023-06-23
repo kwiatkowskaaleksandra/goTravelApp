@@ -14,7 +14,7 @@ public class UserException extends RuntimeException {
      *
      * @param message the message
      */
-    public UserException(String message) {
+    public UserException(final String message) {
         super(message);
     }
 }

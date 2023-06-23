@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class OpinionServiceImpl implements OpinionService {
 
+    /**
+     * The OpinionRepository instance used for accessing and manipulating opinion data.
+     */
     private final OpinionRepository opinionRepository;
 
     /**
@@ -24,7 +27,7 @@ public class OpinionServiceImpl implements OpinionService {
      * @return list of opinions
      */
     @Override
-    public List<Opinion> getOpinionsByIdTrip(Long idTrip) {
+    public List<Opinion> getOpinionsByIdTrip(final Long idTrip) {
         return opinionRepository.findByTrip_IdTrip(idTrip);
     }
 
@@ -35,7 +38,7 @@ public class OpinionServiceImpl implements OpinionService {
      * @return the opinion
      */
     @Override
-    public Opinion saveOpinion(Opinion opinion) {
+    public Opinion saveOpinion(final Opinion opinion) {
         return opinionRepository.save(opinion);
     }
 
@@ -46,7 +49,7 @@ public class OpinionServiceImpl implements OpinionService {
      * @return the opinion
      */
     @Override
-    public Opinion getOpinionByIdOpinion(int idOpinion) {
+    public Opinion getOpinionByIdOpinion(final int idOpinion) {
         return opinionRepository.findOpinionByIdOpinion(idOpinion);
     }
 
@@ -56,7 +59,7 @@ public class OpinionServiceImpl implements OpinionService {
      * @param opinion the opinion
      */
     @Override
-    public void deleteOpinion(Opinion opinion) {
+    public void deleteOpinion(final Opinion opinion) {
         opinionRepository.delete(opinion);
     }
 
@@ -67,7 +70,7 @@ public class OpinionServiceImpl implements OpinionService {
      * @return list of opinions
      */
     @Override
-    public List<Opinion> getOpinionsByIdUser(Long idUser) {
+    public List<Opinion> getOpinionsByIdUser(final Long idUser) {
         return opinionRepository.getOpinionByUser_Id(idUser);
     }
 }

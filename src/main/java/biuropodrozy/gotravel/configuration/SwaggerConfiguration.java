@@ -16,12 +16,19 @@ import org.springframework.context.annotation.Configuration;
 @NoArgsConstructor
 public class SwaggerConfiguration {
 
+    /**
+     * Key name for the Bearer token security scheme.
+     */
     public static final String BEARER_KEY_SECURITY_SCHEME = "bearer-key";
+
+    /**
+     * Name of the application.
+     */
     @Value("${spring.application.name}")
     private String applicationName;
 
     /**
-     * Open api model
+     * Open api model.
      *
      * @return the open api
      */

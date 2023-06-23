@@ -8,8 +8,16 @@ import lombok.Data;
  */
 @Data
 public class UserTotp {
+
+    /**
+     * The username of the user.
+     */
     @NotBlank
-    String username;
+    private String username;
+
+    /**
+     * The TOTP value provided by the user.
+     */
     @NotBlank
-    int totp;
+    private int totp;
 }

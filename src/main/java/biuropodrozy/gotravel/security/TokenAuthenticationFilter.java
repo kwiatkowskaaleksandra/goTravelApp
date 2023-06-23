@@ -26,9 +26,24 @@ import java.util.Optional;
 @Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
+    /**
+     * Header key for token in the request.
+     */
     public static final String TOKEN_HEADER = "Authorization";
+
+    /**
+     * Token prefix used in the Authorization header.
+     */
     public static final String TOKEN_PREFIX = "Bearer ";
+
+    /**
+     * Service for retrieving user details.
+     */
     private final UserDetailsService userDetailsService;
+
+    /**
+     * Provider for generating and validating tokens.
+     */
     private final TokenProvider tokenProvider;
 
     /**
@@ -64,7 +79,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
      * @param request the request
      * @return token
      */
-    private Optional<String> getJwtFromRequest(HttpServletRequest request) {
+    private Optional<String> getJwtFromRequest(final HttpServletRequest request) {
         String tokenHeader = request.getHeader(TOKEN_HEADER);
         if (StringUtils.hasText(tokenHeader) && tokenHeader.startsWith(TOKEN_PREFIX)) {
             return Optional.of(tokenHeader.replace(TOKEN_PREFIX, ""));

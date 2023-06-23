@@ -18,6 +18,9 @@ import java.util.List;
 @RequestMapping("/api/accommodations")
 public class AccommodationController {
 
+    /**
+     * The AccommodationService instance used for handling accommodation-related operations.
+     */
     private final AccommodationService accommodationService;
 
     /**

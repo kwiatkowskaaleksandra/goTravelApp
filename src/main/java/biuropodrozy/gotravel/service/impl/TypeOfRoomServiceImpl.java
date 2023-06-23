@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class TypeOfRoomServiceImpl implements TypeOfRoomService {
 
+    /**
+     * Repository for accessing and managing TypeOfRoom entities.
+     */
     private final TypeOfRoomRepository typeOfRoomRepository;
 
     /**
@@ -34,7 +37,7 @@ public class TypeOfRoomServiceImpl implements TypeOfRoomService {
      * @return the type of room
      */
     @Override
-    public TypeOfRoom getTypeOfRoom(int idTypeOfRoom) {
+    public TypeOfRoom getTypeOfRoom(final int idTypeOfRoom) {
         return typeOfRoomRepository.findByIdTypeOfRoom(idTypeOfRoom);
     }
 
@@ -45,7 +48,7 @@ public class TypeOfRoomServiceImpl implements TypeOfRoomService {
      * @return the type of room
      */
     @Override
-    public TypeOfRoom getTypeOfRoomByType(String typeOfRoom) {
+    public TypeOfRoom getTypeOfRoomByType(final String typeOfRoom) {
         return typeOfRoomRepository.findByType(typeOfRoom);
     }
 }

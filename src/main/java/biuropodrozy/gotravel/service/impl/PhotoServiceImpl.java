@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class PhotoServiceImpl implements PhotoService {
 
+    /**
+     * Repository interface for managing photos.
+     */
     private final PhotoRepository photoRepository;
 
     /**
@@ -24,7 +27,7 @@ public class PhotoServiceImpl implements PhotoService {
      * @return list of photos
      */
     @Override
-    public List<Photo> getPhotosByIdTrip(Long idTrip) {
+    public List<Photo> getPhotosByIdTrip(final Long idTrip) {
         return photoRepository.findAllByTrip_IdTrip(idTrip);
     }
 

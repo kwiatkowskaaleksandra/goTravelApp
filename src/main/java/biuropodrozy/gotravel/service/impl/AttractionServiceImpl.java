@@ -16,6 +16,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AttractionServiceImpl implements AttractionService {
 
+    /**
+     * The AttractionRepository instance used for accessing and manipulating attraction data.
+     */
     private final AttractionRepository attractionRepository;
 
     /**
@@ -25,12 +28,12 @@ public class AttractionServiceImpl implements AttractionService {
      * @return list of attractions
      */
     @Override
-    public List<Attraction> getAllByTrips_idTrip(Long tripsIdTrip) {
+    public List<Attraction> getAllByTrips_idTrip(final Long tripsIdTrip) {
         return attractionRepository.findAllByTrips_idTrip(tripsIdTrip);
     }
 
     /**
-     * Get all attractions
+     * Get all attractions.
      *
      * @return list of attractions
      */
@@ -47,19 +50,8 @@ public class AttractionServiceImpl implements AttractionService {
      * @return the attraction
      */
     @Override
-    public Optional<Attraction> getAttractionByNameAttraction(String name) {
+    public Optional<Attraction> getAttractionByNameAttraction(final String name) {
         return attractionRepository.findByNameAttraction(name);
-    }
-
-    /**
-     * Get by id own offer.
-     *
-     * @param ownOffersIdOwnOffer the id own offer
-     * @return list of attractions
-     */
-    @Override
-    public List<Attraction> getByOwnOffers_idOwnOffer(Long ownOffersIdOwnOffer) {
-        return attractionRepository.findByOwnOffers_idOwnOffer(ownOffersIdOwnOffer);
     }
 
 }

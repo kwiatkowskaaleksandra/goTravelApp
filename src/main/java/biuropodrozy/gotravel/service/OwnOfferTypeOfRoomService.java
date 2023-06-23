@@ -10,7 +10,7 @@ import java.util.List;
 public interface OwnOfferTypeOfRoomService {
 
     /**
-     * Save new own offer type of rooms
+     * Save new own offer type of rooms.
      *
      * @param ownOfferTypeOfRoom the own offer type of rooms
      * @return the own offer type of rooms
@@ -26,7 +26,7 @@ public interface OwnOfferTypeOfRoomService {
     List<OwnOfferTypeOfRoom> findByOwnOffer_IdOwnOffer(Long id);
 
     /**
-     * Delete own offer type of rooms
+     * Delete own offer type of rooms.
      *
      * @param ownOfferTypeOfRoom the own offer type of rooms
      */

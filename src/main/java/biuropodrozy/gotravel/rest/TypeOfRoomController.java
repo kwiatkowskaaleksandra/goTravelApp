@@ -19,6 +19,9 @@ import java.util.List;
 @RequestMapping("/api/typeOfRoom")
 public class TypeOfRoomController {
 
+    /**
+     * Service for managing TypeOfRoom-related operations.
+     */
     private final TypeOfRoomService typeOfRoomService;
 
     /**
@@ -38,7 +41,7 @@ public class TypeOfRoomController {
      * @return the response entity
      */
     @GetMapping("/{idTypeOfRoom}")
-    ResponseEntity<TypeOfRoom> getTypeOfRoom(@PathVariable int idTypeOfRoom) {
+    ResponseEntity<TypeOfRoom> getTypeOfRoom(@PathVariable final int idTypeOfRoom) {
         return ResponseEntity.ok(typeOfRoomService.getTypeOfRoom(idTypeOfRoom));
     }
 

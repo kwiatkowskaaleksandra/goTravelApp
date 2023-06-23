@@ -21,7 +21,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * The type Auth controller.
@@ -32,11 +36,34 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/gotravel")
 public class AuthController {
 
+    /**
+     * The UserService instance used for handling user-related operations.
+     */
     private final UserService userService;
+
+    /**
+     * The PasswordEncoder instance used for encoding passwords.
+     */
     private final PasswordEncoder passwordEncoder;
+
+    /**
+     * The AuthenticationManager instance used for user authentication.
+     */
     private final AuthenticationManager authenticationManager;
+
+    /**
+     * The TokenProvider instance used for token generation and verification.
+     */
     private final TokenProvider tokenProvider;
+
+    /**
+     * The minimum length required for a password.
+     */
     private static final int PASSWORD_MIN_LENGTH = 5;
+
+    /**
+     * The TotpService instance used for Time-based One-Time Password (TOTP) operations.
+     */
     @Autowired
     private TotpService totpService;
 
@@ -47,7 +74,7 @@ public class AuthController {
      * @return the auth response
      */
     @PostMapping("/authenticate")
-    public AuthResponse login(@Valid @RequestBody LoginRequest loginRequest) {
+    public AuthResponse login(@Valid @RequestBody final LoginRequest loginRequest) {
         String token = authenticateAndGetToken(loginRequest.getUsername(), loginRequest.getPassword());
         return new AuthResponse(token);
     }
@@ -59,7 +86,7 @@ public class AuthController {
      * @return true or false
      */
    @PostMapping("/findUser")
-    public boolean findUser(@Valid @RequestBody LoginRequest loginRequest){
+    public boolean findUser(@Valid @RequestBody final LoginRequest loginRequest) {
         User user = userService.validateAndGetUserByUsername(loginRequest.getUsername());
         return user.isUsing2FA();
     }
@@ -71,7 +98,7 @@ public class AuthController {
      * @return true or false
      */
     @PostMapping("/verify")
-    public boolean verifyCode(@NotEmpty @RequestBody UserTotp userTotp){
+    public boolean verifyCode(@NotEmpty @RequestBody final UserTotp userTotp) {
         User user = userService.validateAndGetUserByUsername(userTotp.getUsername());
         return totpService.verifyCode(user.getSecret2FA(), userTotp.getTotp());
     }
@@ -84,7 +111,7 @@ public class AuthController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
-    public AuthResponse signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public AuthResponse signUp(@Valid @RequestBody final SignUpRequest signUpRequest) {
         if (userService.hasUserWithUsername(signUpRequest.getUsername())) {
             throw new DuplicatedUserInfoException(String.format("Użytkownik o nazwie: %s już istnieje.", signUpRequest.getUsername()));
         }
@@ -94,7 +121,7 @@ public class AuthController {
         if (signUpRequest.getPassword().length() < PASSWORD_MIN_LENGTH) {
             throw new UserSignUpException("Hasło powinno się składać z co najmniej 5 znaków.");
         }
-        if(!signUpRequest.getEmail().matches("(.*)@(.*)")){
+        if (!signUpRequest.getEmail().matches("(.*)@(.*)")) {
             throw new UserSignUpException("Podano zły adres email.");
         }
 
@@ -111,18 +138,18 @@ public class AuthController {
      * @param password the password
      * @return token
      */
-    public String authenticateAndGetToken(String username, String password) {
+    public String authenticateAndGetToken(final String username, final String password) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         return tokenProvider.generate(authentication);
     }
 
     /**
-     * Mapping new user from signup request to user
+     * Mapping new user from signup request to user.
      *
      * @param signUpRequest the signup request
      * @return the user
      */
-    public User mapSignUpRequestToUser(SignUpRequest signUpRequest) {
+    public User mapSignUpRequestToUser(final SignUpRequest signUpRequest) {
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));

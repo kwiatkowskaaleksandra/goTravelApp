@@ -9,10 +9,21 @@ import lombok.Data;
 @Data
 public class Password {
 
+    /**
+     * The old password.
+     */
     @NotBlank
-    String oldPassword;
+    private String oldPassword;
+
+    /**
+     * The new password.
+     */
     @NotBlank
-    String newPassword;
+    private String newPassword;
+
+    /**
+     * The confirmation of the new password.
+     */
     @NotBlank
-    String newPassword2;
+    private String newPassword2;
 }

@@ -34,13 +34,6 @@ class TransportServiceImplTest {
     }
 
     @Test
-    void getTransportById() {
-        given(transportRepository.findByIdTransport(1)).willReturn(transport);
-        Transport transport1 = transportService.getTransportById(1);
-        assertEquals(transport, transport1);
-    }
-
-    @Test
     void getAllTransports() {
         given(transportRepository.findAll()).willReturn(List.of(transport));
         List<Transport> transportList = transportService.getAllTransports();

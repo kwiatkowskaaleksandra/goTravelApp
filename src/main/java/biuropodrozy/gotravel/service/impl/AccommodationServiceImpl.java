@@ -15,6 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccommodationServiceImpl implements AccommodationService {
 
+    /**
+     * The AccommodationRepository instance used for accessing and manipulating accommodation data.
+     */
     private final AccommodationRepository accommodationRepository;
 
     /**

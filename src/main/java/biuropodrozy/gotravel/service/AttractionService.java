@@ -19,7 +19,7 @@ public interface AttractionService {
     List<Attraction> getAllByTrips_idTrip(Long tripsIdTrip);
 
     /**
-     * Get all attractions
+     * Get all attractions.
      *
      * @return list of attractions
      */
@@ -32,13 +32,5 @@ public interface AttractionService {
      * @return the attraction
      */
     Optional<Attraction> getAttractionByNameAttraction(String nameAttractions);
-
-    /**
-     * Get by id own offer.
-     *
-     * @param ownOffersIdOwnOffer the id own offer
-     * @return list of attractions
-     */
-    List<Attraction> getByOwnOffers_idOwnOffer(Long ownOffersIdOwnOffer);
 
 }

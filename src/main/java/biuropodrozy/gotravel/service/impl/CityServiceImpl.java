@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class CityServiceImpl implements CityService {
 
+    /**
+     * The CityRepository instance used for accessing and manipulating city data.
+     */
     private final CityRepository cityRepository;
 
     /**
@@ -24,7 +27,7 @@ public class CityServiceImpl implements CityService {
      * @return list of cities
      */
     @Override
-    public List<City> getCitiesByCountry_IdCountry(int idCountry) {
+    public List<City> getCitiesByCountry_IdCountry(final int idCountry) {
         return cityRepository.findByCountry_IdCountry(idCountry);
     }
 

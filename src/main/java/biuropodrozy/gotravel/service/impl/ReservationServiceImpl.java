@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
+    /**
+     * Repository interface for managing reservations.
+     */
     private final ReservationRepository reservationRepository;
 
     /**
@@ -24,7 +27,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @return the reservation
      */
     @Override
-    public Reservation saveReservation(Reservation reservation) {
+    public Reservation saveReservation(final Reservation reservation) {
         return reservationRepository.save(reservation);
     }
 
@@ -35,7 +38,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @return the reservation
      */
     @Override
-    public Reservation getReservationsByIdReservation(Long idReservation) {
+    public Reservation getReservationsByIdReservation(final Long idReservation) {
         return reservationRepository.findReservationsByIdReservation(idReservation);
     }
 
@@ -56,7 +59,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @return list of reservation
      */
     @Override
-    public List<Reservation> getReservationByIdUser(Long idUser) {
+    public List<Reservation> getReservationByIdUser(final Long idUser) {
         return reservationRepository.findReservationsByUser_Id(idUser);
     }
 
@@ -66,7 +69,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @param reservation the reservation
      */
     @Override
-    public void deleteReservation(Reservation reservation) {
+    public void deleteReservation(final Reservation reservation) {
         reservationRepository.delete(reservation);
     }
 }

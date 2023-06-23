@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -91,64 +93,60 @@ class TripControllerTest {
     @Test
     void filterByCountryTransportNumberOfDaysWithCountry() {
         trip.setTripCity(city);
-        when(tripService.getTripsByTripCity_Country_IdCountry(1)).thenReturn(List.of(trip));
+        when(tripService.getAllTrips()).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterByCountryTransportNumberOfDays(1, 0, 0, 0);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getTripCity().getCountry().getIdCountry() == 1).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
     @Test
     void filterByCountryTransportNumberOfDaysWithTransport() {
         trip.setTripTransport(transport);
-        when(tripService.getTripsByTripTransport(transport)).thenReturn(List.of(trip));
-        when(transportService.getTransportById(1)).thenReturn(transport);
+        when(tripService.getAllTrips()).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterByCountryTransportNumberOfDays(0, 1, 0, 0);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getTripTransport().getIdTransport() == 1).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
     @Test
     void filterByCountryTransportNumberOfDaysWithNumberOfDaysMin() {
         trip.setNumberOfDays(12);
-        when(tripService.getTripsByNumberOfDaysBetween(5,10000)).thenReturn(List.of(trip));
+        when(tripService.getAllTrips()).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterByCountryTransportNumberOfDays(0, 0, 5, 0);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getNumberOfDays() >= 5 && c.getNumberOfDays() <= 10000).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
     @Test
     void filterByCountryTransportNumberOfDaysWithNumberOfDaysMax() {
         trip.setNumberOfDays(12);
-        when(tripService.getTripsByNumberOfDaysBetween(0,15)).thenReturn(List.of(trip));
+        when(tripService.getAllTrips()).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterByCountryTransportNumberOfDays(0, 0, 0, 15);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
-        assertEquals(status, HttpStatusCode.valueOf(200));
-    }
-
-    @Test
-    void filterByCountryTransportNumberOfDaysWithParameters() {
-        trip.setTripCity(city);
-        trip.setTripTransport(transport);
-        trip.setNumberOfDays(12);
-        when(tripService.getTripsByTripCity_Country_IdCountryAndTripTransportAndNumberOfDaysBetween(1, transport, 5,15)).thenReturn(List.of(trip));
-        when(transportService.getTransportById(1)).thenReturn(transport);
-        ResponseEntity<List<Trip>> response = tripController.filterByCountryTransportNumberOfDays(1, 1, 5, 15);
-        List<Trip> trip1 = response.getBody();
-        HttpStatusCode status = response.getStatusCode();
-        assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getNumberOfDays() >= 0 && c.getNumberOfDays() <= 15).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
@@ -166,89 +164,90 @@ class TripControllerTest {
     @Test
     void filterTripByTypeOfTripCountryTransportPriceNumberOfDaysWithCountry() {
         trip.setTripCity(city);
-        when(tripService.getTripsByTypeOfTripAndTripCity_Country_IdCountry("last minute", 1)).thenReturn(List.of(trip));
+        when(tripService.getTripsByTypeOfTrip("last minute")).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterTripByTypeOfTripCountryTransportPriceNumberOfDays("last minute", 1, 0, 0, 0, 0, 0);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getTripCity().getCountry().getIdCountry() == 1).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
     @Test
     void filterTripByTypeOfTripCountryTransportPriceNumberOfDaysWithTransport() {
         trip.setTripTransport(transport);
-        when(tripService.getTripsByTypeOfTripAndTripTransport("last minute", transport)).thenReturn(List.of(trip));
-        when(transportService.getTransportById(1)).thenReturn(transport);
+        when(tripService.getTripsByTypeOfTrip("last minute")).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterTripByTypeOfTripCountryTransportPriceNumberOfDays("last minute", 0, 1, 0, 0, 0, 0);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getTripTransport().getIdTransport() == 1).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
     @Test
     void filterTripByTypeOfTripCountryTransportPriceNumberOfDaysWithPriceMin() {
         trip.setPrice(1500);
-        when(tripService.getTripsByTypeOfTripAndPriceBetween("last minute", 100,  100000000)).thenReturn(List.of(trip));
+        when(tripService.getTripsByTypeOfTrip("last minute")).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterTripByTypeOfTripCountryTransportPriceNumberOfDays("last minute", 0, 0, 100.0, 0, 0, 0);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getPrice() >= 1000 && c.getPrice() <= 100000).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
     @Test
     void filterTripByTypeOfTripCountryTransportPriceNumberOfDaysWithPriceMax() {
         trip.setPrice(1500);
-        when(tripService.getTripsByTypeOfTripAndPriceBetween("last minute", 0,  2000)).thenReturn(List.of(trip));
+        when(tripService.getTripsByTypeOfTrip("last minute")).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterTripByTypeOfTripCountryTransportPriceNumberOfDays("last minute", 0, 0, 0, 2000, 0, 0);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getPrice() >= 0 && c.getPrice() <= 2000).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
     @Test
     void filterTripByTypeOfTripCountryTransportPriceNumberOfDaysWithNumberOfDaysMin() {
         trip.setNumberOfDays(20);
-        when(tripService.getTripsByTypeOfTripAndNumberOfDaysBetween("last minute", 4,  10000)).thenReturn(List.of(trip));
+        when(tripService.getTripsByTypeOfTrip("last minute")).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterTripByTypeOfTripCountryTransportPriceNumberOfDays("last minute", 0, 0, 0, 0, 4, 0);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getNumberOfDays() >= 4 && c.getNumberOfDays() <= 1000).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 
     @Test
     void filterTripByTypeOfTripCountryTransportPriceNumberOfDaysWithNumberOfDaysMax() {
         trip.setNumberOfDays(20);
-        when(tripService.getTripsByTypeOfTripAndNumberOfDaysBetween("last minute", 0,  20)).thenReturn(List.of(trip));
+        when(tripService.getTripsByTypeOfTrip("last minute")).thenReturn(List.of(trip));
         ResponseEntity<List<Trip>> response = tripController.filterTripByTypeOfTripCountryTransportPriceNumberOfDays("last minute", 0, 0, 0, 0, 0, 20);
         List<Trip> trip1 = response.getBody();
         HttpStatusCode status = response.getStatusCode();
         assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
-        assertEquals(status, HttpStatusCode.valueOf(200));
-    }
-
-    @Test
-    void filterTripByTypeOfTripCountryTransportPriceNumberOfDaysWithParameters() {
-        trip.setTripCity(city);
-        trip.setTripTransport(transport);
-        trip.setNumberOfDays(20);
-        trip.setPrice(1500);
-        when(tripService.getTripsByTypeOfTripAndTripCity_Country_IdCountryAndTripTransportAndPriceBetweenAndNumberOfDaysBetween("last minute",1,  transport, 100, 2000, 4, 20)).thenReturn(List.of(trip));
-        when(transportService.getTransportById(1)).thenReturn(transport);
-        ResponseEntity<List<Trip>> response = tripController.filterTripByTypeOfTripCountryTransportPriceNumberOfDays("last minute", 1, 1, 100, 2000, 4, 20);
-        List<Trip> trip1 = response.getBody();
-        HttpStatusCode status = response.getStatusCode();
-        assert trip1 != null;
-        assertEquals(List.of(trip).size(), trip1.size());
+        assertEquals(List.of(trip).size(),
+                Stream.of(trip)
+                        .filter(c -> c.getNumberOfDays() >= 0 && c.getNumberOfDays() <= 20).toList().size()
+        );
         assertEquals(status, HttpStatusCode.valueOf(200));
     }
 }

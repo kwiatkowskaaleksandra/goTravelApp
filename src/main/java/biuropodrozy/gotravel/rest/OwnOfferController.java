@@ -9,13 +9,20 @@ import biuropodrozy.gotravel.service.OwnOfferService;
 import biuropodrozy.gotravel.service.OwnOfferTypeOfRoomService;
 import biuropodrozy.gotravel.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * The type Own offer controller.
@@ -25,9 +32,24 @@ import java.util.*;
 @RequestMapping("/api/ownOffer")
 public class OwnOfferController {
 
+    /**
+     * Service class for managing own offers.
+     */
     private final OwnOfferService ownOfferService;
+
+    /**
+     * Service class for managing own offers.
+     */
     private final UserService userService;
+
+    /**
+     * Service class for managing own offers.
+     */
     private final AttractionService attractionService;
+
+    /**
+     * Service class for managing own offer types of rooms.
+     */
     private final OwnOfferTypeOfRoomService ownOfferTypeOfRoomService;
 
     /**
@@ -38,7 +60,7 @@ public class OwnOfferController {
      * @return the response entity
      */
     @PostMapping("/addOwnOffer/{username}")
-    ResponseEntity<OwnOffer> createOwnOffer(@PathVariable String username, @RequestBody OwnOffer ownOffer) {
+    ResponseEntity<OwnOffer> createOwnOffer(@PathVariable final String username, @RequestBody final OwnOffer ownOffer) {
         LocalDate localDate = LocalDate.now();
         User user = userService.validateAndGetUserByUsername(username);
 
@@ -55,7 +77,7 @@ public class OwnOfferController {
      */
     @PostMapping("/addOwnOfferAttractions")
     public ResponseEntity<?> addAttractionsToOwnOffer(@RequestBody String attractions) {
-        if(ownOfferService.getTopByOrderByIdOwnOffer() != null){
+        if (ownOfferService.getTopByOrderByIdOwnOffer() != null) {
             OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(ownOfferService.getTopByOrderByIdOwnOffer().getIdOwnOffer());
             Set<Attraction> attraction = new HashSet<>();
             attractions = attractions.replaceAll("\"", "");
@@ -74,7 +96,7 @@ public class OwnOfferController {
      * @return the list of own offer response entity
      */
     @GetMapping("/getByUsername/{username}")
-    ResponseEntity<List<OwnOffer>> getAllByUsername(@PathVariable String username) {
+    ResponseEntity<List<OwnOffer>> getAllByUsername(@PathVariable final String username) {
         return ResponseEntity.ok(ownOfferService.getAllOwnOfferByUsername(username));
     }
 
@@ -85,7 +107,7 @@ public class OwnOfferController {
      * @return the response entity
      */
     @DeleteMapping("/deleteOwnOffer/{idOwnOffer}")
-    ResponseEntity<?> deleteOwnOffer(@PathVariable Long idOwnOffer) {
+    ResponseEntity<?> deleteOwnOffer(@PathVariable final Long idOwnOffer) {
         OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(idOwnOffer);
 
         List<OwnOfferTypeOfRoom> ownOfferTypeOfRooms = ownOfferTypeOfRoomService.findByOwnOffer_IdOwnOffer(ownOffer.getIdOwnOffer());

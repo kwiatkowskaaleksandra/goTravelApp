@@ -41,7 +41,7 @@ public interface OwnOfferService {
     List<OwnOffer> getAllOwnOfferByUsername(String username);
 
     /**
-     * Delete own offer
+     * Delete own offer.
      *
      * @param ownOffer the own offer
      */

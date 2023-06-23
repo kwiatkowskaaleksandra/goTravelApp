@@ -19,6 +19,9 @@ import java.util.List;
 @RequestMapping("/api/cities")
 public class CityController {
 
+    /**
+     * The CityService instance used for handling city-related operations.
+     */
     private final CityService cityService;
 
     /**
@@ -28,7 +31,7 @@ public class CityController {
      * @return list of cities response entity
      */
     @GetMapping("/all/{idCountry}")
-    ResponseEntity<List<City>> filterByCountry(@PathVariable int idCountry) {
+    ResponseEntity<List<City>> filterByCountry(@PathVariable final int idCountry) {
         return ResponseEntity.ok(cityService.getCitiesByCountry_IdCountry(idCountry));
     }
 }

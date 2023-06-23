@@ -16,12 +16,39 @@ import java.util.Collection;
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
+    /**
+     * The unique identifier for the user.
+     */
     private Long id;
+
+    /**
+     * The username of the user.
+     */
     private String username;
+
+    /**
+     * The password of the user.
+     */
     private String password;
+
+    /**
+     * The password of the user.
+     */
     private String firstname;
+
+    /**
+     * The last name of the user.
+     */
     private String lastname;
+
+    /**
+     * The last name of the user.
+     */
     private String email;
+
+    /**
+     * The collection of granted authorities for the user.
+     */
     private Collection<? extends GrantedAuthority> authorities;
 
     /**

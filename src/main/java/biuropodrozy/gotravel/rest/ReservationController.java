@@ -11,10 +11,14 @@ import biuropodrozy.gotravel.service.ReservationsTypeOfRoomService;
 import biuropodrozy.gotravel.service.TripService;
 import biuropodrozy.gotravel.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,11 +31,34 @@ import java.util.List;
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
+    /**
+     * The ReservationService instance used for handling reservation-related operations.
+     */
     private final ReservationService reservationService;
+
+    /**
+     * The UserService instance used for handling user-related operations.
+     */
     private final UserService userService;
+
+    /**
+     * The ReservationsTypeOfRoomService instance used for handling reservations of room types.
+     */
     private final ReservationsTypeOfRoomService reservationsTypeOfRoomService;
+
+    /**
+     * The TripService instance used for handling trip-related operations.
+     */
     private final TripService tripService;
+
+    /**
+     * The constant representing half price.
+     */
     private static final int HALF_PRICE = 5;
+
+    /**
+     * The default date value.
+     */
     private static final LocalDate DATE_DEFAULT = LocalDate.of(1970, 1, 1);
 
     /**
@@ -41,7 +68,7 @@ public class ReservationController {
      * @return the response entity
      */
     @GetMapping("/getReservation/{idReservation}")
-    ResponseEntity<Reservation> getReservationByIdReservation(@PathVariable Long idReservation) {
+    ResponseEntity<Reservation> getReservationByIdReservation(@PathVariable final Long idReservation) {
         return ResponseEntity.ok(reservationService.getReservationsByIdReservation(idReservation));
     }
 
@@ -52,7 +79,7 @@ public class ReservationController {
      * @return the list of reservations response entity
      */
     @GetMapping("/getReservationByUser/{username}")
-    ResponseEntity<List<Reservation>> getReservationByUser(@PathVariable String username) {
+    ResponseEntity<List<Reservation>> getReservationByUser(@PathVariable final String username) {
         User user = userService.validateAndGetUserByUsername(username);
         return ResponseEntity.ok(reservationService.getReservationByIdUser(user.getId()));
     }
@@ -66,7 +93,8 @@ public class ReservationController {
      * @return the response entity
      */
     @PostMapping("/addReservation/{username}/{idTrip}")
-    ResponseEntity<Reservation> createReservation(@PathVariable String username, @PathVariable Long idTrip, @RequestBody Reservation reservation) {
+    ResponseEntity<Reservation> createReservation(@PathVariable final String username, @PathVariable final Long idTrip,
+                                                  @RequestBody final Reservation reservation) {
 
         User user = userService.validateAndGetUserByUsername(username);
         Trip trip = tripService.getTripByIdTrip(idTrip);
@@ -75,10 +103,10 @@ public class ReservationController {
         reservation.setUser(user);
         reservation.setDateOfReservation(localDate);
         reservation.setTrip(trip);
-        if(reservationService.getTopByOrderByIdReservation() != null){
+        if (reservationService.getTopByOrderByIdReservation() != null) {
             reservation.setIdReservation(reservationService.getTopByOrderByIdReservation().getIdReservation() + 1);
-        }else{
-            reservation.setIdReservation(1L) ;
+        } else {
+            reservation.setIdReservation(1L);
         }
 
         double price = reservation.getNumberOfAdults() * trip.getPrice() + reservation.getNumberOfChildren() * (trip.getPrice() / HALF_PRICE);
@@ -107,7 +135,7 @@ public class ReservationController {
      * @return the response entity
      */
     @DeleteMapping("/deleteReservation/{idReservation}")
-    ResponseEntity<?> deleteReservation(@PathVariable Long idReservation) {
+    ResponseEntity<?> deleteReservation(@PathVariable final Long idReservation) {
         Reservation reservation = reservationService.getReservationsByIdReservation(idReservation);
 
         List<ReservationsTypeOfRoom> reservationsTypeOfRooms = reservationsTypeOfRoomService.findByReservation_IdReservation(idReservation);

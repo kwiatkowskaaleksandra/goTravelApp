@@ -15,18 +15,10 @@ import java.util.List;
 @Service
 public class TransportServiceImpl implements TransportService {
 
-    private final TransportRepository transportRepository;
-
     /**
-     * Get transport by id transport.
-     *
-     * @param idTransport the id transport
-     * @return the transport
+     * Repository for accessing and managing Transport entities.
      */
-    @Override
-    public Transport getTransportById(int idTransport) {
-        return transportRepository.findByIdTransport(idTransport);
-    }
+    private final TransportRepository transportRepository;
 
     /**
      * Get all transports.

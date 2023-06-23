@@ -18,6 +18,9 @@ import java.util.List;
 @RequestMapping("/api/country")
 public class CountryController {
 
+    /**
+     * The CountryService instance used for handling country-related operations.
+     */
     private final CountryService countryService;
 
     /**

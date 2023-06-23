@@ -18,6 +18,9 @@ import java.util.List;
 @RequestMapping("/api/photos")
 public class PhotoController {
 
+    /**
+     * Service class for managing photos.
+     */
     private final PhotoService photoService;
 
     /**
@@ -27,7 +30,7 @@ public class PhotoController {
      * @return the list of photos response entity
      */
     @GetMapping("/{idTrip}")
-    ResponseEntity<List<Photo>> getAllPhotoByIdTrip(@PathVariable Long idTrip) {
+    ResponseEntity<List<Photo>> getAllPhotoByIdTrip(@PathVariable final Long idTrip) {
         return ResponseEntity.ok(photoService.getPhotosByIdTrip(idTrip));
     }
 

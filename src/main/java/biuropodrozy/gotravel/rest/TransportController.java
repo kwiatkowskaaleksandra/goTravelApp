@@ -18,6 +18,9 @@ import java.util.List;
 @RequestMapping("/api/transport")
 public class TransportController {
 
+    /**
+     * Service for managing Transport-related operations.
+     */
     private final TransportService transportService;
 
     /**

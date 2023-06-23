@@ -14,7 +14,7 @@ public class ReservationException extends RuntimeException {
      *
      * @param message the message
      */
-    public ReservationException(String message) {
+    public ReservationException(final String message) {
         super(message);
     }
 

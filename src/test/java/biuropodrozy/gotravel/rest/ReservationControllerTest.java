@@ -108,6 +108,31 @@ class ReservationControllerTest {
     }
 
     @Test
+    void createReservation2() {
+        user.setFirstname("Krysia");
+        user.setLastname("Nowak");
+        user.setEmail("krysia@wp.pl");
+        user.setCity("Kielce");
+        user.setStreet("Wesoła");
+        user.setZipCode("12345");
+        user.setStreetNumber("12 b");
+        user.setPhoneNumber("123456789");
+        reservationService.deleteReservation(reservation);
+        when(userService.validateAndGetUserByUsername("krysia1234")).thenReturn(user);
+        when(tripService.getTripByIdTrip(1L)).thenReturn(trip);
+        when(reservationService.getTopByOrderByIdReservation()).thenReturn(null);
+        when(reservationService.saveReservation(reservation)).thenReturn(reservation);
+        reservation.setNumberOfAdults(1);
+        reservation.setNumberOfChildren(12);
+        reservation.setDepartureDate(LocalDate.now());
+        ResponseEntity<Reservation> response = reservationController.createReservation("krysia1234", 1L, reservation);
+        Reservation reservation1 = response.getBody();
+        HttpStatusCode status = response.getStatusCode();
+        assertEquals(status, HttpStatusCode.valueOf(200));
+        assertThat(reservation1).isNotNull();
+    }
+
+    @Test
     void createReservationUserException() {
         when(userService.validateAndGetUserByUsername("krysia1234")).thenReturn(user);
         when(tripService.getTripByIdTrip(1L)).thenReturn(trip);

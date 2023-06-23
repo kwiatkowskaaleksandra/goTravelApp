@@ -13,12 +13,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The UserDetailsService implementation
+ * The UserDetailsService implementation.
  */
 @RequiredArgsConstructor
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    /**
+     * Service for managing user-related operations.
+     */
     private final UserService userService;
 
     /**
@@ -29,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @throws UsernameNotFoundException the UsernameNotFoundException
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         User user = userService.getUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("Nazwa użytkownika: %s nie została odnaleziona.", username)));
         List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
@@ -43,7 +46,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @param authorities the authorities
      * @return the custom user details
      */
-    private CustomUserDetails mapUserToCustomUserDetails(User user, List<SimpleGrantedAuthority> authorities) {
+    private CustomUserDetails mapUserToCustomUserDetails(final User user,
+                                                         final List<SimpleGrantedAuthority> authorities) {
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails.setId(user.getId());
         customUserDetails.setUsername(user.getUsername());

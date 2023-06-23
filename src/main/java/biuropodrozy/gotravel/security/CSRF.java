@@ -23,7 +23,7 @@ public class CSRF {
      */
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @RequestMapping(value = "/csrf", method = RequestMethod.GET)
-    public CsrfToken csrf(CsrfToken token) {
+    public CsrfToken csrf(final CsrfToken token) {
         return token;
     }
 
