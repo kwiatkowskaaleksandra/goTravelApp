@@ -1,23 +1,17 @@
 package biuropodrozy.gotravel.repository;
 
 import biuropodrozy.gotravel.model.Trip;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 /**
  * The interface Trip repository.
  */
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
-
-    /**
-     * Find all trips.
-     *
-     * @return list of trips
-     */
-    List<Trip> findAll();
 
     /**
      * Find by id trip.
@@ -28,10 +22,19 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     Trip findByIdTrip(Long idTrip);
 
     /**
-     * Find all by type of trip.
+     * Retrieves all trips by the name of the type of trip with pagination.
      *
-     * @param typeOfTrip the type of room
-     * @return list of trips
+     * @param typeOfTrip The name of the type of trip to filter.
+     * @param pageable   Pagination information.
+     * @return Page of trips filtered by the name of the type of trip.
      */
-    List<Trip> findAllByTypeOfTrip(String typeOfTrip);
+    Page<Trip> findAllByTypeOfTrip_Name(String typeOfTrip, Pageable pageable);
+
+    /**
+     * Counts the number of trips by the name of the type of trip.
+     *
+     * @param typeOfTrip The name of the type of trip to count.
+     * @return The count of trips filtered by the name of the type of trip.
+     */
+    int countTripByTypeOfTrip_Name(String typeOfTrip);
 }

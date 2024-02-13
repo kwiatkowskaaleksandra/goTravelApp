@@ -11,4 +11,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccommodationRepository extends JpaRepository<Accommodation, Integer> {
 
+    /**
+     * Find accommodation by id of the accommodation.
+     *
+     * @param idAccommodation the id accommodation
+     * @return the accommodation
+     */
+    Accommodation findByIdAccommodation(int idAccommodation);
 }

@@ -69,7 +69,7 @@ public class OwnOffer {
     /**
      * The type of food included in the offer.
      */
-    private String food;
+    private boolean food;
 
     /**
      * The number of days for the offer.

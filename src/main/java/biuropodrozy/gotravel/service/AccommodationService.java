@@ -15,4 +15,12 @@ public interface AccommodationService {
      * @return list of accommodations
      */
     List<Accommodation> getAllAccommodations();
+
+    /**
+     * Get accommodation by id of the accommodation.
+     *
+     * @param id the id of the accommodation
+     * @return the accommodation
+     */
+    Accommodation getAccommodationsById(int id);
 }

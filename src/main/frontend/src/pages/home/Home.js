@@ -3,7 +3,7 @@ import './Home.css'
 import Carousel from 'react-bootstrap/Carousel';
 import {TbBeach} from "react-icons/tb"
 import {TiWeatherSunny} from "react-icons/ti"
-import Turkiye from '../../assets/image/turkiye.PNG'
+import Turkey from '../../assets/image/turkiye.PNG'
 import Cyprus from '../../assets/image/cyprus.png'
 import Tunisia from '../../assets/image/tunisia.svg'
 import Italy from '../../assets/image/italy.svg'
@@ -15,7 +15,8 @@ import Holiday from '../../assets/image/holiday.png'
 import {Container} from "react-bootstrap";
 import Footer from "../../others/Footer";
 import NavigationBar from "../../others/NavigationBar";
-import {orderApi} from "../../others/OrderApi";
+import {goTravelApi} from "../../others/GoTravelApi";
+import {withTranslation} from "react-i18next";
 
 class Home extends Component {
 
@@ -28,6 +29,9 @@ class Home extends Component {
         selectedCountryId: 0,
         numberOfDaysMin: 0,
         numberOfDaysMax: 0,
+        isExpandedPost1: false,
+        isExpandedPost2: false,
+        isExpandedPost3: false,
     }
 
     componentDidMount() {
@@ -36,34 +40,54 @@ class Home extends Component {
     }
 
     handleGetTransports = () => {
-        orderApi.getTransports().then(res => {
+        goTravelApi.getTransports().then(res => {
             this.setState({transports: res.data})
         })
     }
 
+    toggleExpandPost1 = () => {
+        this.setState(prevState => ({
+            isExpandedPost1: !prevState.isExpandedPost1
+        }));
+    };
+
+    toggleExpandPost2 = () => {
+        this.setState(prevState => ({
+            isExpandedPost2: !prevState.isExpandedPost2
+        }));
+    };
+
+    toggleExpandPost3 = () => {
+        this.setState(prevState => ({
+            isExpandedPost3: !prevState.isExpandedPost3
+        }));
+    };
+
     handleGetCountries = () => {
-        orderApi.getCountries().then(res => {
+        goTravelApi.getCountries().then(res => {
             this.setState({countries: res.data})
         })
     }
 
     handleChangeCountry = (e) => {
+        const {t} = this.props
         this.setState({selectedCountry: e.target.value})
 
-        this.state.countries.map(country => {
-            if (country.nameCountry === e.target.value) {
-                this.setState({selectedCountryId: country.idCountry, selectedCountry: ''})
+        this.state.countries.forEach(country => {
+            if (t('goTravelNamespace2:' + country.nameCountry) === e.target.value) {
+                this.setState({ selectedCountryId: country.idCountry, selectedCountry: '' });
             } else if (e.target.value === '') {
-                this.setState({selectedCountryId: 0, selectedCountry: ''})
+                this.setState({ selectedCountryId: 0, selectedCountry: '' });
             }
-        })
+        });
     }
 
     handleChangeTransport = (e) => {
+        const {t} = this.props
         this.setState({selectedTransport: e.target.value})
 
-        this.state.transports.map(tran => {
-            if (tran.nameTransport === e.target.value) {
+        this.state.transports.forEach(tran => {
+            if (t(tran.nameTransport) === e.target.value) {
                 this.setState({selectedTransportId: tran.idTransport, selectedTransport: ''})
             } else if (e.target.value.trim() === "") {
                 this.setState({selectedTransportId: 0, selectedTransport: ''})
@@ -72,23 +96,37 @@ class Home extends Component {
     }
 
     handleChangeNumberOfDays = (e) => {
-
-        if (e.target.value === "Ilekolwiek") {
+        const {t} = this.props
+        if (e.target.value === t('whatever')) {
             this.setState({numberOfDaysMin: 1, numberOfDaysMax: 100})
-        } else if (e.target.value === "> 15 dni") {
+        } else if (e.target.value === ("> 15 " + t('days'))) {
             this.setState({numberOfDaysMin: 15, numberOfDaysMax: 100})
         } else {
             const textArr = e.target.value.split(" - ")
-            const textArr2 = textArr[1].split(" dni")
+            const textArr2 = textArr[1].split(" " + t('days'))
             this.setState({numberOfDaysMin: textArr[0], numberOfDaysMax: textArr2[0]})
         }
     }
 
     handleClickSearch = () => {
-        window.location.href = "/searchedTrips/" + this.state.selectedCountryId + "/" + this.state.selectedTransportId + "/" + this.state.numberOfDaysMin + "/" + this.state.numberOfDaysMax
+        const {selectedCountryId, selectedTransportId, numberOfDaysMin, numberOfDaysMax} = this.state
+
+        const stateToSave = {
+            selectedCountryId,
+            selectedTransportId,
+            numberOfDaysMin,
+            numberOfDaysMax
+        };
+
+        localStorage.setItem('search', JSON.stringify(stateToSave));
+        window.location.href = "/allOffers/search"
+       // this.props.navigate("/allOffers/search", {state: {selectedCountryId, selectedTransportId, numberOfDaysMin, numberOfDaysMax}})
     }
 
     render() {
+        const {t} = this.props
+        const { isExpandedPost1, isExpandedPost2, isExpandedPost3  } = this.state;
+
         return (
             <main>
                 <NavigationBar/>
@@ -100,45 +138,45 @@ class Home extends Component {
                                     <div className="col-lg-12">
                                         <div className="row">
                                             <div className="col-lg-3 col-md-3 col-sm-12 p-0">
-                                                <p className="search-desc">Dokąd chcesz jechać ?</p>
+                                                <p className="search-desc">{t('whereDoYouWantToGo')}</p>
                                                 <select className="form-control search-slt"
                                                         id="exampleFormControlSelect1"
-                                                        name={"selectedCountry"} onChange={this.handleChangeCountry}>
-                                                    <option value={this.state.selectedCountry}>Gdziekolwiek</option>
+                                                        name={"selectedCountry"} onChange={this.handleChangeCountry} style={{fontFamily: "Comic Sans MS"}}>
+                                                    <option value={this.state.selectedCountry}>{t('wherever')}</option>
                                                     {this.state.countries.map(country =>
-                                                        <option key={country.idCountry}>{country.nameCountry}</option>
+                                                        <option key={country.idCountry}>{t('goTravelNamespace2:' + country.nameCountry)}</option>
                                                     )}
                                                 </select>
                                             </div>
                                             <div className="col-lg-3 col-md-3 col-sm-12 p-0">
-                                                <p className="search-desc">Jak długo ?</p>
+                                                <p className="search-desc">{t('howLong')}</p>
                                                 <select className="form-control search-slt"
                                                         id="exampleFormControlSelect1"
-                                                        onChange={this.handleChangeNumberOfDays}>
-                                                    <option>Ilekolwiek</option>
-                                                    <option>1 - 5 dni</option>
-                                                    <option>5 - 10 dni</option>
-                                                    <option>10 - 15 dni</option>
-                                                    <option> > 15 dni</option>
+                                                        onChange={this.handleChangeNumberOfDays} style={{fontFamily: "Comic Sans MS"}}>
+                                                    <option>{t('whatever')}</option>
+                                                    <option>1 - 5 {t('days')}</option>
+                                                    <option>5 - 10 {t('days')}</option>
+                                                    <option>10 - 15 {t('days')}</option>
+                                                    <option> > 15 {t('days')}</option>
                                                 </select>
                                             </div>
                                             <div className="col-lg-3 col-md-3 col-sm-12 p-0">
-                                                <p className="search-desc">Czym ?</p>
+                                                <p className="search-desc">{t('what')}</p>
                                                 <select className="form-control search-slt"
                                                         id="exampleFormControlSelect1"
                                                         name={"selectedTransport"}
-                                                        onChange={this.handleChangeTransport}>
+                                                        onChange={this.handleChangeTransport} style={{fontFamily: "Comic Sans MS"}}>
 
-                                                    <option value={this.state.selectedTransport}>Czymkolwiek</option>
+                                                    <option value={this.state.selectedTransport} >{t('anything')}</option>
                                                     {this.state.transports.map(transport =>
                                                         <option
-                                                            key={transport.idTransport}>{transport.nameTransport}</option>
+                                                            key={transport.idTransport}>{t('goTravelNamespace1:' + transport.nameTransport)}</option>
                                                     )}
                                                 </select>
                                             </div>
                                             <div className="col-lg-3 col-md-3 col-sm-12 p-0">
                                                 <button type="button" className="btn btn-danger wrn-btn"
-                                                        onClick={this.handleClickSearch}>Szukaj
+                                                        onClick={this.handleClickSearch}>{t('search')}
                                                 </button>
                                             </div>
                                         </div>
@@ -155,11 +193,11 @@ class Home extends Component {
                                     <Carousel.Item interval={1000}>
                                         <img
                                             className="d-block"
-                                            src={Turkiye}
+                                            src={Turkey}
                                             alt=" "
                                         />
                                         <Carousel.Caption>
-                                            <h3 className={"carusel-first"}>TURCJA I EGIPT<br/>NA ZIMĘ 2023</h3>
+                                            <h3 className={"carusel-first"}>{t('türkiyeAndEgypt').toUpperCase()}<br/>{t('forWinter').toUpperCase()}</h3>
                                         </Carousel.Caption>
                                     </Carousel.Item>
                                     <Carousel.Item interval={1000}>
@@ -168,17 +206,14 @@ class Home extends Component {
                                             alt=""
                                         />
                                         <Carousel.Caption className={"carusel-second"}>
-                                            <h3> LATO 2023 - <br/>PRZEDSPRZEDAŻ</h3>
+                                            <h3> {t('summer2024').toUpperCase()} - <br/>{t('presale').toUpperCase()}</h3>
                                             <p>
                                                 <ul>
                                                     <li>
-                                                        Zaliczki od 15%
+                                                        {t('advancePayment')}
                                                     </li>
                                                     <li>
-                                                        Zaliczki od 15%
-                                                    </li>
-                                                    <li>
-                                                        Bezpłatna zmiana rezerwacji
+                                                        {t('freeReservationChange')}
                                                     </li>
                                                 </ul>
                                             </p>
@@ -190,14 +225,14 @@ class Home extends Component {
                                             alt=""
                                         />
                                         <Carousel.Caption className={"carusel-third"}>
-                                            <h3>Cypr<br/>Więcej do odkrycia</h3>
+                                            <h3>{t('cyprus')}<br/>{t('moreToDiscover')}</h3>
                                             <p>
                                                 <ul>
                                                     <li>
-                                                        <TiWeatherSunny/> imponujące plaże i klify
+                                                        <TiWeatherSunny/> {t('goTravelNamespace1:impressiveBeachesAndCliffs')}
                                                     </li>
                                                     <li>
-                                                        <TbBeach/> sielski klimat
+                                                        <TbBeach/> {t('idyllicAtmosphere')}
                                                     </li>
                                                 </ul>
                                             </p>
@@ -212,7 +247,7 @@ class Home extends Component {
                     <Container>
                         <section>
                             <div className="index-header">
-                                <center><h2 className="main">Polecane kierunki:</h2></center>
+                                <center><h2 className="main">{t('recommendedDirections')}:</h2></center>
                                 <hr className="main-line"></hr>
 
                                 <div className="row">
@@ -220,17 +255,12 @@ class Home extends Component {
                                         <div className="country-image-container">
                                             <img src={Italy} alt={""}/>
                                             <div className="highlight_trip">
-                                                <h3>Włochy</h3>
-                                                <span className="trip-price"> od 1430 zł/os.</span>
+                                                <h3>{t('italy')}</h3>
+                                                <span className="trip-price"> {t('priceFrom')} 1430 {t('perPerson')}</span>
                                                 <div className="dark_cover">
                                                     <div className="info-container">
                                                         <div className="trip_desc">
-                                                            przyciągają zabytkami i dziełami sztuki, śródziemnomorską
-                                                            kuchnią. Swoją wielowiekową historią, bogatą kulturą i
-                                                            awangardową modą. Wciąż proponują nowe atrakcje. Do tego
-                                                            szybki lot samolotem, bo około 2 godz. Włochy są uwielbiane
-                                                            przez niemal wszystkich, a w szczególności przez
-                                                            zakochanych.
+                                                            {t('italyDescription')}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -242,16 +272,12 @@ class Home extends Component {
                                         <div className="country-image-container">
                                             <img src={Tunisia} alt={""}/>
                                             <div className="highlight_trip">
-                                                <h3>Tunezja</h3>
-                                                <span className="trip-price"> od 1734 zł/os.</span>
+                                                <h3>{t('tunisia')}</h3>
+                                                <span className="trip-price"> {t('priceFrom')} 1734 {t('perPerson')}</span>
                                                 <div className="dark_cover">
                                                     <div className="info-container">
                                                         <div className="trip_desc">
-                                                            nieduży, ale bardzo gościnny i nadzwyczaj różnorodny kraj.
-                                                            Wielowiekowa historia, kolorowe gwarne bazary, strojne białe
-                                                            domki ukryte w jaśminie. Ale przede wszystkim cudowne plaże.
-                                                            Tunezja słynie z pięknych, szerokich, piaszczystych plaż,
-                                                            przez niektórych porównywanych wręcz do egzotycznych.
+                                                            {t('tunisiaDescription')}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -263,17 +289,12 @@ class Home extends Component {
                                         <div className="country-image-container">
                                             <img src={Spain} alt={""}/>
                                             <div className="highlight_trip">
-                                                <h3>Hiszpania</h3>
-                                                <span className="trip-price"> od 2193 zł/os.</span>
+                                                <h3>{t('spain')}</h3>
+                                                <span className="trip-price"> {t('priceFrom')} 2193 {t('perPerson')}</span>
                                                 <div className="dark_cover">
                                                     <div className="info-container">
                                                         <div className="trip_desc">
-                                                            kraj uwielbiany przez turystów z całego świata. Kochają ja i
-                                                            młodzi spragnieni wakacyjnego szaleństwa, ale i rodziny,
-                                                            które z dziećmi doskonale odnajdują się choćby w dzikich
-                                                            zatoczkach Costa Brava. Temperamentni, zawsze szczęśliwi
-                                                            Hiszpanie mogą stać się szkołą jak żyć a nie spieszyć się,
-                                                            może warto się tego od nich nauczyć?
+                                                            {t('spainDescription')}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -285,17 +306,12 @@ class Home extends Component {
                                         <div className="country-image-container">
                                             <img src={Greece} alt={""}/>
                                             <div className="highlight_trip">
-                                                <h3>Grecja</h3>
-                                                <span className="trip-price"> od 1629 zł/os.</span>
+                                                <h3>{t('greece')}</h3>
+                                                <span className="trip-price">  {t('priceFrom')} 1629 {t('perPerson')}</span>
                                                 <div className="dark_cover">
                                                     <div className="info-container">
                                                         <div className="trip_desc">
-                                                            kraj słońca, gór, niekończących się plaż i lazurowego morza.
-                                                            Tu koimy zmysły, delektujemy smakami wina, fety i oliwek a
-                                                            co i raz zaczepiani grecką serdecznością zatapiamy się w
-                                                            błogim wypoczynku. Grecja jest też swoistym powrotem do
-                                                            legend i mądrych słów wielkich Greków, w które po trosze
-                                                            wierzymy.
+                                                            {t('greeceDescription')}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -307,15 +323,12 @@ class Home extends Component {
                                         <div className="country-image-container">
                                             <img src={Bulgaria} alt={""}/>
                                             <div className="highlight_trip">
-                                                <h3>Bułgaria</h3>
-                                                <span className="trip-price"> od 1562 zł/os.</span>
+                                                <h3>{t('bulgaria')}</h3>
+                                                <span className="trip-price">  {t('priceFrom')} 1562 {t('perPerson')}</span>
                                                 <div className="dark_cover">
                                                     <div className="info-container">
                                                         <div className="trip_desc">
-                                                            złoty kraj, który oferuje tak wiele za tak niewiele.
-                                                            Począwszy od szerokich plaż, poprzez kameralne zatoczki,
-                                                            efektowne klify, przepiękne przełomy rzek o baśniowej
-                                                            urodzie, aż po majestatyczne góry i urzekające stare miasta.
+                                                            {t('bulgariaDescription')}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -327,17 +340,12 @@ class Home extends Component {
                                         <div className="country-image-container">
                                             <img src={Croatia} alt={""}/>
                                             <div className="highlight_trip">
-                                                <h3>Chorwacja</h3>
-                                                <span className="trip-price"> od 1892 zł/os.</span>
+                                                <h3>{t('croatia')}</h3>
+                                                <span className="trip-price">  {t('priceFrom')} 1892 {t('perPerson')}</span>
                                                 <div className="dark_cover">
                                                     <div className="info-container">
                                                         <div className="trip_desc">
-                                                            perła Adriatyku, gdzie lato może być naprawdę gorąco, łatwo
-                                                            jednak odnaleźć nieco orzeźwienia przy wybrzeżu. Kusi
-                                                            bałkańską kuchnią oraz urzekającymi nadmorskimi
-                                                            miasteczkami. Chorwacja to świetne miejsce do wypoczynku z
-                                                            rodziną, ale nie tylko - mnogość opcji na rozrywkę i
-                                                            intensywne nocne życie jest naprawdę imponująca.
+                                                            {t('croatiaDescription')}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -356,51 +364,39 @@ class Home extends Component {
 
                                 <div className="trip-info-sections">
                                     <div className="trip-info-sect">
-                                        <input type="checkbox" className="read-more-state" id="post-1"/>
-                                        <h3>Last minute</h3>
+                                        <input type="checkbox" className="read-more-state" id="post-1" checked={isExpandedPost1} onChange={this.toggleExpandPost1} style={{ display: 'none' }}/>
+                                        <h3 style={{color: "#4ec3ff"}}>{t('lastMinute')}</h3>
                                         <p className="read-more-wrap">
-                                            Jesteś ostatnio przemęczony i nie możesz się skupić na pracy, a aura za
-                                            oknem sprawia, że najchętniej przez cały dzień nie wychodziłbyś spod kołdry?
-                                            Zamiast zastanawiać się, jak przetrwać i nie zwariować sprawdź jaką ofertę
-                                            last minute przygotowało nasze biuro podróży!
-                                            <span className="read-more-target"> Jeśli tylko możesz na kilka dni oderwać się od obowiązków, to teraz jest najlepszy czas na podróż, ponieważ mamy wiele ciekawych destynacji w bardzo atrakcyjnych cenach. Może zainteresuje Cię Chorwacja, Grecja lub Portugalia? Tam zawsze masz gwarancję dobrej pogody, a niezliczone atrakcje turystyczne sprawią, że każdy dzień pobytu będzie pełen wrażeń. Dodaj do tego pyszne, lokalne jedzenie i otrzymasz definicję idealnego urlopu.
-                                Oferta last minute jest świetnym rozwiązaniem dla osób podchodzących do życia spontanicznie, które nie lubią tworzyć długoterminowych planów.
-                                    Czasami wystarczy tylko spakować kilka najpotrzebniejszych rzeczy i wyruszyć w podróż, która może stać się przygodą życia. Udany urlop wcale nie wymaga od Ciebie wielu miesięcy poszukiwań i zastanawiania się, gdzie i kiedy wyjechać. Od dawna marzysz o wyjeździe do Izraela czy Gruzji, ale zawsze się martwisz o finanse? Sprawdź naszą ofertę, bo teraz wyśnione wakacje są na wyciągnięcie ręki!
-                                </span>
+                                            {t('lastMinutePart1')}
+                                            <span className="read-more-target">{t('lastMinutePart2')}</span>
                                         </p>
-                                        <label htmlFor="post-1" className="read-more-trigger"></label>
+                                        <label htmlFor="post-1" className="read-more-trigger">
+                                            {isExpandedPost1 ? t('readLess') : t('readMore')}
+                                        </label>
                                     </div>
 
                                     <div className="trip-info-sect">
-                                        <input type="checkbox" className="read-more-state" id="post-2"/>
-                                        <h3>All Inclusive</h3>
+                                        <input type="checkbox" className="read-more-state" id="post-2" checked={isExpandedPost2} onChange={this.toggleExpandPost2} style={{ display: 'none' }}/>
+                                        <h3 style={{color: "#4ec3ff"}}>{t('allInclusive')}</h3>
                                         <p className="read-more-wrap">
-                                            Wyjazdy typu all inclusive są idealnym wyborem dla każdego turysty, zarówno
-                                            dla singla podróżującego w pojedynkę, dużej rodziny z dziećmi, jak i dla par
-                                            wybierających się na romantyczną wycieczkę we dwoje. Koszt takich wakacji,
-                                            początkowo może wydawać się wysoki. <span className="read-more-target"> Jednak obejmuje on wszelkie wydatki - od podróży, przez pobyt w luksusowym hotelu, po wyżywienie, napoje i drinki. Pamiętaj, że nie ma żadnych międzynarodowych regulacji dokładnie określających, co wchodzi w zakres oferty all inclusive.
-                                Niektóre hotele wprowadzają pewne ograniczenia, dlatego szczegóły musisz zawsze sprawdzić przy wyborze konkretnej oferty. Wybierając tę formę urlopu, masz jednak pewność, że nic nie zakłóci Twojego spokoju, nie będziesz musiał zaprzątać sobie głowy żadnymi organizacyjnymi szczegółami. Musisz jedynie wybrać wymarzoną destynację, określić swój budżet i cieszyć się wakacjami.
-                                Nasze biuro podróży oferuje wyjazdy all inclusive do miejsc ulubionych przez wielu turystów, które od lat znajdują się w czołówce wybieranych kierunków, takich jak Grecja, Egipt, Chorwacja czy Tunezja. Możemy jednak zabrać Cię także w mniej oczywiste miejsca, między innymi do Albanii, Brazylii lub na Malediwy.
-                               </span>
+                                            {t('allInclusivePart1')}
+                                             <span className="read-more-target">{t('allInclusivePart2')}</span>
                                         </p>
-                                        <label htmlFor="post-2" className="read-more-trigger"></label>
+                                        <label htmlFor="post-2" className="read-more-trigger">
+                                            {isExpandedPost2 ? t('readLess') : t('readMore')}
+                                        </label>
                                     </div>
 
                                     <div className="trip-info-sect">
-                                        <input type="checkbox" className="read-more-state" id="post-3"/>
-                                        <h3>Rejsy</h3>
+                                        <input type="checkbox" className="read-more-state" id="post-3" checked={isExpandedPost3} onChange={this.toggleExpandPost3} style={{ display: 'none' }}/>
+                                        <h3 style={{color: "#4ec3ff"}}>{t('cruises')}</h3>
                                         <p className="read-more-wrap">
-                                            Rejsy statkiem są coraz popularniejszą formą spędzania wakacji. Dzięki
-                                            takiej formie wczasów mamy możliwość odkryć piękno danych krajów z nieco
-                                            innej strony. Otchłań morza, bezkres oceanu, a do tego cudowny wypoczynek w
-                                            wygodnych kajutach, dobra zabawa, a także szeroka pula licznych atrakcji na
-                                            statku
-                                            <span className="read-more-target"> (basen, restauracje, miejsca zabaw dla dzieci) - to wszystko dostępne jest podczas wakacji w nieco innym wydaniu. Nie można zapominać o głównej atrakcji jakie mają do zaoferowania rejsy statkiem - zwiedzaniu i odkrywaniu piękna miast, do których codziennie przypływamy.
-                                    Rejsy statkiem dostępne są także w formie wakacji all inclusive. Odkryj niezapomniane wakacje dla siebie i całej Twojej rodziny! Wybierz miejsce najlepsze dla siebie. Dzięki rejsom wycieczkowym odkryć można piękno świata w niecodziennej odsłonie. A może rejs po Nilu i poznanie tajemnic piramid w Gizie oraz Sfinksa?
-                                    A może malownicze i zapierające dech w piersiach norweskich fiordach? Znikąd nie wyglądają tak pięknie, jak od strony wody! Rejsy statkiem to prawdziwy raj dla miłośników odkrywania świata! To forma wycieczek objazdowych, bez konieczności zmian noclegu i rozpakowywania się w nowych miejscach, gdzie zamiast autokaru czeka na nas luksusowy statek.
-                                    </span>
+                                            {t('cruisesPart1')}
+                                            <span className="read-more-target"> {t('cruisesPart2')}</span>
                                         </p>
-                                        <label htmlFor="post-3" className="read-more-trigger"></label>
+                                        <label htmlFor="post-3" className="read-more-trigger">
+                                            {isExpandedPost3 ? t('readLess') : t('readMore')}
+                                        </label>
                                     </div>
 
                                 </div>
@@ -414,4 +410,4 @@ class Home extends Component {
     }
 }
 
-export default Home
+export default withTranslation()(Home);

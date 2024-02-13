@@ -3,7 +3,6 @@ package biuropodrozy.gotravel.service;
 import biuropodrozy.gotravel.model.Attraction;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The interface Attraction service.
@@ -26,11 +25,11 @@ public interface AttractionService {
     List<Attraction> getAll();
 
     /**
-     * Get optional attraction by name of the attraction.
+     * Get attraction by id of the attraction.
      *
-     * @param nameAttractions the name of the attraction
+     * @param id the id of the attraction
      * @return the attraction
      */
-    Optional<Attraction> getAttractionByNameAttraction(String nameAttractions);
+    Attraction getAttractionById(int id);
 
 }

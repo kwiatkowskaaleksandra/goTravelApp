@@ -1,16 +1,17 @@
 package biuropodrozy.gotravel.rest;
 
-import biuropodrozy.gotravel.model.Attraction;
 import biuropodrozy.gotravel.model.OwnOffer;
-import biuropodrozy.gotravel.model.OwnOfferTypeOfRoom;
 import biuropodrozy.gotravel.model.User;
-import biuropodrozy.gotravel.service.AttractionService;
+import biuropodrozy.gotravel.security.services.UserDetailsImpl;
 import biuropodrozy.gotravel.service.OwnOfferService;
-import biuropodrozy.gotravel.service.OwnOfferTypeOfRoomService;
 import biuropodrozy.gotravel.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,17 +19,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * The type Own offer controller.
  */
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 @RequestMapping("/api/ownOffer")
 public class OwnOfferController {
 
@@ -43,81 +41,75 @@ public class OwnOfferController {
     private final UserService userService;
 
     /**
-     * Service class for managing own offers.
-     */
-    private final AttractionService attractionService;
-
-    /**
-     * Service class for managing own offer types of rooms.
-     */
-    private final OwnOfferTypeOfRoomService ownOfferTypeOfRoomService;
-
-    /**
-     * Create new own offer OwnOffer.
+     * Retrieves the total price of the given own offer.
+     * This endpoint requires the user to have the 'USER' role.
      *
-     * @param username the username
-     * @param ownOffer the own offer
-     * @return the response entity
+     * @param ownOffer The own offer for which the total price needs to be calculated.
+     * @return ResponseEntity containing the total price if the user is authenticated and authorized,
+     *         otherwise returns UNAUTHORIZED status.
      */
-    @PostMapping("/addOwnOffer/{username}")
-    ResponseEntity<OwnOffer> createOwnOffer(@PathVariable final String username, @RequestBody final OwnOffer ownOffer) {
-        LocalDate localDate = LocalDate.now();
-        User user = userService.validateAndGetUserByUsername(username);
-
-        ownOffer.setUser(user);
-        ownOffer.setDateOfReservation(localDate);
-        return ResponseEntity.ok(ownOfferService.saveOwnOffer(ownOffer));
-    }
-
-    /**
-     * Add attractions to own offer response entity.
-     *
-     * @param attractions the attractions
-     * @return the response entity
-     */
-    @PostMapping("/addOwnOfferAttractions")
-    public ResponseEntity<?> addAttractionsToOwnOffer(@RequestBody String attractions) {
-        if (ownOfferService.getTopByOrderByIdOwnOffer() != null) {
-            OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(ownOfferService.getTopByOrderByIdOwnOffer().getIdOwnOffer());
-            Set<Attraction> attraction = new HashSet<>();
-            attractions = attractions.replaceAll("\"", "");
-            Optional<Attraction> atr = attractionService.getAttractionByNameAttraction(attractions);
-            atr.ifPresent(attraction::add);
-            ownOffer.getOfferAttraction().addAll(attraction);
-            ownOfferService.saveOwnOffer(ownOffer);
+    @PostMapping("/getTotalPrice")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getTotalPrice(@RequestBody OwnOffer ownOffer) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
+            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
+            double price = ownOfferService.getTotalPrice(ownOffer, existingUser);
+            return ResponseEntity.ok().body(price);
         }
-        return ResponseEntity.ok().build();
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     /**
-     * Get all own offers by username response entity.
+     * Creates a new own offer based on the provided own offer data.
+     * This endpoint requires the user to be authenticated.
      *
-     * @param username the username
-     * @return the list of own offer response entity
+     * @param ownOffer The own offer to be created.
+     * @return ResponseEntity indicating successful creation of the own offer if the user is authenticated,
+     *         otherwise returns UNAUTHORIZED status.
      */
-    @GetMapping("/getByUsername/{username}")
-    ResponseEntity<List<OwnOffer>> getAllByUsername(@PathVariable final String username) {
-        return ResponseEntity.ok(ownOfferService.getAllOwnOfferByUsername(username));
+    @PostMapping("/createOwnOffer")
+    ResponseEntity<?> createOwnOffer(@RequestBody final OwnOffer ownOffer) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
+            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
+            ownOfferService.saveOwnOffer(ownOffer, existingUser);
+            return ResponseEntity.ok().body("theTripHasBeenBooked");
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    /**
-     * Delete own offer response entity.
-     *
-     * @param idOwnOffer the id own offer
-     * @return the response entity
-     */
-    @DeleteMapping("/deleteOwnOffer/{idOwnOffer}")
-    ResponseEntity<?> deleteOwnOffer(@PathVariable final Long idOwnOffer) {
-        OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(idOwnOffer);
+//    /**
+//     * Get all own offers by username response entity.
+//     *
+//     * @param username the username
+//     * @return the list of own offer response entity
+//     */
+//    @GetMapping("/getByUsername/{username}")
+//    ResponseEntity<List<OwnOffer>> getAllByUsername(@PathVariable final String username) {
+//        return ResponseEntity.ok(ownOfferService.getAllOwnOfferByUsername(username));
+//    }
 
-        List<OwnOfferTypeOfRoom> ownOfferTypeOfRooms = ownOfferTypeOfRoomService.findByOwnOffer_IdOwnOffer(ownOffer.getIdOwnOffer());
-        ownOfferTypeOfRooms.forEach((ownOfferTypeOfRoomService::deleteOwnOfferTypeOfRoom));
-
-        ownOffer.setOfferAttraction(null);
-        ownOfferService.saveOwnOffer(ownOffer);
-
-        ownOfferService.deleteOwnOffer(ownOffer);
-        return ResponseEntity.ok().build();
-    }
+//    /**
+//     * Delete own offer response entity.
+//     *
+//     * @param idOwnOffer the id own offer
+//     * @return the response entity
+//     */
+//    @DeleteMapping("/deleteOwnOffer/{idOwnOffer}")
+//    ResponseEntity<?> deleteOwnOffer(@PathVariable final Long idOwnOffer) {
+//        OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(idOwnOffer);
+//
+//        List<OwnOfferTypeOfRoom> ownOfferTypeOfRooms = ownOfferTypeOfRoomService.findByOwnOffer_IdOwnOffer(ownOffer.getIdOwnOffer());
+//        ownOfferTypeOfRooms.forEach((ownOfferTypeOfRoomService::deleteOwnOfferTypeOfRoom));
+//
+//        ownOffer.setOfferAttraction(null);
+//        ownOfferService.saveOwnOffer(ownOffer);
+//
+//        ownOfferService.deleteOwnOffer(ownOffer);
+//        return ResponseEntity.ok().build();
+//    }
 
 }

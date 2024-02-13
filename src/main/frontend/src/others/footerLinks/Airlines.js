@@ -1,13 +1,15 @@
 import NavigationBar from "../NavigationBar";
 import Footer from "../Footer";
 import React from "react";
+import {useTranslation} from "react-i18next";
 
 function Airlines() {
+    const {t} = useTranslation()
     return (
         <div>
             <NavigationBar/>
             <section className='d-flex justify-content-center justify-content-lg-between p-4 border-bottom'></section>
-            <p className={"info"} style={{fontSize: '20px', fontWeight: 'bold', marginLeft: '20%',  color: '#0066f0'}}> Główne linie czarterowe</p>
+            <p className={"info"} style={{fontSize: '20px', fontWeight: 'bold', marginLeft: '20%',  color: '#4ec3ff'}}>{t('majorCharterLines')}</p>
             <div>
                 <div className={"row"} style={{marginLeft: "10%"}}>
                     <div className={"col"} >
@@ -46,7 +48,7 @@ function Airlines() {
             </div>
 
             <section className='d-flex justify-content-center justify-content-lg-between p-4 border-bottom'></section>
-            <p className={"info"} style={{fontSize: '20px', fontWeight: 'bold', marginLeft: '20%',  color: '#0066f0'}}> Linie rejsowe</p>
+            <p className={"info"} style={{fontSize: '20px', fontWeight: 'bold', marginLeft: '20%',  color: '#4ec3ff'}}>{t('cruiseLines')}</p>
             <div className={"row"} style={{marginLeft: "10%"}}>
                 <div className={"col"} >
                     <a href={"https://www.klm.pl/"}>

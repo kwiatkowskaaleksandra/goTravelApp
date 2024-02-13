@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The interface Attraction repository.
@@ -22,19 +21,11 @@ public interface AttractionRepository extends JpaRepository<Attraction, Integer>
     List<Attraction> findAllByTrips_idTrip(Long tripsIdTrip);
 
     /**
-     * Find optional attraction by name of the attraction.
+     * Find attraction by id of the attraction.
      *
-     * @param name the name of the attraction
-     * @return the attraction
+     * @param id the id attraction
+     * @return the attractions
      */
-    Optional<Attraction> findByNameAttraction(String name);
-
-    /**
-     * Find by id own offer.
-     *
-     * @param ownOffersIdOwnOffer the id own offer
-     * @return list of attractions
-     */
-    List<Attraction> findByOwnOffers_idOwnOffer(Long ownOffersIdOwnOffer);
+    Attraction findByIdAttraction(int id);
 
 }

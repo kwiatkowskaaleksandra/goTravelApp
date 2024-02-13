@@ -4,12 +4,12 @@ import React, {Component} from "react";
 import {Container, Modal,} from "react-bootstrap";
 import "./MyProfile.css"
 import AuthContext from "../../others/AuthContext";
-import {orderApi} from "../../others/OrderApi";
+import {goTravelApi} from "../../others/GoTravelApi";
 import {CgProfile} from "react-icons/cg";
 import {RiLockPasswordLine} from "react-icons/ri";
 import {HiOutlineClipboardDocumentList} from "react-icons/hi2";
 import {MdOutlineDeleteSweep} from "react-icons/md";
-import {handleLogError} from "../../others/Helpers";
+import {handleLogError} from "../../others/JWT";
 import Button from "react-bootstrap/Button";
 import {Checkbox, Message} from "semantic-ui-react";
 import {IoTrashBin} from "react-icons/io5";
@@ -46,7 +46,8 @@ class MyProfile extends Component {
         passwordNew2: '',
         using2FA: false,
         qrCode: "",
-        verifyButtonShow: false
+        verifyButtonShow: false,
+        token: ''
     }
 
     componentDidMount() {
@@ -56,7 +57,7 @@ class MyProfile extends Component {
         if (user != null) {
             this.setState({isUserLogin: true})
 
-            orderApi.getUserInfo(user).then(res => {
+            goTravelApi.getUserInfo(user).then(res => {
                 this.setState({
                     userInfo: res.data,
                     usernameID: res.data.username,
@@ -80,122 +81,17 @@ class MyProfile extends Component {
     }
 
     handleGetOwnOffers = (username) => {
-        orderApi.getOwnOffersByUsername(username).then(res => {
+        goTravelApi.getOwnOffersByUsername(username).then(res => {
             this.setState({ownOffers: res.data})
         })
     }
 
     handleGetReservations = (username) => {
-        orderApi.getReservationByUser(username).then(res => {
+        goTravelApi.getReservationByUser(username).then(res => {
             this.setState({reservations: res.data})
         })
     }
 
-    save = () => {
-        const userDetails = {
-            username: this.state.username,
-            firstname: this.state.firstname,
-            lastname: this.state.lastname,
-            email: this.state.email,
-            phoneNumber: this.state.phoneNumber,
-            city: this.state.city,
-            street: this.state.street,
-            streetNumber: this.state.streetNumber,
-            zipCode: this.state.zipCode,
-            using2FA: this.state.using2FA
-        }
-
-
-        orderApi.csrf().then(res => {
-            axios.put("http://localhost:8080/api/users/update/"+this.state.usernameID, userDetails, {
-                withCredentials: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': res.data.token
-                }}).then((res) => {
-                const Auth = this.context
-
-                if(this.state.using2FA === true){
-                    if(res.data !== ""){
-                        this.setState({qrCode: res.data, verifyButtonShow: true})
-                    }
-                }
-                else{
-                    Auth.userLogout()
-                    window.location.href = "/"
-                }
-            }).catch(error => {
-                handleLogError(error)
-                const errorData = error.response.data
-                this.handleShowModal()
-                let errorMessage = 'Pola zostały błędnie uzupełnione.'
-                if (errorData.status === 409) {
-                    errorMessage = errorData.message
-                } else if (errorData.status === 400) {
-                    errorMessage = errorData.errors[0].defaultMessage
-                }
-                this.setState({isError: true, errorMessage: errorMessage})
-            })
-            })
-    }
-
-    savePassword = () => {
-
-        const passwords = {
-            oldPassword: this.state.passwordOld,
-            newPassword: this.state.passwordNew,
-            newPassword2: this.state.passwordNew2
-        }
-
-        orderApi.csrf().then(res => {
-            axios.put("http://localhost:8080/api/users/updatePassword/" + this.state.usernameID, passwords, {
-                withCredentials: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': res.data.token
-                }
-            }).then(() => {
-                const Auth = this.context
-                Auth.userLogout()
-                window.location.href = "/"
-            }).catch(error => {
-                handleLogError(error)
-                const errorData = error.response.data
-                this.handleShowModal()
-                let errorMessage = 'Pola zostały błędnie uzupełnione.'
-                if (errorData.status === 409) {
-                    errorMessage = errorData.message
-                } else if (errorData.status === 400) {
-                    errorMessage = errorData.errors[0].defaultMessage
-                }
-                this.setState({isError: true, errorMessage: errorMessage})
-            })
-        })
-    }
-
-    deleteAccount = () => {
-
-        this.showModalDelete()
-
-        orderApi.csrf().then(res => {
-            axios.delete("http://localhost:8080/api/users/deleteUser/"+this.state.usernameID,{
-                withCredentials: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': res.data.token
-                }}
-            ).then(() => {
-                const Auth = this.context
-                Auth.userLogout()
-                handleLogError("konto usuniete")
-                window.location.href = "/"
-            })
-        })
-
-    }
 
     handleCloseModal = () => {
         this.setState({showModal: false});
@@ -227,7 +123,7 @@ class MyProfile extends Component {
     }
 
     deleteOwnOffer = (id) => {
-        orderApi.csrf().then(res => {
+        goTravelApi.csrf().then(res => {
             axios.delete("http://localhost:8080/api/ownOffer/deleteOwnOffer/" + id, {
                 withCredentials: true,
                 headers: {
@@ -242,7 +138,7 @@ class MyProfile extends Component {
     }
 
     deleteReservation = (id) => {
-        orderApi.csrf().then(res => {
+        goTravelApi.csrf().then(res => {
             axios.delete("http://localhost:8080/api/reservations/deleteReservation/" + id, {
                 withCredentials: true,
                 headers: {

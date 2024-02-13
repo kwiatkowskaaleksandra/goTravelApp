@@ -21,7 +21,6 @@ public class CSRF {
      * @param token the csrf token
      * @return csrf token
      */
-    @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @RequestMapping(value = "/csrf", method = RequestMethod.GET)
     public CsrfToken csrf(final CsrfToken token) {
         return token;

@@ -17,14 +17,6 @@ public interface TypeOfRoomService {
     List<TypeOfRoom> getAllTypeOfRoom();
 
     /**
-     * Get type of room by id type of room.
-     *
-     * @param idTypeOfRoom the id type of room
-     * @return the type of room
-     */
-    TypeOfRoom getTypeOfRoom(int idTypeOfRoom);
-
-    /**
      * Get type of rooms by type.
      *
      * @param typeOfRoom the type of room

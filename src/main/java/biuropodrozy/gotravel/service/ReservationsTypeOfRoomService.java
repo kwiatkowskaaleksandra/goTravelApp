@@ -13,9 +13,8 @@ public interface ReservationsTypeOfRoomService {
      * Save new reservation type of room.
      *
      * @param reservationsTypeOfRoom reservation type of room
-     * @return the reservation type of room
      */
-    ReservationsTypeOfRoom saveReservationsTypeOfRoom(ReservationsTypeOfRoom reservationsTypeOfRoom);
+    void saveReservationsTypeOfRoom(ReservationsTypeOfRoom reservationsTypeOfRoom);
 
     /**
      * Get by id reservation.

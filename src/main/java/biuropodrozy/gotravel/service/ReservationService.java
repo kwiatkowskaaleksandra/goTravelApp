@@ -1,6 +1,7 @@
 package biuropodrozy.gotravel.service;
 
 import biuropodrozy.gotravel.model.Reservation;
+import biuropodrozy.gotravel.model.User;
 
 import java.util.List;
 
@@ -13,9 +14,8 @@ public interface ReservationService {
      * Save reservation.
      *
      * @param reservation the reservation
-     * @return the reservation
      */
-    Reservation saveReservation(Reservation reservation);
+    void saveReservation(Reservation reservation, User user);
 
     /**
      * Get reservation by id reservation.

@@ -24,11 +24,10 @@ public class ReservationsTypeOfRoomServiceImpl implements ReservationsTypeOfRoom
      * Save new reservation type of room.
      *
      * @param reservationsTypeOfRoom reservation type of room
-     * @return the reservation type of room
      */
     @Override
-    public ReservationsTypeOfRoom saveReservationsTypeOfRoom(final ReservationsTypeOfRoom reservationsTypeOfRoom) {
-        return reservationsTypeOfRoomRepository.save(reservationsTypeOfRoom);
+    public void saveReservationsTypeOfRoom(final ReservationsTypeOfRoom reservationsTypeOfRoom) {
+        reservationsTypeOfRoomRepository.save(reservationsTypeOfRoom);
     }
 
     /**

@@ -2,14 +2,16 @@ import '../../others/NavigationBar.css'
 import NavigationBar from "../../others/NavigationBar";
 import Footer from "../../others/Footer";
 import React, {Component} from "react";
-import {Container, Modal} from "react-bootstrap";
+import {Modal, OverlayTrigger, Tab, Tabs} from "react-bootstrap";
 import "./ReservationForm.css"
 import AuthContext from "../../others/AuthContext";
-import {orderApi} from "../../others/OrderApi";
+import {goTravelApi} from "../../others/GoTravelApi";
 import Button from "react-bootstrap/Button";
-import {handleLogError} from "../../others/Helpers";
+import {handleLogError} from "../../others/JWT";
 import {Message} from "semantic-ui-react";
-import axios from "axios";
+import { BsCheck2Circle } from "react-icons/bs";
+import {withTranslation} from "react-i18next";
+import Tooltip from 'react-bootstrap/Tooltip';
 
 class ReservationForm extends Component {
 
@@ -22,36 +24,31 @@ class ReservationForm extends Component {
         country: '',
         transport: '',
         accommodation: '',
-        isUserLogin: false,
-        username: '',
-        userInfo: [],
+        user: [],
         typeOfRoom: [],
-        rooms: [],
-
+        rooms: [{ type: "", quantity: "" }],
         numberOfAdults: 0,
         numberOfChildren: 0,
         departureDate: 0,
-        singleRoom: 0,
-        twoPersonRoom: 0,
-        roomWithTwoSingleBeds: 0,
-        tripleRoom: 0,
-        apartment: 0,
         showModal: false,
         isError: false,
         errorMessage: '',
+        key: 'personalData',
+        userInfo: null,
+        bookedCorrectlyVisible: false,
+        message: ''
     }
-
 
     componentDidMount() {
         const Auth = this.context
         const user = Auth.getUser()
 
         if (user != null) {
-            this.setState({isUserLogin: true})
-            orderApi.getUserInfo(user).then(res => {
+            goTravelApi.getUserInfo(user).then(res => {
                 this.setState({
-                    userInfo: res.data,
-                    username: res.data.username
+                    user: res.data,
+                    departureDate: this.getCurrentDate(),
+                    userInfo: user
                 })
             })
         }
@@ -60,11 +57,20 @@ class ReservationForm extends Component {
         this.handleGetTypeOfRoom()
     }
 
-    handleGetTrip = () => {
-        orderApi.getTripById(this.state.idTripSelected).then(res => {
-            this.setState({tripOffer: res.data})
+    getCurrentDate() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        let month = currentDate.getMonth() + 1;
+        if (month < 10) month = '0' + month;
+        let day = currentDate.getDate();
+        if (day < 10) day = '0' + day;
+        return `${year}-${month}-${day}`;
+    }
 
+    handleGetTrip = () => {
+        goTravelApi.getTripById(this.state.idTripSelected).then(res => {
             this.setState({
+                tripOffer: res.data,
                 city: res.data.tripCity.nameCity,
                 country: res.data.tripCity.country.nameCountry,
                 transport: res.data.tripTransport.nameTransport,
@@ -74,101 +80,93 @@ class ReservationForm extends Component {
     }
 
     handleGetTypeOfRoom = () => {
-        orderApi.getAllTypeOfRoom().then(res => {
+        goTravelApi.getAllTypeOfRoom().then(res => {
             this.setState({typeOfRoom: res.data})
         })
+    }
+
+    handleRoomQuantityChange = (index, value) => {
+        const rooms = [...this.state.rooms];
+        rooms[index].quantity = value;
+        this.setState({ rooms });
+    }
+
+    addRoom = () => {
+        this.setState(prevState => ({
+            rooms: [...prevState.rooms, { type: "", quantity: "" }]
+        }));
+    }
+
+    removeRoom = (index) => {
+        this.setState(prevState => ({
+            rooms: prevState.rooms.filter((_, i) => i !== index)
+        }));
+    }
+
+    handleRoomTypeChange = (index, value) => {
+        const rooms = [...this.state.rooms];
+        rooms[index].type = value;
+        this.setState({ rooms });
     }
 
     handleChangeDepartureDate = (e) => {
         this.setState({departureDate: this.formatDate(e.target.value)})
     }
 
-    handlePostReservation = () => {
+    handlePostReservation = async () => {
+        const {t} = this.props;
+        const csrfResponse = await goTravelApi.csrf();
+        const csrfToken = csrfResponse.data.token;
+
         const reservation = {
             departureDate: this.state.departureDate,
             numberOfAdults: this.state.numberOfAdults,
-            numberOfChildren: this.state.numberOfChildren
+            numberOfChildren: this.state.numberOfChildren,
+            trip: this.state.tripOffer,
+            typeOfRoomReservation: this.state.rooms.map(room => ({
+                numberOfRoom: room.quantity,
+                typeOfRoom: {
+                    type: room.type
+                }
+            }))
         }
 
-
-        if (this.state.singleRoom === 0 && this.state.twoPersonRoom === 0 && this.state.roomWithTwoSingleBeds === 0 && this.state.tripleRoom === 0 && this.state.apartment === 0) {
-            this.setState({isError: true, errorMessage: "Proszę wskazać do rezerwacji ilość oraz rodzaj pokoi."})
+        if (this.state.rooms.some(room => room.type === "" || room.type === "choose" || room.quantity === "" || room.quantity === "0")) {
+            this.setState({
+                isError: true,
+                errorMessage: t('goTravelNamespace3:pleaseIndicateTheNumberAndTypeOfRoomsWhenBooking')
+            });
             return;
         }
 
-
-        orderApi.csrf().then(res => {
-            axios.post("http://localhost:8080/api/reservations/addReservation/" + this.state.username + "/" + this.state.idTripSelected, reservation, {
-                withCredentials: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': res.data.token
-                }
-            }).then(() => {
-                if (this.state.singleRoom !== 0) {
-                    const reservationsTypOfRooms = {numberOfRoom: this.state.singleRoom}
-                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 1, reservationsTypOfRooms, {
-                        withCredentials: true,
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': res.data.token
-                        }}).then(() => {})
-                }
-                if (this.state.twoPersonRoom !== 0) {
-                    const reservationsTypOfRooms = {numberOfRoom: this.state.twoPersonRoom}
-                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 2, reservationsTypOfRooms, {
-                        withCredentials: true,
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': res.data.token
-                        }}).then(() => {})
-                }
-                if (this.state.roomWithTwoSingleBeds !== 0) {
-                    const reservationsTypOfRooms = {numberOfRoom: this.state.roomWithTwoSingleBeds}
-                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 3, reservationsTypOfRooms, {
-                        withCredentials: true,
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': res.data.token
-                        }}).then(() => {})
-                }
-                if (this.state.tripleRoom !== 0) {
-                    const reservationsTypOfRooms = {numberOfRoom: this.state.tripleRoom}
-                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 4, reservationsTypOfRooms, {
-                        withCredentials: true,
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': res.data.token
-                        }}).then(() => {})
-                }
-                if (this.state.apartment !== 0) {
-                    const reservationsTypOfRooms = {numberOfRoom: this.state.apartment}
-                    axios.post("http://localhost:8080/api/reservationsTypOfRooms/addReservationsTypOfRooms/"+ 5, reservationsTypOfRooms, {
-                        withCredentials: true,
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': res.data.token
-                        }}).then(() => {})
-                }
-                window.location.href = "/"
-            }).catch(error => {
-                handleLogError(error)
-                const errorData = error.response.data
-                this.setState({isError: true, errorMessage: errorData.message})
+        goTravelApi.createReservation(this.state.userInfo, csrfToken, reservation).then((res) => {
+            this.handleCloseModal()
+            this.setState({
+                bookedCorrectlyVisible: true,
+                message: res.data
             })
+        }).catch(error => {
+            handleLogError(error)
+            const errorData = error.response
+            this.setState({isError: true, errorMessage: t('goTravelNamespace3:'+errorData.data.message)})
         })
     }
 
     handleCloseModal = () => {
-        this.setState({showModal: false});
-        this.setState({isError: false, errorMessage: ' '})
+        this.setState({
+            showModal: false,
+            isError: false,
+            errorMessage: ' '
+        });
     };
+
+    handleCloseModalBookedCorrectly = () => {
+        this.setState({
+            bookedCorrectlyVisible: false,
+            message: ''
+        });
+        window.location.href = "/myProfile/invoices"
+    }
 
     handleShowModal = () => {
         this.setState({showModal: true});
@@ -181,7 +179,6 @@ class ReservationForm extends Component {
     }
 
     returnTripFormat = (date) => {
-
         if (date !== 0) {
             let newDate = new Date(date.toString());
             newDate.setDate(newDate.getDate() + this.state.tripOffer.numberOfDays);
@@ -189,801 +186,724 @@ class ReservationForm extends Component {
         }
     }
 
+    handleTabSelect = (selectedKey) => {
+        this.setState({key: selectedKey});
+    };
+
     render() {
-        const tabs = document.querySelectorAll(".my-tabs .tabs li");
-        const sections = document.querySelectorAll(".my-tabs .tab-content");
-
-
-        tabs.forEach(tab => {
-            tab.addEventListener("click", e => {
-                e.preventDefault();
-                removeActiveTab();
-                addActiveTab(tab);
-            });
-        })
-
-        const removeActiveTab = () => {
-            tabs.forEach(tab => {
-                tab.classList.remove("is-active");
-            });
-            sections.forEach(section => {
-                section.classList.remove("is-active");
-            });
-        }
-
-        const addActiveTab = tab => {
-            tab.classList.add("is-active");
-            const href = tab.querySelector("a").getAttribute("href");
-            const matchingSection = document.querySelector(href);
-            matchingSection.classList.add("is-active");
-        }
-
+        const {key} = this.state
+        const {t} = this.props
 
         return (
             <div>
                 <NavigationBar/>
+                <section className='d-flex justify-content-center justify-content-lg-between p-2  mt-4'></section>
                 <header className={"head"}>
-                    <section>
-                        <Container className={"containerForm"}>
+                    <section className={"d-flex justify-content-center"}>
+                        <div className="d-flex justify-content-center w-75">
+                            <div className="d-flex flex-column align-items-start">
+                                <Tabs
+                                    id="controlled-tab"
+                                    activeKey={key}
+                                    onSelect={this.handleTabSelect}
+                                    className="mb-3 flex-row"
+                                    style={{width: '900px'}}
+                                >
+                                    <Tab eventKey="personalData" title={<OverlayTrigger placement="top" overlay={<Tooltip>{t('goTravelNamespace3:dataCanBeChangedInProfileSettings')}</Tooltip>}><span>{t('goTravelNamespace3:personalData')+'*'}</span></OverlayTrigger>}></Tab>
+                                    <Tab eventKey="tripDetails" title={t('goTravelNamespace3:tripDetails')}/>
+                                    <Tab eventKey="reservationDetails" title={t('goTravelNamespace3:reservationDetails')}/>
+                                    <Tab eventKey="summary" title={t('goTravelNamespace3:summary')}/>
+                                </Tabs>
+                                <div className="ml-auto">
+                                    {key === 'personalData' &&
+                                        <div className={"d-flex justify-content-center"} style={{width: '900px'}}>
+                                            <div style={{textAlign: 'center'}}>
+                                                <form className="row gy-2 gx-3 align-items-center">
 
-                            <div className="card-body">
-                                <div className="my-tabs">
-                                    <nav className="tabs">
-                                        <ul>
-                                            <li className="is-active"><a href="#tab-one"><span data-bs-toggle="tooltip"
-                                                                                               title="Dane mogą zostać zmienione w ustawieniach profilu.">Dane osobowe *</span></a>
-                                            </li>
-                                            <li><a href="#tab-two">Dane wycieczki</a></li>
-                                            <li><a href="#tab-three">Dane do rezerwacji</a></li>
-                                            <li><a href="#tab-four">Podsumowanie</a></li>
-                                        </ul>
-                                    </nav>
-
-                                    <section className="tab-content is-active" id="tab-one">
-
-                                        <form className="row gy-2 gx-3 align-items-center">
-
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Imię</label>
-                                                        </div>
-                                                        <div className="col colReservation w-80">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.userInfo.firstname} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Nazwisko</label>
-                                                        </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.userInfo.lastname} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-4"}>
-                                                <div className={"col mt-3"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Adres email</label>
-                                                        </div>
-                                                        <div className="col colReservation">
-                                                            <label className="visually-hidden"
-                                                                   htmlFor="autoSizingInputGroup">Adres email</label>
-                                                            <div className="input-group" style={{width: '20rem'}}>
-                                                                <div className="input-group-text"
-                                                                     style={{width: '15%'}}>@
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('firstname')}</label>
                                                                 </div>
-                                                                <input type="text" className="form-control"
-                                                                       id="autoSizingInputGroup" placeholder="Username"
-                                                                       value={this.state.userInfo.email} disabled/>
+                                                                <div className="col colReservation w-80">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.user.firstname} disabled/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('lastname')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.user.lastname} disabled/>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Numer telefonu</label>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col mt-3"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">Email</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <label className="visually-hidden"
+                                                                           htmlFor="autoSizingInputGroup">Email</label>
+                                                                    <div className="input-group" style={{width: '20rem'}}>
+                                                                        <div className="input-group-text"
+                                                                             style={{width: '15%'}}>@
+                                                                        </div>
+                                                                        <input type="text" className="form-control"
+                                                                               id="autoSizingInputGroup"
+                                                                               value={this.state.user.email} disabled/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.userInfo.phoneNumber} disabled/>
+
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('goTravelNamespace2:phoneNumber')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.user.phoneNumber} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
 
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Miasto</label>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('goTravelNamespace2:city')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.user.city} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.userInfo.city} disabled/>
+
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('goTravelNamespace2:street')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.user.street} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Ulica</label>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('goTravelNamespace2:streetNumber')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.user.streetNumber} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.userInfo.street} disabled/>
+
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('goTravelNamespace2:zipCode')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.user.zipCode} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
 
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Numer</label>
-                                                        </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.userInfo.streetNumber} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Kod pocztowy</label>
-                                                        </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.userInfo.zipCode} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <nav className="tabs mt-4">
-                                                <ul>
-                                                    <li><a href="#tab-two" style={{justifyContent: 'center'}}>Dalej</a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </form>
-                                    </section>
-
-                                    <section className="tab-content" id="tab-two">
-
-                                        <form className="row gy-2 gx-3 align-items-center">
-
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Kraj</label>
-                                                        </div>
-                                                        <div className="col colReservation w-80">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.country} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Miasto</label>
-                                                        </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.city} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Wyżywienie</label>
-                                                        </div>
-                                                        <div className="col colReservation w-80">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.tripOffer.food} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Liczba dni</label>
-                                                        </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.tripOffer.numberOfDays} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Nocleg</label>
-                                                        </div>
-                                                        <div className="col colReservation w-80">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.accommodation} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation">
-                                                            <label className="col-form-label">Transport</label>
-                                                        </div>
-                                                        <div className="col colReservation">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.transport} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Cena za osobę</label>
-                                                        </div>
-                                                        <div className="col colReservation w-80">
-                                                            <input type="text" className="form-control"
-                                                                   style={{width: '20rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   value={this.state.tripOffer.price} disabled/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}></div>
-                                            </div>
-
-                                            <nav className="tabs mt-4">
-                                                <ul>
-                                                    <li className="is-active"><a href="#tab-one"><span>Wstecz</span></a>
-                                                    </li>
-                                                    <li><a href="#tab-three">Dalej</a></li>
-                                                </ul>
-                                            </nav>
-
-                                        </form>
-
-                                    </section>
-
-                                    <section className="tab-content" id="tab-three">
-
-                                        <form className="row gy-2 gx-3 align-items-center">
-
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Liczba dzieci</label>
-                                                        </div>
-                                                        <div className="col colReservation w-50">
-                                                            <input type="number" className="form-control" min={"0"}
-                                                                   placeholder={"0"} style={{width: '10rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   onChange={(e) => {
-                                                                       this.setState({numberOfChildren: e.target.value})
-                                                                   }}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Liczba dorosłych</label>
-                                                        </div>
-                                                        <div className="col colReservation w-50">
-                                                            <input type="number" className="form-control" min={"0"}
-                                                                   placeholder={"0"} style={{width: '10rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   onChange={(e) => {
-                                                                       this.setState({numberOfAdults: e.target.value})
-                                                                   }}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Rodzaj pokoju</label>
-                                                        </div>
-                                                        <div className="col colReservation w-50">
-                                                            <select className="form-control search-slt"
-                                                                    style={{width: '15rem'}}
-                                                                    id="exampleFormControlSelect1">
-                                                                <option>pokój jednoosobowy</option>
-                                                                {this.state.typeOfRoom.map(type =>
-                                                                    <option key={type.idTypeOfRoom}
-                                                                            disabled>{type.type}</option>
-                                                                )}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Ilość pokojów</label>
-                                                        </div>
-                                                        <div className="col colReservation w-50">
-                                                            <input type="number" min={"0"} className="form-control"
-                                                                   placeholder={"0"} style={{width: '10rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   onChange={(e) => {
-                                                                       this.setState({singleRoom: e.target.value})
-                                                                   }}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-2"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-
-                                                        </div>
-                                                        <div className="col colReservation w-50">
-                                                            <select className="form-control search-slt"
-                                                                    style={{width: '15rem'}}
-                                                                    id="exampleFormControlSelect1">
-                                                                <option>pokój dwuosobowy</option>
-                                                                {this.state.typeOfRoom.map(type =>
-                                                                    <option key={type.idTypeOfRoom}
-                                                                            disabled>{type.type}</option>
-                                                                )}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20"></div>
-                                                        <div className="col colReservation w-50">
-                                                            <input type="number" min={"0"} className="form-control"
-                                                                   placeholder={"0"} style={{width: '10rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   onChange={(e) => {
-                                                                       this.setState({twoPersonRoom: e.target.value})
-                                                                   }}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-2"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20"></div>
-                                                        <div className="col colReservation w-50">
-                                                            <select className="form-control search-slt"
-                                                                    style={{width: '15rem'}}
-                                                                    id="exampleFormControlSelect1">
-                                                                <option>pokój z dwoma jednoosobowymi łóżkami</option>
-                                                                {this.state.typeOfRoom.map(type =>
-                                                                    <option key={type.idTypeOfRoom}
-                                                                            disabled>{type.type}</option>
-                                                                )}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20"></div>
-                                                        <div className="col colReservation w-50">
-                                                            <input type="number" min={"0"} className="form-control"
-                                                                   placeholder={"0"} style={{width: '10rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   onChange={(e) => {
-                                                                       this.setState({roomWithTwoSingleBeds: e.target.value})
-                                                                   }}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-2"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20"></div>
-                                                        <div className="col colReservation w-50">
-                                                            <select className="form-control search-slt"
-                                                                    style={{width: '15rem'}}
-                                                                    id="exampleFormControlSelect1">
-                                                                <option>pokój trzyosobowy</option>
-                                                                {this.state.typeOfRoom.map(type =>
-                                                                    <option key={type.idTypeOfRoom}
-                                                                            disabled>{type.type}</option>
-                                                                )}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20"></div>
-                                                        <div className="col colReservation w-50">
-                                                            <input type="number" min={"0"} className="form-control"
-                                                                   placeholder={"0"} style={{width: '10rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   onChange={(e) => {
-                                                                       this.setState({tripleRoom: e.target.value})
-                                                                   }}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-2"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20"></div>
-                                                        <div className="col colReservation w-50">
-                                                            <select className="form-control search-slt"
-                                                                    style={{width: '15rem'}}
-                                                                    id="exampleFormControlSelect1">
-                                                                <option>apartament</option>
-                                                                {this.state.typeOfRoom.map(type =>
-                                                                    <option key={type.idTypeOfRoom}
-                                                                            disabled>{type.type}</option>
-                                                                )}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20"></div>
-                                                        <div className="col colReservation w-50">
-                                                            <input type="number" min={"0"} className="form-control"
-                                                                   placeholder={"0"} style={{width: '10rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   onChange={(e) => {
-                                                                       this.setState({apartment: e.target.value})
-                                                                   }}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className={"row mt-4"}>
-                                                <div className={"col"}>
-                                                    <div className="row g-2 align-items-center">
-                                                        <div className="col colReservation w-20">
-                                                            <label className="col-form-label">Data wyjazdu</label>
-                                                        </div>
-                                                        <div className="col colReservation w-50">
-                                                            <input type="date" className="form-control"
-                                                                   style={{width: '10rem'}}
-                                                                   aria-describedby="passwordHelpInline"
-                                                                   onChange={this.handleChangeDepartureDate}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className={"col"}></div>
-                                            </div>
-
-                                            <nav className="tabs">
-                                                <ul>
-                                                    <li><a href="#tab-two">Wstecz</a></li>
-                                                    <li><a href="#tab-four">Dalej</a></li>
-                                                </ul>
-                                            </nav>
-
-                                        </form>
-                                    </section>
-
-                                    <section className="tab-content" id="tab-four">
-
-                                        <div className={"row mt-4"}>
-                                            <div className={"col "}>
-                                                <div className="row g-2 align-items-center">
-                                                    <div className="col colReservation w-30">
-                                                        <label className="col-form-label" style={{fontWeight: 'bold'}}>Dane
-                                                            rezerwującego:</label>
-                                                    </div>
-                                                    <div className="col w-80"></div>
-
-                                                    <div className="col colReservation w-30">
-                                                        <label className="col-form-label" style={{fontWeight: 'bold'}}>Dane
-                                                            wycieczki:</label>
-                                                    </div>
-                                                    <div className="col w-80"></div>
-                                                </div>
+                                                    <nav className="tabs mt-4">
+                                                        <ul style={{ justifyContent: 'flex-end' }}>
+                                                            <li><a href={"#!"} onClick={(e) => { e.preventDefault(); this.handleTabSelect('tripDetails')}}>{t('goTravelNamespace3:next')}</a></li>
+                                                        </ul>
+                                                    </nav>
+                                                </form>
                                             </div>
                                         </div>
-                                        <div className={"row"}>
-                                            <div className={"col"}>
-                                                <div className="row g-2 align-items-center">
-                                                    <div className="col w-30"></div>
-                                                    <div className="col w-40">
-                                                        <label
-                                                            className="col-form-label">{this.state.userInfo.firstname} {this.state.userInfo.lastname}</label><br/>
-                                                        <label
-                                                            className="col-form-label">{this.state.userInfo.email}</label><br/>
-                                                        <label
-                                                            className="col-form-label">{this.state.userInfo.phoneNumber}</label><br/>
-                                                        <label
-                                                            className="col-form-label">miasto: {this.state.userInfo.city}</label><br/>
-                                                        <label
-                                                            className="col-form-label">ulica: {this.state.userInfo.street}</label><br/>
-                                                        <label
-                                                            className="col-form-label">numer: {this.state.userInfo.streetNumber}</label><br/>
-                                                        <label className="col-form-label">kod
-                                                            pocztowy: {this.state.userInfo.zipCode}</label><br/>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    }
+                                    {key === 'tripDetails' &&
+                                        <div className={"d-flex justify-content-center"} style={{width: '960px'}}>
+                                            <div style={{textAlign: 'center'}}>
+                                                <form className="row gy-2 gx-3 align-items-center">
 
-                                            <div className={"col"}>
-                                                <div className="row g-2 align-items-center">
-                                                    <div className="col w-30"></div>
-                                                    <div className="col w-70">
-                                                        <label
-                                                            className="col-form-label">{this.state.country} - {this.state.city}</label><br/>
-                                                        <label
-                                                            className="col-form-label">wyżywienie: {this.state.tripOffer.food}</label><br/>
-                                                        <label
-                                                            className="col-form-label">{this.state.tripOffer.numberOfDays} dni</label><br/>
-                                                        <label
-                                                            className="col-form-label">zakwaterowanie: {this.state.accommodation}</label><br/>
-                                                        <label
-                                                            className="col-form-label">transport: {this.state.transport}</label><br/>
-                                                        <label
-                                                            className="col-form-label">{this.state.tripOffer.price} zł
-                                                            za osobę</label><br/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className={"row mt-4"}>
-                                            <div className={"col "}>
-                                                <div className="row g-2 align-items-center">
-                                                    <div className="col colReservation w-30">
-                                                        <label className="col-form-label" style={{fontWeight: 'bold'}}>Dane
-                                                            rezerwacji:</label>
-                                                    </div>
-                                                    <div className="col w-80"></div>
-
-                                                    <div className="col colReservation w-30"></div>
-                                                    <div className="col w-80"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className={"row"}>
-                                            <div className={"col"}>
-                                                <div className="row g-2 align-items-center">
-
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">liczba
-                                                                dzieci:</label><br/>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('country')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-80">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={t('goTravelNamespace2:'+this.state.country)} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
 
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.state.numberOfChildren}</label><br/>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('goTravelNamespace2:city')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={t('goTravelNamespace2:'+this.state.city)} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">liczba
-                                                                dorosłych:</label><br/>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('goTravelNamespace3:food')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-80">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={t('goTravelNamespace2:'+this.state.tripOffer.food)} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
 
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.state.numberOfAdults}</label><br/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">data wyjazdu:</label><br/>
-                                                        </div>
-
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.state.departureDate}</label><br/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">data powrotu:</label><br/>
-                                                        </div>
-
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.returnTripFormat(this.state.departureDate)}</label><br/>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('numberOfDays')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.tripOffer.numberOfDays} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">liczba pokoi
-                                                                jednoosobowych:</label><br/>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('goTravelNamespace3:accommodation')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-80">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={t('goTravelNamespace2:'+this.state.accommodation)} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
 
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.state.singleRoom}</label><br/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">liczba pokoi
-                                                                dwuosobowych:</label><br/>
-                                                        </div>
-
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.state.twoPersonRoom}</label><br/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">liczba pokoi z dwoma
-                                                                jednoosobowymi łóżkami:</label><br/>
-                                                        </div>
-
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.state.roomWithTwoSingleBeds}</label><br/>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation">
+                                                                    <label className="col-form-label">{t('transport')}</label>
+                                                                </div>
+                                                                <div className="col colReservation">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={t('goTravelNamespace1:'+this.state.transport)} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">liczba pokoi
-                                                                trzyosobowych:</label><br/>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('goTravelNamespace3:pricePerPerson')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-80">
+                                                                    <input type="text" className="form-control"
+                                                                           style={{width: '20rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.tripOffer.price} disabled/>
+                                                                </div>
+                                                            </div>
                                                         </div>
 
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.state.tripleRoom}</label><br/>
-                                                        </div>
+                                                        <div className={"col"}></div>
                                                     </div>
 
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label">liczba
-                                                                apartamentów:</label><br/>
-                                                        </div>
+                                                    <nav className="tabs mt-4">
+                                                        <ul style={{ justifyContent: 'flex-end' }}>
+                                                            <li><a href={"#!"} onClick={(e) => { e.preventDefault(); this.handleTabSelect('personalData')}}>{t('goTravelNamespace3:back')}</a></li>
+                                                            <li><a href={"#!"} onClick={(e) => { e.preventDefault(); this.handleTabSelect('reservationDetails')}}>{t('goTravelNamespace3:next')}</a></li>
+                                                        </ul>
+                                                    </nav>
 
-                                                        <div className="col w-40">
-                                                            <label
-                                                                className="col-form-label">{this.state.apartment}</label><br/>
-                                                        </div>
-                                                    </div>
+                                                </form>
 
-                                                    <div className={"row"}>
-                                                        <div className="col colReservation w-30">
-                                                            <label className="col-form-label"
-                                                                   style={{fontWeight: 'bold', fontSize: '20px'}}>cena
-                                                                całkowita: </label><br/>
-                                                        </div>
-
-                                                        <div className="col w-40">
-                                                            <label className="col-form-label" style={{
-                                                                fontWeight: 'bold',
-                                                                fontSize: '20px'
-                                                            }}>{(this.state.numberOfChildren * (this.state.tripOffer.price / 2) + this.state.numberOfAdults * this.state.tripOffer.price)}</label><br/>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                            <div className={"col"}>
-                                                <div className="row g-2 align-items-center">
-                                                    <div className="col w-30"></div>
-                                                    <div className="col w-70"></div>
-                                                </div>
                                             </div>
                                         </div>
+                                    }
+                                    {key === 'reservationDetails' &&
+                                        <div className={"d-flex justify-content-center"} style={{width: '960px'}}>
+                                            <div style={{textAlign: 'center'}}>
+                                                <form className="row gy-2 gx-3 align-items-center">
 
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('goTravelNamespace3:numberOfAdults')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-50">
+                                                                    <input type="number" className="form-control" min={"0"}
+                                                                           placeholder={"0"} style={{width: '10rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.numberOfAdults}
+                                                                           onChange={(e) => {
+                                                                               this.setState({numberOfAdults: e.target.value})
+                                                                           }}/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
 
-                                        <button className="btn btn-primary reservation" type="submit"
-                                                onClick={this.handleShowModal}>Zarezerwuj
-                                        </button>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('goTravelNamespace3:numberOfChildren')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-50">
+                                                                    <input type="number" className="form-control" min={"0"}
+                                                                           placeholder={"0"} style={{width: '10rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           value={this.state.numberOfChildren}
+                                                                           onChange={(e) => {
+                                                                               this.setState({numberOfChildren: e.target.value})
+                                                                           }}/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                        <Modal show={this.state.showModal} onHide={this.handleCloseModal}>
-                                            <Modal.Header closeButton>
-                                                <Modal.Title>Potwierdzenie rezerwacji</Modal.Title>
-                                            </Modal.Header>
-                                            <Modal.Body>
-                                                Czy na pewno chcesz zarezerwować?
-                                            </Modal.Body>
-                                            <Modal.Footer>
-                                                <Button variant="secondary" onClick={this.handleCloseModal}>
-                                                    Anuluj
-                                                </Button>
-                                                <Button variant="primary" onClick={this.handlePostReservation}>
-                                                    Potwierdź
-                                                </Button>
-                                            </Modal.Footer>
-                                            {this.state.isError &&
-                                                <Message negative>{this.state.errorMessage}</Message>}
-                                        </Modal>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('goTravelNamespace3:departureDate')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-50">
+                                                                    <input type="date" className="form-control"
+                                                                           style={{width: '10rem'}}
+                                                                           aria-describedby="passwordHelpInline"
+                                                                           min={new Date().toISOString().split('T')[0]}
+                                                                           value={this.state.departureDate}
+                                                                           onChange={this.handleChangeDepartureDate}/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
 
-                                    </section>
+                                                        <div className={"col"}></div>
+                                                    </div>
 
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col w-20">
+                                                                    <label className="col-form-label">{t('goTravelNamespace3:typeOfRoom')}</label>
+                                                                </div>
+                                                                <div className="col w-20">
+                                                                    <label className="col-form-label">{t('goTravelNamespace3:quantity')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-20"/>
+                                                            </div>
+                                                        </div>
+                                                        {this.state.rooms.map((room, index) => (
+                                                            <div key={index} className="row mt-2 align-items-center" style={{textAlign: '-webkit-center'}}>
+                                                                <div className="col">
+                                                                    <select
+                                                                        className="form-control search-slt"
+                                                                        style={{ width: '15rem', borderRadius: '5px' }}
+                                                                        value={room.type}
+                                                                        onChange={(e) => this.handleRoomTypeChange(index, e.target.value)}>
+                                                                        <option>{t('choose')}</option>
+                                                                        {this.state.typeOfRoom.map(room =>
+                                                                            <option key={room.idTypeOfRoom} value={room.type}>{t('goTravelNamespace2:'+room.type)}</option>
+                                                                        )}
+                                                                    </select>
+                                                                </div>
+                                                                <div className="col">
+                                                                    <input
+                                                                        type="number"
+                                                                        min="0"
+                                                                        className="form-control"
+                                                                        placeholder="0"
+                                                                        style={{ width: '10rem' }}
+                                                                        value={room.quantity}
+                                                                        onChange={(e) => this.handleRoomQuantityChange(index, e.target.value)}
+                                                                    />
+                                                                </div>
+                                                                <div className="col">
+                                                                    {index === this.state.rooms.length - 1 && <button onClick={this.addRoom} className={"quantityButton"}>+</button>}
+                                                                    {index !== 0 && <button onClick={() => this.removeRoom(index)} className={"quantityButton"}>-</button>}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    <nav className="tabs">
+                                                        <ul style={{ justifyContent: 'flex-end' }}>
+                                                            <li><a href={"#!"} onClick={(e) => { e.preventDefault(); this.handleTabSelect('tripDetails')}}>{t('goTravelNamespace3:back')}</a></li>
+                                                            <li><a href={"#!"} onClick={(e) => { e.preventDefault(); this.handleTabSelect('summary')}}>{t('goTravelNamespace3:next')}</a></li>
+                                                        </ul>
+                                                    </nav>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    }
+                                    {key === 'summary' &&
+                                        <div className={"d-flex "} style={{width: '960px', marginLeft: '10%',
+                                            marginRight: '10%',
+                                            overflowY: 'scroll',
+                                            height: '500px'}}>
+                                            <div style={{textAlign: 'center'}}>
+                                                <p>{t('goTravelNamespace3:personalData')} <section className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'  style={{width: '900px'}}></section></p>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('firstname')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.user.firstname} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('lastname')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.user.lastname} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">Email</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.user.email} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace2:phoneNumber')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.user.phoneNumber} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace2:city')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.user.city} disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:address')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={ this.state.user.street + ' ' + this.state.user.streetNumber + ' ' + this.state.user.zipCode}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <p style={{marginTop: '10px'}}>{t('goTravelNamespace3:reservationDetails')} <section className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom' style={{width: '900px'}}></section></p>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('country')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={t('goTravelNamespace2:'+this.state.country) + ' - ' + t('goTravelNamespace2:'+this.state.city)}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:food')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={t('goTravelNamespace2:'+this.state.tripOffer.food)}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('numberOfDays')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.tripOffer.numberOfDays}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('transport')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={t('goTravelNamespace1:'+this.state.transport)}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:accommodation')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={t('goTravelNamespace2:'+this.state.accommodation)}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:typeOfRoom')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <div className="row mt-1">
+                                                            {this.state.rooms.map(({ type, quantity }) =>
+                                                                (type !== '' && quantity !== '') ? (
+                                                                <div className="col" key={type} style={{marginBottom: '10px'}}>
+                                                                    <div className="d-flex align-items-center">
+                                                                        <input type="text" className="form-control" style={{ width: '20rem', marginRight: '10px' }} aria-describedby="passwordHelpInline" key={type} value={t('goTravelNamespace2:'+type)} disabled />
+                                                                        <label className="col-form-label">{t('goTravelNamespace3:quantity')}</label>
+                                                                        <input type="text" className="form-control" style={{ width: '5rem', marginLeft: '5px' }} aria-describedby="passwordHelpInline" key={type} value={quantity} disabled />
+                                                                    </div>
+                                                                </div>
+                                                                ) : null
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:pricePerPerson')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.tripOffer.price}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:numberOfAdults')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.numberOfAdults}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:numberOfChildren')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.numberOfChildren}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:departureDate')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.state.departureDate}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:dateOfReturn')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={this.returnTripFormat(this.state.departureDate)}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('goTravelNamespace3:totalPrice')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={(this.state.numberOfChildren * (this.state.tripOffer.price / 2) + this.state.numberOfAdults * this.state.tripOffer.price)}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+
+                                                <button className="btn btn-primary reservation" type="submit"
+                                                        onClick={this.handleShowModal}>{t('goTravelNamespace3:book')}
+                                                </button>
+
+                                                <Modal show={this.state.showModal} onHide={this.handleCloseModal}>
+                                                    <Modal.Header closeButton>
+                                                        <Modal.Title style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace3:reservationConfirmation')}</Modal.Title>
+                                                    </Modal.Header>
+                                                    <Modal.Body style={{fontFamily: "Comic Sans MS"}}>
+                                                        {t('goTravelNamespace3:areYouSureYouWantToBook')}
+                                                    </Modal.Body>
+                                                    <Modal.Footer>
+                                                        <Button variant="secondary" onClick={this.handleCloseModal} style={{fontFamily: "Comic Sans MS"}}>
+                                                            {t('goTravelNamespace3:cancel')}
+                                                        </Button>
+                                                        <Button variant="primary confirmBtn" onClick={this.handlePostReservation} style={{fontFamily: "Comic Sans MS"}}>
+                                                            {t('goTravelNamespace3:confirm')}
+                                                        </Button>
+                                                        {this.state.isError &&
+                                                            <Message negative  className={"mt-3 messageError"} style={{fontFamily: "Comic Sans MS", width: '400px'}}>{this.state.errorMessage}</Message>}
+                                                    </Modal.Footer>
+                                                </Modal>
+
+                                                <Modal show={this.state.bookedCorrectlyVisible} onHide={this.handleCloseModalBookedCorrectly}>
+                                                    <Modal.Header closeButton>
+                                                        <Modal.Title style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace3:reservationConfirmation')}</Modal.Title>
+                                                    </Modal.Header>
+                                                    <Modal.Body style={{fontFamily: "Comic Sans MS"}}>
+                                                        <BsCheck2Circle style={{width: '100px', height: '100px', color: '#52d113'}}/>
+                                                        {t('goTravelNamespace3:'+this.state.message)}
+                                                    </Modal.Body>
+                                                    <Modal.Footer>
+                                                        <Button variant="secondary" onClick={this.handleCloseModalBookedCorrectly} style={{fontFamily: "Comic Sans MS"}}>
+                                                            {t('goTravelNamespace3:close')}
+                                                        </Button>
+                                                    </Modal.Footer>
+                                                </Modal>
+
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
-
-
-                        </Container>
+                        </div>
                     </section>
                 </header>
                 <Footer/>
@@ -992,4 +912,4 @@ class ReservationForm extends Component {
     }
 }
 
-export default ReservationForm;
+export default withTranslation()(ReservationForm);

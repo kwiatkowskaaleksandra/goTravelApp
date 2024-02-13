@@ -4,13 +4,32 @@ p.infoOwnOffer {
     font-size: 18px;
 }
 
-.ownTrip {
-    margin-left: 20%;
-    margin-right: 20%;
-}
-
 .filterNameOwnTrip {
     font-family: "Comic Sans MS";
     font-weight: bold;
     margin-top: 5%;
+}
+
+button#controlled-tab-tab-generalInformation, button#controlled-tab-tab-basicInformationAboutTheTrip, button#controlled-tab-tab-accommodation,
+button#controlled-tab-tab-attractions, button#controlled-tab-tab-additionalInformation, button#controlled-tab-tab-summary {
+    width: 200px;
+    color: black;
+    font-family: "Comic Sans MS"
+}
+
+button#controlled-tab-tab-generalInformation.active, button#controlled-tab-tab-basicInformationAboutTheTrip.active, button#controlled-tab-tab-accommodation.active,
+button#controlled-tab-tab-attractions.active, button#controlled-tab-tab-additionalInformation.active, button#controlled-tab-tab-summary.active {
+    color: #4ec3ff;
+    font-weight: bold;
+}
+
+.modal-content {
+    width: 700px;
+}
+
+.quantityButton {
+    border-color: #b2b2b2;
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
 }

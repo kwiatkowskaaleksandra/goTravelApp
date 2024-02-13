@@ -2,11 +2,11 @@ import React, {Component} from 'react'
 import {Link, Navigate} from 'react-router-dom'
 import {Checkbox, Form, Message} from 'semantic-ui-react'
 import AuthContext from "../../others/AuthContext";
-import {orderApi} from '../../others/OrderApi'
-import {handleLogError} from '../../others/Helpers'
+import {handleLogError} from '../../others/JWT'
 import './CustomerZoneRegistration.css'
 import {Nav} from "react-bootstrap"
-import axios from "axios";
+import {goTravelApi} from "../../others/GoTravelApi";
+import {withTranslation} from "react-i18next";
 
 class CustomerZoneRegistration extends Component {
     static contextType = AuthContext
@@ -14,7 +14,7 @@ class CustomerZoneRegistration extends Component {
     state = {
         username: '',
         password: '',
-        password2: '',
+        repeatedPassword: '',
         firstname: '',
         lastname: '',
         email: '',
@@ -26,9 +26,10 @@ class CustomerZoneRegistration extends Component {
     }
 
     componentDidMount() {
-        const Auth = this.context
-        const isLoggedIn = Auth.userIsAuthenticated()
-        this.setState({isLoggedIn})
+        (async () => {
+            const isLoggedIn = await this.context.userIsAuthenticated();
+            this.setState({isLoggedIn});
+        })();
     }
 
     handleInputChange = (e, {name, value}) => {
@@ -42,20 +43,14 @@ class CustomerZoneRegistration extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
+        const { t } = this.props;
+        const role = ["USER"]
+        const {username, password, repeatedPassword, firstname, lastname, email, acceptanceOfPolicy} = this.state
 
-        const {username, password, password2, firstname, lastname, email, acceptanceOfPolicy} = this.state
-        if (!(username && password && password2 && firstname && lastname && email)) {
+        if (!(username && password && repeatedPassword && firstname && lastname && email)) {
             this.setState({
                 isError: true,
-                errorMessage: 'Proszę uzupełnić wszystkie pola!'
-            })
-            return
-        }
-
-        if (password !== password2) {
-            this.setState({
-                isError: true,
-                errorMessage: 'Podane hasła różnią się od siebie.'
+                errorMessage: t('pleaseCompleteAllFields')
             })
             return
         }
@@ -63,24 +58,18 @@ class CustomerZoneRegistration extends Component {
         if (!acceptanceOfPolicy) {
             this.setState({
                 isError: true,
-                errorMessage: 'Proszę zaakceptować regulamin.'
+                errorMessage: t('pleaseAcceptTheRegulations')
             })
             return
         }
 
-        const user = {username, password, firstname, lastname, email}
+        const user = {username, password, repeatedPassword, firstname, lastname, email, role}
 
-        orderApi.csrf().then(res => {
-            axios.post("http://localhost:8080/gotravel/signup", user, {
-                withCredentials: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': res.data.token
-                }}).then(() => {
+        goTravelApi.signup(user).then(() => {
                 this.setState({
                     username: '',
                     password: '',
+                    repeatedPassword: '',
                     isLoggedIn: false,
                     isError: false,
                     errorMessage: ''
@@ -91,9 +80,9 @@ class CustomerZoneRegistration extends Component {
                     handleLogError(error)
                     if (error.response && error.response.data) {
                         const errorData = error.response.data
-                        let errorMessage = 'Pola zostały błędnie uzupełnione.'
+                        let errorMessage = t('theFieldsWereFilledInIncorrectly')
                         if (errorData.status === 409) {
-                            errorMessage = errorData.message
+                            errorMessage = t('goTravelNamespace3:' + errorData.message)
                         } else if (errorData.status === 400) {
                             errorMessage = errorData.errors[0].defaultMessage
                         }
@@ -103,10 +92,11 @@ class CustomerZoneRegistration extends Component {
                         })
                     }
                 })
-        })
+
     }
 
     render() {
+        const {t} = this.props
         const {isLoggedIn, isError, errorMessage} = this.state
         if (isLoggedIn) {
             return <Navigate to='/'/>
@@ -120,55 +110,55 @@ class CustomerZoneRegistration extends Component {
                             <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
                                 <div className="card border-0 shadow rounded-3 my-5">
                                     <div className="card-body p-4 p-sm-5">
-                                        <h5 className="card-title text-center mb-5 fw-light fs-5">Zarejestruj się</h5>
+                                        <h5 className="card-title text-center mb-5 fw-light fs-5">{t('register')}</h5>
                                         <Form onSubmit={this.handleSubmit}>
 
                                             <Form.Field>
-                                                <label>Imię</label>
+                                                <label>{t('firstname')}</label>
                                                 <Form.Input fluid autoFocus type="text" id="floatingInput"
-                                                            placeholder="imię" name="firstname"
+                                                            placeholder={t('firstname')} name="firstname"
                                                             onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
-                                                <label>Nazwisko</label>
-                                                <Form.Input fluid type="text" id="floatingInput" placeholder="nazwisko"
+                                                <label>{t('lastname')}</label>
+                                                <Form.Input fluid type="text" id="floatingInput" placeholder={t('lastname')}
                                                             name="lastname" onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
-                                                <label>Nazwa użytkownika</label>
+                                                <label>{t('username')}</label>
                                                 <Form.Input fluid type="text" id="floatingInput"
-                                                            placeholder="nazwa użytkownika" name="username"
+                                                            placeholder={t('username')} name="username"
                                                             onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
-                                                <label>Hasło</label>
-                                                <Form.Input fluid type="password" id="floatingInput" placeholder="hasło"
+                                                <label>{t('password')}</label>
+                                                <Form.Input fluid type="password" id="floatingInput" placeholder={t('password')}
                                                             name="password" onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
-                                                <label>Powtórz hasło</label>
-                                                <Form.Input fluid type="password" id="floatingInput" placeholder="hasło"
-                                                            name="password2" onChange={this.handleInputChange}/>
+                                                <label>{t('repeatedPassword')}</label>
+                                                <Form.Input fluid type="password" id="floatingInput" placeholder={t('repeatedPassword')}
+                                                            name="repeatedPassword" onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
-                                                <label>Email</label>
-                                                <Form.Input fluid type="text" id="floatingInput" placeholder="email"
+                                                <label>{t('email')}</label>
+                                                <Form.Input fluid type="text" id="floatingInput" placeholder={t('email')}
                                                             name="email" onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
-                                                <Checkbox toggle label={'Akceptuję postanowienia polityki prywatności.'}
+                                                <Checkbox toggle label={t('acceptTheProvisionsOfThePrivacyPolicy')}
                                                           onClick={(e, data) => this.onChangeCheckBox(e, data)}/>
                                             </Form.Field>
 
                                             <div className="d-grid">
                                                 <button className="btn btn-primary btn-login text-uppercase fw-bold"
-                                                        type="submit">Zarejestruj się
+                                                        type="submit">{t('register')}
                                                 </button>
                                             </div>
 
@@ -176,24 +166,22 @@ class CustomerZoneRegistration extends Component {
 
                                             <div className="d-grid mb-2">
                                                 <Nav.Link as={Link} to={"/customerZone/login"}
-                                                          className="btn btn-primary btn-login text-uppercase fw-bold"> Masz już konto ?</Nav.Link>
+                                                          className="btn btn-primary btn-login text-uppercase fw-bold">{t('alreadyHaveAnAccount')}</Nav.Link>
                                             </div>
 
                                         </Form>
-                                        {isError && <Message negative>{errorMessage}</Message>}
+                                        {isError && <Message className={"messageErrorRegister"}>{errorMessage}</Message>}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
-
-
                 </body>
             )
         }
     }
 }
 
-export default CustomerZoneRegistration
+export default withTranslation()(CustomerZoneRegistration);
 

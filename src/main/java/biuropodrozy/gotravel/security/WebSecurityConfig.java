@@ -1,5 +1,6 @@
 package biuropodrozy.gotravel.security;
 
+import biuropodrozy.gotravel.security.jwt.AuthenticationTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +35,10 @@ public class WebSecurityConfig {
     /**
      * Creates a new instance of the TokenAuthenticationFilter class.
      */
-    private final TokenAuthenticationFilter tokenAuthenticationFilter;
+    @Bean
+    public AuthenticationTokenFilter authenticationJwtTokenFilter() {
+        return new AuthenticationTokenFilter();
+    }
 
     /**
      * AuthenticationManager configuration.
@@ -59,8 +63,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority(USER)
-
+                .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER")
                 .requestMatchers("/gotravel/**", "/api/**").permitAll()
                 .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
@@ -73,16 +76,18 @@ public class WebSecurityConfig {
                                 .httpStrictTransportSecurity(withDefaults())
                                 .frameOptions(withDefaults()
                                 )).cors(withDefaults())
-                .csrf()
-                .csrfTokenRepository(csrfTokenRepository());
+                .csrf(csrf ->
+                        csrf
+                                .ignoringRequestMatchers("/gotravel/signup/**", "/gotravel/authenticate/**", "/gotravel/refreshToken/**")
+                                .csrfTokenRepository(csrfTokenRepository())
+                );
 
-        http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         return http.build();
     }
-
 
     /**
      * B crypt password encoder.

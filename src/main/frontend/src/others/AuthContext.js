@@ -1,10 +1,12 @@
 import React, {Component, useContext} from "react";
+import {goTravelApi} from "./GoTravelApi";
+import {handleLogError, parseJwt} from "./JWT";
 
 const AuthContext = React.createContext();
 
 class AuthProvider extends Component {
     state = {
-        user: null
+        user: null,
     }
 
     componentDidMount() {
@@ -16,7 +18,7 @@ class AuthProvider extends Component {
         return JSON.parse(localStorage.getItem('user'))
     }
 
-    userIsAuthenticated = () => {
+    userIsAuthenticated = async () => {
         let user = localStorage.getItem('user')
         if (!user) {
             return false;
@@ -25,8 +27,23 @@ class AuthProvider extends Component {
 
         //jeśli token użytkownika wygasł, wyloguj użytkownika
         if (Date.now() > user.data.exp * 1000) {
-            this.userLogout()
-            return false
+            try {
+                const res = await goTravelApi.refreshToken(user.refreshToken);
+                const { accessToken, refreshToken } = res.data;
+                const data = parseJwt(accessToken);
+                localStorage.setItem('user', JSON.stringify({ data, accessToken, refreshToken }));
+                return true;
+            } catch (error) {
+                handleLogError(error)
+                if (error.response.data.status === 403) {
+                    localStorage.removeItem('user')
+                    this.setState({user: null})
+                    window.location.href = "/"
+                    return false
+                }
+                await this.userLogout();
+                return false;
+            }
         }
         return true
     }
@@ -36,9 +53,17 @@ class AuthProvider extends Component {
         this.setState({user})
     }
 
-    userLogout = () => {
-        localStorage.removeItem('user')
-        this.setState({user: null})
+    userLogout = async () => {
+        const user = this.getUser()
+        const csrfResponse = await goTravelApi.csrf();
+        const csrfToken = csrfResponse.data.token;
+
+        goTravelApi.signout(user, csrfToken).then(() => {
+            localStorage.removeItem('user')
+            this.setState({user: null})
+            window.location.href = "/"
+        })
+
     }
 
     render() {

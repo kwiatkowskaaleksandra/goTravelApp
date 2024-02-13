@@ -126,6 +126,10 @@ col-lg-4 col-md-6 {
     cursor: pointer;
 }
 
+.trip_desc {
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
 .row:before {
     display: table;
@@ -168,7 +172,6 @@ col-lg-4 col-md-6 {
 
 .highlight_trip > h3 {
     display: block;
-    position: center;
     font-size: 25px;
     font-family: "Comic Sans MS";
     text-transform: uppercase;
@@ -189,21 +192,15 @@ col-lg-4 col-md-6 {
 
 .dark_cover {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 10px;
-    height: 0;
     width: 100%;
     background: rgba(0, 0, 0, 0.15);
 }
 
 .info-container {
     position: absolute;
-    width: 89%;
+    width: 90%;
     background: rgba(0, 0, 0, 0.50);
     top: 25px;
-    left: 0;
-    right: 15px;
     color: #ffffff;
     font-family: "Comic Sans MS";
     font-size: 12px;
@@ -214,7 +211,6 @@ col-lg-4 col-md-6 {
 .country-image-container:hover .info-container {
     visibility: visible;
 }
-
 
 .trip-info-sections h3 {
     display: block;
@@ -272,24 +268,16 @@ col-lg-4 col-md-6 {
     width: 50px;
 }
 
-.read-more-state ~ .read-more-trigger:before {
-    content: 'Czytaj więcej';
-}
-
-.read-more-state:checked ~ .read-more-trigger:before {
-    content: 'Czytaj mniej';
-}
-
 .read-more-trigger {
     cursor: pointer;
     display: inline-block;
     padding: 0 .5em;
-    color: #1e5799;
+    color: #4ec3ff;
     font-size: .9em;
     line-height: 2;
-    border: 1px solid #1e5799;
+    border: 1px solid #4ec3ff;
     border-radius: .25em;
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Comic Sans MS";
 }
 
 .show-text {

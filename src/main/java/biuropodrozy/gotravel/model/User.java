@@ -1,18 +1,12 @@
 package biuropodrozy.gotravel.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -62,14 +56,8 @@ public class User {
     private String email;
 
     /**
-     * The role of the user.
-     */
-    private String role;
-
-    /**
      * The phone number of the user.
      */
-    @Size(max = 9, min = 9)
     private String phoneNumber;
 
     /**
@@ -90,8 +78,13 @@ public class User {
     /**
      * The zip code of the user.
      */
-    @Size(max = 5, min = 5)
     private String zipCode;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     /**
      * The set of opinions made by the user.
@@ -120,5 +113,7 @@ public class User {
      * The secret key for two-factor authentication.
      */
     private String secret2FA;
+
+    private boolean activity;
 
 }

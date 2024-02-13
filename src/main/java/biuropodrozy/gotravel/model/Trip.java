@@ -67,10 +67,9 @@ public class Trip {
      */
     private String food;
 
-    /**
-     * The type of trip.
-     */
-    private String typeOfTrip;
+    @ManyToOne
+    @JoinColumn(name = "idTypeOfTrip")
+    private TypeOfTrip typeOfTrip;
 
     /**
      * The number of days of the trip.

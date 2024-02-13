@@ -31,17 +31,6 @@ public class TypeOfRoomServiceImpl implements TypeOfRoomService {
     }
 
     /**
-     * Get type of room by id type of room.
-     *
-     * @param idTypeOfRoom the id type of room
-     * @return the type of room
-     */
-    @Override
-    public TypeOfRoom getTypeOfRoom(final int idTypeOfRoom) {
-        return typeOfRoomRepository.findByIdTypeOfRoom(idTypeOfRoom);
-    }
-
-    /**
      * Get type of rooms by type.
      *
      * @param typeOfRoom the type of room

@@ -2,11 +2,11 @@ import React, {Component} from 'react'
 import {Link, Navigate} from 'react-router-dom'
 import {Form, Message} from 'semantic-ui-react'
 import AuthContext from '../../others/AuthContext'
-import {orderApi} from '../../others/OrderApi'
-import {handleLogError, parseJwt} from '../../others/Helpers'
+import {goTravelApi} from '../../others/GoTravelApi'
+import {handleLogError, parseJwt} from '../../others/JWT'
 import './CustomerZoneLogin.css'
 import {Nav} from "react-bootstrap"
-import axios from "axios";
+import {withTranslation} from "react-i18next";
 
 class Login extends Component {
 
@@ -22,16 +22,17 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        const Auth = this.context
-        const isLoggedIn = Auth.userIsAuthenticated()
-        this.setState({isLoggedIn})
+        (async () => {
+            const isLoggedIn = await this.context.userIsAuthenticated();
+            this.setState({isLoggedIn});
+        })();
     }
 
     handleInputChange = (e, {name, value}) => {
         this.setState({[name]: value})
     }
 
-    handleSubmit = (e) => {
+    handleSubmitLogin = (e) => {
         e.preventDefault()
 
         const {username, password} = this.state
@@ -40,105 +41,57 @@ class Login extends Component {
             return
         }
 
-       orderApi.csrf().then(res => {
-
-            axios.post("http://localhost:8080/gotravel/findUser", {username, password}, {
-                withCredentials: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': res.data.token
-                }
-            }).then(response => {
-                if(response.data === false){
-                    axios.post("http://localhost:8080/gotravel/authenticate",{username, password}, {
-                        withCredentials: true,
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': res.data.token
-                        }
-                    }).then(response => {
-
-                        const {accessToken} = response.data
-                        const data = parseJwt(accessToken)
-                        const user = {data, accessToken}
-
-                        const Auth = this.context
-                        Auth.userLogin(user)
-
-                        this.setState({
-                            username: '',
-                            password: '',
-                            totp: 0,
-                            isLoggedIn: true,
-                            isError: false
-                        })
-                    }).catch(error => {
-                        handleLogError(error)
-                        this.setState({isError: true})
-                    })
-                }else{
-                    this.setState({twoFA: true})
-                }
-            })
+        goTravelApi.isUsing2FA(username).then(res => {
+            if (res.data === true) {
+                this.setState({
+                    twoFA: true,
+                    isError: false
+                })
+            } else {
+                this.login({username, password})
+            }
         })
     }
 
-    handleSubmitVerify = (e) => {
-        e.preventDefault()
-
+    handleSubmitVerifyCode = async () => {
+        const csrfResponse = await goTravelApi.csrf();
+        const csrfToken = csrfResponse.data.token;
         const {username, password, totp} = this.state
 
-        if(totp === 0){
+        if (totp === 0) {
             this.setState({isError: true})
             return
         }
 
-        orderApi.csrf().then(res => {
-            axios.post("http://localhost:8080/gotravel/verify", {username, totp},{
-                withCredentials: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': res.data.token
-                }}
-            ).then(response => {
-                console.log("asdsadsd "+ response.data)
-                if(response.data === true){
-                    axios.post("http://localhost:8080/gotravel/authenticate",{username, password}, {
-                        withCredentials: true,
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': res.data.token
-                        }
-                    }).then(response => {
+        goTravelApi.verify2FACode(csrfToken, {username, totp}).then(response => {
+            if (response.data === true) {
+               this.login({username, password})
+            } else {
+                this.setState({isError: true})
+            }
+        })
+    }
 
-                        const {accessToken} = response.data
-                        const data = parseJwt(accessToken)
-                        const user = {data, accessToken}
+    login = (signInInfo) => {
+        goTravelApi.login(signInInfo).then(response => {
+            const {accessToken} = response.data
+            const {refreshToken} = response.data
+            const data = parseJwt(accessToken)
+            const user = {data, accessToken, refreshToken}
 
-                        const Auth = this.context
-                        Auth.userLogin(user)
+            const Auth = this.context
+            Auth.userLogin(user)
 
-                        this.setState({
-                            username: '',
-                            password: '',
-                            totp: 0,
-                            isLoggedIn: true,
-                            isError: false
-                        })
-                    }).catch(error => {
-                        handleLogError(error)
-                        this.setState({isError: true})
-                    })
-
-                }else{
-                    this.setState({isError: true})
-                }
+            this.setState({
+                username: '',
+                password: '',
+                totp: 0,
+                isLoggedIn: true,
+                isError: false
             })
-
+        }).catch(error => {
+            handleLogError(error)
+            this.setState({isError: true})
         })
     }
 
@@ -151,6 +104,7 @@ class Login extends Component {
     }
 
     render() {
+        const {t} = this.props
         const {isLoggedIn, isError} = this.state
         if (isLoggedIn) {
             return <Navigate to={'/'}/>
@@ -164,39 +118,37 @@ class Login extends Component {
                             <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
                                 <div className="card border-0 shadow rounded-3 my-5">
                                     <div className="card-body p-4 p-sm-5">
-                                        <h5 className="card-title text-center mb-5 fw-light fs-5">Zaloguj się</h5>
-                                        <Form onSubmit={this.handleSubmit}>
+                                        <h5 className="card-title text-center mb-5 fw-light fs-5">{t('login')}</h5>
+                                        <Form onSubmit={this.handleSubmitLogin}>
 
                                             <Form.Field>
-                                                <label>Nazwa użytkownika:</label>
+                                                <label>{t('username')}:</label>
                                                 <Form.Input fluid autoFocus type="text" id="floatingInput"
-                                                            placeholder="nazwa użytkownika" name="username"
+                                                            placeholder={t('username')} name="username"
                                                             onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <Form.Field>
-                                                <label>Hasło:</label>
+                                                <label>{t('password')}:</label>
                                                 <Form.Input fluid type="password" id="floatingInput"
-                                                            placeholder="hasło" name="password"
+                                                            placeholder={t('password')} name="password"
                                                             onChange={this.handleInputChange}/>
                                             </Form.Field>
 
                                             <div className="d-grid">
                                                 <button className="btn btn-primary btn-login text-uppercase fw-bold"
-                                                        type="submit">Zaloguj się
+                                                        type="submit">{t('login')}
                                                 </button>
                                             </div>
 
                                             <hr className="my-4"></hr>
 
                                             <div className="d-grid mb-2">
-                                                <p>Nie masz jeszcze konta ?</p>
+                                                <p>{t('youDontHaveAnAccountYet')}</p>
                                                 <Nav.Link as={Link} to={"/customerZone/registration"}
-                                                          className="btn btn-primary btn-login text-uppercase fw-bold"> Zarejestruj
-                                                    się</Nav.Link>
+                                                          className="btn btn-primary btn-login text-uppercase fw-bold">{t('register')}</Nav.Link>
                                             </div>
-                                            {isError && <Message negative>Nazwa użytkownika lub hasło są
-                                                nieprawidłowe!</Message>}
+                                            {isError && <Message className={"messageErrorLogin"}>{t('usernameOrPasswordAreIncorrect')}</Message>}
                                         </Form>
                                     </div>
                                 </div>
@@ -209,27 +161,27 @@ class Login extends Component {
                                 <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
                                     <div className="card border-0 shadow rounded-3 my-5">
                                         <div className="card-body p-4 p-sm-5">
-                                            <h5 className="card-title text-center mb-5 fw-light fs-5">Proszę podać 6-cyfrowy kod z aplikacji autentykatora </h5>
-                                            <Form onSubmit={this.handleSubmitVerify}>
+                                            <h5 className="card-title text-center mb-5 fw-light fs-5">{t('6digitCode')}</h5>
+                                            <Form onSubmit={this.handleSubmitVerifyCode}>
 
                                                 <Form.Field>
-                                                    <label>2FA kod:</label>
+                                                    <label>{t('2FACode')}</label>
                                                     <Form.Input fluid autoFocus type="text" id="floatingInput"
-                                                                placeholder="kod" name="totp"
+                                                                placeholder={t('code')} name="totp"
                                                                 onChange={this.handleInputChange}/>
                                                 </Form.Field>
 
 
                                                 <div className="d-grid">
                                                     <button className="btn btn-primary btn-login text-uppercase fw-bold"
-                                                            type="submit">Zaloguj się
+                                                            type="submit">{t('login')}
                                                     </button>
                                                 </div>
 
 
                                                 <hr className="my-4"></hr>
 
-                                                {isError && <Message negative>Błąd!</Message>}
+                                                {isError && <Message className={"messageErrorLogin"}>{t('error')}</Message>}
                                             </Form>
                                         </div>
                                     </div>
@@ -244,4 +196,4 @@ class Login extends Component {
     }
 }
 
-export default Login
+export default withTranslation()(Login);

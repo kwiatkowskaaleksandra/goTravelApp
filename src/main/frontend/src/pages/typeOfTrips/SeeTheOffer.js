@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import NavigationBar from "../../others/NavigationBar";
 import Footer from "../../others/Footer";
-import {orderApi} from "../../others/OrderApi";
+import {goTravelApi} from "../../others/GoTravelApi";
 import {BsCalendarWeek, BsCheck2All, BsPeople, BsTrash3} from "react-icons/bs";
 import {MdOutlineFoodBank} from "react-icons/md";
 import {FaRegPaperPlane} from "react-icons/fa";
@@ -10,12 +10,12 @@ import Carousel from "react-bootstrap/Carousel";
 import AuthContext from "../../others/AuthContext";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
+import {withTranslation} from "react-i18next";
 
 
 class SeeTheOffer extends Component {
 
     static contextType = AuthContext
-
 
     state = {
         idTripSelected: '',
@@ -43,7 +43,7 @@ class SeeTheOffer extends Component {
 
         if (user != null) {
             this.setState({isUserLogin: true, userId: user.id})
-            orderApi.getUserInfo(user).then(res => {
+            goTravelApi.getUserInfo(user).then(res => {
                 this.setState({
                     userInfo: res.data,
                     userId: res.data.id,
@@ -56,11 +56,12 @@ class SeeTheOffer extends Component {
         this.handleGetOpinion()
         this.handleGetPhoto()
         this.handleGetAttractions()
+
     }
 
 
     handleGetOpinion = () => {
-        orderApi.getOpinionsByIdTrip(this.state.idTripSelected).then(res => {
+        goTravelApi.getOpinionsByIdTrip(this.state.idTripSelected).then(res => {
             this.setState({
                 opinions: res.data,
                 dateFormatted: new Date(res.data.date).toLocaleDateString("en-CA", {
@@ -75,7 +76,7 @@ class SeeTheOffer extends Component {
     handlePostOpinion = () => {
         const opinion = {description: this.state.opinionDesc}
 
-        orderApi.csrf().then(res => {
+        goTravelApi.csrf().then(res => {
             axios.post("http://localhost:8080/api/opinions/addOpinion/"+this.state.userId+"/"+ this.state.idTripSelected, opinion, {
                 withCredentials: true,
                 headers: {
@@ -91,7 +92,7 @@ class SeeTheOffer extends Component {
     }
 
     handleGetPhoto = () => {
-        orderApi.getPhotos(this.state.idTripSelected).then(res => {
+        goTravelApi.getPhotos(this.state.idTripSelected).then(res => {
             this.setState({
                 photos: res.data
             })
@@ -99,7 +100,7 @@ class SeeTheOffer extends Component {
     }
 
     handleGetAttractions = () => {
-        orderApi.getAttractions(this.state.idTripSelected).then(res => {
+        goTravelApi.getAttractions(this.state.idTripSelected).then(res => {
             this.setState({
                 attractions: res.data
             })
@@ -107,40 +108,41 @@ class SeeTheOffer extends Component {
     }
 
     handleGetTrip = () => {
-        orderApi.getTripById(this.state.idTripSelected).then(res => {
+        const {t} = this.props
+        goTravelApi.getTripById(this.state.idTripSelected, localStorage.getItem('selectedLang')).then(res => {
             this.setState({tripOffer: res.data})
 
-            if (res.data.typeOfTrip === 'lastMinute') {
+            if (res.data.typeOfTrip.name === 'lastMinute') {
                 this.setState({
-                    typeTrip: 'Last Minute'
+                    typeTrip: t('lastMinute')
                 })
-            } else if (res.data.typeOfTrip === 'promocje') {
+            } else if (res.data.typeOfTrip.name === 'promotions') {
                 this.setState({
-                    typeTrip: 'Promocja'
+                    typeTrip: t('promotions')
                 })
-            } else if (res.data.typeOfTrip === 'krotkiUrlop') {
+            } else if (res.data.typeOfTrip.name === 'shortTrips') {
                 this.setState({
-                    typeTrip: 'Krótki urlop'
+                    typeTrip: t('shortTrips')
                 })
-            } else if (res.data.typeOfTrip === 'dlugiPobyt') {
+            } else if (res.data.typeOfTrip.name === 'longTrips') {
                 this.setState({
-                    typeTrip: 'Dlugi pobyt'
+                    typeTrip: t('longTrips')
                 })
-            } else if (res.data.typeOfTrip === 'rejs') {
+            } else if (res.data.typeOfTrip.name === 'cruises') {
                 this.setState({
-                    typeTrip: 'Rejs'
+                    typeTrip: t('cruises')
                 })
-            } else if (res.data.typeOfTrip === 'allInclusive') {
+            } else if (res.data.typeOfTrip.name === 'allInclusive') {
                 this.setState({
-                    typeTrip: 'All Inclusive'
+                    typeTrip: t('allInclusive')
                 })
-            } else if (res.data.typeOfTrip === 'wakacjeRodzina') {
+            } else if (res.data.typeOfTrip.name === 'familyTrips') {
                 this.setState({
-                    typeTrip: 'Wakacje z dziećmi'
+                    typeTrip: t('familyTrips')
                 })
-            } else if (res.data.typeOfTrip === 'egzotyka') {
+            } else if (res.data.typeOfTrip.name === 'exotics') {
                 this.setState({
-                    typeTrip: 'Egzotyka'
+                    typeTrip: t('exotics')
                 })
             }
 
@@ -154,11 +156,7 @@ class SeeTheOffer extends Component {
     }
 
     handleReservation = () => {
-        if (this.state.isUserLogin === false) {
-            window.location.href = "/customerZone/login"
-        } else {
-            window.location.href = "/reservationForm/" + this.state.idTripSelected
-        }
+        window.location.href = "/reservationForm/" + this.state.idTripSelected
     }
 
     handleGetDescription = (e) => {
@@ -167,7 +165,7 @@ class SeeTheOffer extends Component {
 
     handleDeleteOpinion = (id) => {
 
-        orderApi.csrf().then(res => {
+        goTravelApi.csrf().then(res => {
             axios.delete("http://localhost:8080/api/opinions/deleteOpinion/" + id, {
                     withCredentials: true,
                     headers: {
@@ -214,7 +212,8 @@ class SeeTheOffer extends Component {
             matchingSection.classList.add("is-active");
         }
 
-
+        const {t} = this.props
+        //this.props.
         return (
             <main>
                 <NavigationBar/>
@@ -238,53 +237,53 @@ class SeeTheOffer extends Component {
                                 </Carousel>
                             </center>
 
-                            <div class="card-body">
+                            <div className="card-body">
                                 <div className="my-tabs">
                                     <nav className="tabs">
                                         <ul>
-                                            <li className="is-active"><a href="#tab-one">Informacje ogólne</a></li>
-                                            <li><a href="#tab-two">Opinie</a></li>
-                                            <li><a href="#tab-three">Atrakcje</a></li>
+                                            <li className="is-active" style={{fontFamily: "Comic Sans MS"}}><a href="#tab-one">{t('goTravelNamespace2:generalInformation')}</a></li>
+                                            <li><a href="#tab-two" style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace2:opinions')}</a></li>
+                                            <li><a href="#tab-three" style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace2:attractions')}</a></li>
                                         </ul>
                                     </nav>
 
                                     <section className="tab-content is-active" id="tab-one">
 
-                                        <h2 className={"infoTrip"}>{this.state.typeTrip} - {this.state.city} - {this.state.country}</h2>
+                                        <h2 className={"infoTrip"}>{t('goTravelNamespace1:'+this.state.typeTrip)} - {t('goTravelNamespace2:'+this.state.city)} - {t('goTravelNamespace2:'+this.state.country)}</h2>
 
                                         <p className={"mt-3 ms-3 price"}><BsPeople style={{
                                             width: '25px',
                                             height: '25px',
                                             marginLeft: '5px'
-                                        }}/> {this.state.tripOffer.price} zł/os</p>
+                                        }}/> {this.state.tripOffer.price} {t('goTravelNamespace1:perPerson')}</p>
 
                                         <p className={"mt-3 ms-3 info"}><BsCalendarWeek style={{
                                             width: '15px',
                                             height: '15px',
                                             marginLeft: '5px'
-                                        }}/> {this.state.tripOffer.numberOfDays} noclegów </p>
+                                        }}/> {this.state.tripOffer.numberOfDays} {t('goTravelNamespace2:nights')} </p>
 
                                         <p className={"mt-3 ms-3 info"}><MdOutlineFoodBank style={{
                                             width: '25px',
                                             height: '25px'
-                                        }}/> {this.state.tripOffer.food} </p>
+                                        }}/> {t('goTravelNamespace2:'+this.state.tripOffer.food)} </p>
 
                                         <p className={"mt-3 ms-3 info"}><FaRegPaperPlane tyle={{
                                             width: '15px',
                                             height: '15px',
                                             marginLeft: '2px'
-                                        }}/> {this.state.transport}</p>
+                                        }}/> {t('goTravelNamespace1:'+this.state.transport)}</p>
 
                                         <p className={"mt-3 ms-3 info"}><RiHotelLine tyle={{
                                             width: '15px',
                                             height: '15px',
                                             marginLeft: '2px'
-                                        }}/> {this.state.accommodation}</p>
+                                        }}/> {t('goTravelNamespace2:'+this.state.accommodation)}</p>
 
                                         <p className={"mt-3 ms-3 desc"}> {this.state.tripOffer.tripDescription}</p>
 
-                                        <button class="btn btn-primary reservation" type="submit"
-                                                onClick={this.handleReservation}>Zarezerwuj już teraz
+                                        <button className="btn btn-primary reservation" type="submit"
+                                                onClick={this.handleReservation}>{t('goTravelNamespace2:bookNow')}
                                         </button>
 
                                     </section>
@@ -313,10 +312,10 @@ class SeeTheOffer extends Component {
                                             {this.state.isUserLogin ? (
                                                 <div className="input-group mt-3" style={{width: '77rem'}}>
                                                     <textarea className="form-control" aria-label="With textarea"
-                                                              placeholder={"Moja opinia..."}
+                                                              placeholder={t('goTravelNamespace2:myOpinion')+'...'}
                                                               onChange={this.handleGetDescription}></textarea>
                                                     <Button type="submit" class="btn btn-primary"
-                                                            onClick={this.handlePostOpinion}>Dodaj opinie</Button>
+                                                            onClick={this.handlePostOpinion}>{t('goTravelNamespace2:addOpinions')}</Button>
                                                 </div>
                                             ) : (
                                                 <div></div>
@@ -331,7 +330,7 @@ class SeeTheOffer extends Component {
                                     <section className="tab-content" id="tab-three">
                                         {this.state.attractions.map(attraction =>
                                             <div key={attraction.idAttraction} className={"mt-3 ms-3"}>
-                                                <p className={"attraction"}><BsCheck2All/> {attraction.nameAttraction}
+                                                <p className={"attraction"}><BsCheck2All/> {t('goTravelNamespace2:'+attraction.nameAttraction)}
                                                 </p>
                                             </div>
                                         )}
@@ -353,4 +352,4 @@ class SeeTheOffer extends Component {
 }
 
 
-export default SeeTheOffer;
+export default withTranslation(['goTravelNamespace2', 'goTravelNamespace1'])(SeeTheOffer);

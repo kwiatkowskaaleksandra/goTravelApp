@@ -29,4 +29,16 @@ public class AccommodationServiceImpl implements AccommodationService {
     public List<Accommodation> getAllAccommodations() {
         return accommodationRepository.findAll();
     }
+
+    /**
+     * Get accommodation by id of the accommodation.
+     *
+     * @param id the id of the accommodation
+     * @return the accommodation
+     */
+    @Override
+    public Accommodation getAccommodationsById(int id) {
+        return accommodationRepository.findByIdAccommodation(id);
+    }
+
 }

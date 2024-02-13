@@ -1,0 +1,11 @@
+.insurance-card {
+    flex: 1;
+    margin: 0.5rem;
+    max-width: calc(33.333% - 1rem);
+}
+
+@media (max-width: 768px) {
+    .insurance-card {
+        max-width: 100%; /
+    }
+}

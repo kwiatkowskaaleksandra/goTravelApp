@@ -9,7 +9,6 @@ import java.util.List;
  */
 public interface CityService {
 
-
     /**
      * Get cities by id country.
      *

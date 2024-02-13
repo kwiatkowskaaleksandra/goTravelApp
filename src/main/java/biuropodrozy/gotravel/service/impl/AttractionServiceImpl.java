@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
 /**
  * The Attraction service implementation.
  */
@@ -42,16 +40,15 @@ public class AttractionServiceImpl implements AttractionService {
         return attractionRepository.findAll();
     }
 
-
     /**
-     * Get optional attraction by name of the attraction.
+     * Get attraction by id of the attraction.
      *
-     * @param name the name of the attraction
+     * @param id the id of the attraction
      * @return the attraction
      */
     @Override
-    public Optional<Attraction> getAttractionByNameAttraction(final String name) {
-        return attractionRepository.findByNameAttraction(name);
+    public Attraction getAttractionById(int id) {
+        return attractionRepository.findByIdAttraction(id);
     }
 
 }
