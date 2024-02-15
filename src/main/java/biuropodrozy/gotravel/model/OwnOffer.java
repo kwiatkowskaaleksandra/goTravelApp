@@ -77,6 +77,11 @@ public class OwnOffer {
     private int numberOfDays;
 
     /**
+     * Represents the payment status.
+     */
+    private boolean payment;
+
+    /**
      * The set of room types included in the offer.
      */
     @OneToMany(mappedBy = "ownOffer")

@@ -1,7 +1,5 @@
 package biuropodrozy.gotravel.service;
 
-import biuropodrozy.gotravel.exception.PasswordException;
-import biuropodrozy.gotravel.exception.UserException;
 import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.rest.dto.request.PasswordRequest;
 import biuropodrozy.gotravel.rest.dto.request.UserTotpRequest;

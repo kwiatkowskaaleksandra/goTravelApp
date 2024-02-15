@@ -15,8 +15,9 @@ public interface OwnOfferService {
      *
      * @param ownOffer the own offer
      * @param user the user
+     * @return the id of the booked trip
      */
-    void saveOwnOffer(OwnOffer ownOffer, User user);
+    long saveOwnOffer(OwnOffer ownOffer, User user);
 
     /**
      * Calculates the total price for the given own offer.
@@ -27,6 +28,14 @@ public interface OwnOfferService {
      */
     double getTotalPrice(OwnOffer ownOffer, User user);
 
+    /**
+     * Updates the payment status of the own offer with the specified ID.
+     * This method retrieves the own offer from the repository using the provided ID,
+     * sets the payment status to true, and saves the updated own offer back to the repository.
+     *
+     * @param idOwnOffer The ID of the own offer whose payment status is to be updated.
+     */
+    void updatePaymentStatus(long idOwnOffer);
     /**
      * Get by id own offer.
      *

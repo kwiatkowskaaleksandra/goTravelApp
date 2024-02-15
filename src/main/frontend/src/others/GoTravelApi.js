@@ -35,7 +35,20 @@ export const goTravelApi = {
     isUsing2FA,
     createReservation,
     getTotalPriceOwnOffer,
-    createOwnOffer
+    createOwnOffer,
+    updatePaymentStatus
+}
+
+function updatePaymentStatus(user, token, type, idOwnOffer) {
+    return instance.put("api/"+type+"/updatePaymentStatus", idOwnOffer, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
 }
 
 function createOwnOffer(user, token, ownOffer) {

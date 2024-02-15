@@ -57,9 +57,14 @@ public class Reservation {
     private LocalDate departureDate;
 
     /**
-     *
+     * Total price of the trip.
      */
     private double totalPrice;
+
+    /**
+     * Represents the payment status.
+     */
+    private boolean payment;
 
     /**
      * The set of room types included in the reservation.

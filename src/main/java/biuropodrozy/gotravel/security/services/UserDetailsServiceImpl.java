@@ -1,7 +1,6 @@
 package biuropodrozy.gotravel.security.services;
 
 import biuropodrozy.gotravel.model.User;
-import biuropodrozy.gotravel.security.services.UserDetailsImpl;
 import biuropodrozy.gotravel.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

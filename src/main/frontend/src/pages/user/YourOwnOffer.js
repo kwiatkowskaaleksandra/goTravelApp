@@ -2,15 +2,15 @@ import React, {Component} from "react";
 import NavigationBar from "../../others/NavigationBar";
 import Footer from "../../others/Footer";
 import './YourOwnOffer.css'
-import {Container, Modal, OverlayTrigger, Tab, Tabs} from "react-bootstrap";
+import {Modal, Tab, Tabs} from "react-bootstrap";
 import AuthContext from "../../others/AuthContext";
 import {goTravelApi} from "../../others/GoTravelApi";
 import {BsCheck2Circle, BsInfoCircle} from "react-icons/bs";
 import {handleLogError} from "../../others/JWT";
-import axios from "axios";
 import {withTranslation} from "react-i18next";
 import Button from "react-bootstrap/Button";
 import {Message} from "semantic-ui-react";
+import StripeButton from "../../others/StripeButton";
 
 
 class YourOwnOffer extends Component {
@@ -21,45 +21,31 @@ class YourOwnOffer extends Component {
         super(props);
         this.state = {
             userInfo: [],
-
             countries: [],
             selectedCountryId: 0,
-
             cities: [],
-            selectedCity: '',
             selectedCityId: 0,
-
             accommodations: [],
-            selectedAccommodation: '',
             selectedAccommodationId: 0,
-
             typeOfRooms: [],
-
             attractions: [],
-
             showModal: false,
-            checkedItems: {},
-            numberOfRooms: {},
             checkedAttractions: {},
-
             numberOfAdults: 0,
             numberOfChildren: 0,
             departureDate: '',
             numberOfDays: 0,
             food: false,
-
-            selectedTypeOfRoom: {},
-
             isError: false,
             errorMessage: '',
             price: 0,
-
             key: 'generalInformation',
             rooms: [{type: "", quantity: ""}],
             user: null,
             summaryVisibility: false,
             bookedCorrectlyVisible: false,
-            message: ''
+            message: '',
+            idOwnOffer: 0
         }
     }
 
@@ -181,6 +167,7 @@ class YourOwnOffer extends Component {
             food: this.state.food,
             totalPrice: this.state.price,
             numberOfDays: this.state.numberOfDays,
+            payment: false,
             offerCity: {
                 idCity: this.state.selectedCityId
             },
@@ -226,7 +213,8 @@ class YourOwnOffer extends Component {
              goTravelApi.createOwnOffer(this.state.user, csrfToken, ownOffer).then(response => {
                  this.setState({
                      bookedCorrectlyVisible: true,
-                     message: response.data
+                     message: response.data.message,
+                     idOwnOffer: response.data.idOwnOffer
                  })
              }).catch(error => {
                  handleLogError(error)
@@ -895,6 +883,7 @@ class YourOwnOffer extends Component {
                                     <Button variant="secondary" onClick={this.handleCloseModalBookedCorrectly} style={{fontFamily: "Comic Sans MS"}}>
                                         {t('goTravelNamespace3:close')}
                                     </Button>
+                                    <StripeButton price={this.state.price} email={this.state.userInfo.email} user={this.state.user} type={"ownOffer"} id={this.state.idOwnOffer}/>
                                 </Modal.Footer>
                             </Modal>
                         </div>

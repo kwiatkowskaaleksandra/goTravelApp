@@ -47,9 +47,10 @@ public class ReservationServiceImpl implements ReservationService {
      *
      * @param reservation The reservation to be saved.
      * @param user        The user associated with the reservation.
+     * @return The id of the booked trip.
      */
     @Override
-    public void saveReservation(final Reservation reservation, User user) {
+    public long saveReservation(final Reservation reservation, User user) {
         ValidationData validationData = new ValidationData(user, reservation.getNumberOfChildren(), reservation.getNumberOfAdults(), reservation.getDepartureDate(),
                 reservation.getTrip().getTripAccommodation().getIdAccommodation(), reservation.getTrip().getTripCity().getIdCity(), reservation.getTrip().getNumberOfDays());
         validateReservation.validateReservationData(validationData);
@@ -64,6 +65,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
         saveReservationsTypeOfRoom(savedReservation);
         log.info("The trip has been booked.");
+        return savedReservation.getIdReservation();
     }
 
     /**
@@ -75,6 +77,20 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation getReservationsByIdReservation(final Long idReservation) {
         return reservationRepository.findReservationsByIdReservation(idReservation);
+    }
+
+    /**
+     * Updates the payment status of the reservation with the specified ID.
+     * This method retrieves the reservation from the repository using the provided ID,
+     * sets the payment status to true, and saves the updated reservation back to the repository.
+     *
+     * @param idReservation The ID of the reservation whose payment status is to be updated.
+     */
+    @Override
+    public void updatePaymentStatus(long idReservation) {
+        Reservation reservation = reservationRepository.findReservationsByIdReservation(idReservation);
+        reservation.setPayment(true);
+        reservationRepository.save(reservation);
     }
 
     /**

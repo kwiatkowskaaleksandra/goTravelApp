@@ -9,7 +9,6 @@ import {CgProfile} from "react-icons/cg";
 import {RiLockPasswordLine} from "react-icons/ri";
 import {HiOutlineClipboardDocumentList} from "react-icons/hi2";
 import {MdOutlineDeleteSweep} from "react-icons/md";
-import {handleLogError} from "../../others/JWT";
 import Button from "react-bootstrap/Button";
 import {Checkbox, Message} from "semantic-ui-react";
 import {IoTrashBin} from "react-icons/io5";

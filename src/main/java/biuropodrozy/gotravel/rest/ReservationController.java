@@ -14,15 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Reservation controller.
@@ -77,8 +73,7 @@ public class ReservationController {
      * This endpoint requires the user to have the 'USER' role.
      *
      * @param reservation The reservation to be added.
-     * @return ResponseEntity indicating successful addition of the reservation if the user is authenticated and authorized,
-     *         otherwise returns UNAUTHORIZED status.
+     * @return A ResponseEntity containing a message indicating the success of the operation and the ID of the newly created reservation.
      */
     @PostMapping("/addReservation")
     @PreAuthorize("hasRole('USER')")
@@ -86,8 +81,33 @@ public class ReservationController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
             User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            reservationService.saveReservation(reservation, existingUser);
-            return ResponseEntity.ok().body("theTripHasBeenBooked");
+            long idReservation = reservationService.saveReservation(reservation, existingUser);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "theTripHasBeenBooked");
+            response.put("idReservation", idReservation);
+
+            return ResponseEntity.ok().body(response);
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    /**
+     * Endpoint for updating the payment status of a reservation.
+     * This endpoint allows users to update the payment status of their reservation.
+     * Only users with the 'USER' role are authorized to access this endpoint.
+     *
+     * @param idReservation The ID of the reservation whose payment status is to be updated.
+     * @return A ResponseEntity with an appropriate message indicating whether the payment status was successfully updated or not.
+     */
+    @PutMapping("/updatePaymentStatus")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<?> updatePaymentStatus(@RequestBody final long idReservation) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
+            userService.validateAndGetUserByUsername(userDetails.getUsername());
+            reservationService.updatePaymentStatus(idReservation);
+            return ResponseEntity.ok().body("Payment status changed correctly.");
         }
         log.error("Unauthorized access.");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

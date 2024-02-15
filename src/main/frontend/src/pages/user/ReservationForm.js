@@ -12,6 +12,7 @@ import {Message} from "semantic-ui-react";
 import { BsCheck2Circle } from "react-icons/bs";
 import {withTranslation} from "react-i18next";
 import Tooltip from 'react-bootstrap/Tooltip';
+import StripeButton from "../../others/StripeButton";
 
 class ReservationForm extends Component {
 
@@ -36,7 +37,9 @@ class ReservationForm extends Component {
         key: 'personalData',
         userInfo: null,
         bookedCorrectlyVisible: false,
-        message: ''
+        message: '',
+        idOwnOffer: 0,
+        totalCost: 0
     }
 
     componentDidMount() {
@@ -123,6 +126,7 @@ class ReservationForm extends Component {
             numberOfAdults: this.state.numberOfAdults,
             numberOfChildren: this.state.numberOfChildren,
             trip: this.state.tripOffer,
+            payment: false,
             typeOfRoomReservation: this.state.rooms.map(room => ({
                 numberOfRoom: room.quantity,
                 typeOfRoom: {
@@ -143,7 +147,8 @@ class ReservationForm extends Component {
             this.handleCloseModal()
             this.setState({
                 bookedCorrectlyVisible: true,
-                message: res.data
+                message: res.data.message,
+                idReservation: res.data.idReservation
             })
         }).catch(error => {
             handleLogError(error)
@@ -187,6 +192,12 @@ class ReservationForm extends Component {
     }
 
     handleTabSelect = (selectedKey) => {
+        if (selectedKey === 'summary') {
+            const totalCost = this.state.numberOfChildren * (this.state.tripOffer.price / 2) + this.state.numberOfAdults * this.state.tripOffer.price;
+            this.setState({
+                totalCost: totalCost
+            })
+        }
         this.setState({key: selectedKey});
     };
 
@@ -855,7 +866,7 @@ class ReservationForm extends Component {
                                                         <input type="text" className="form-control"
                                                                style={{width: '20rem'}}
                                                                aria-describedby="passwordHelpInline"
-                                                               value={(this.state.numberOfChildren * (this.state.tripOffer.price / 2) + this.state.numberOfAdults * this.state.tripOffer.price)}
+                                                               value={this.state.totalCost}
                                                                disabled/>
                                                     </div>
                                                 </div>
@@ -895,6 +906,7 @@ class ReservationForm extends Component {
                                                         <Button variant="secondary" onClick={this.handleCloseModalBookedCorrectly} style={{fontFamily: "Comic Sans MS"}}>
                                                             {t('goTravelNamespace3:close')}
                                                         </Button>
+                                                        <StripeButton price={this.state.totalCost} email={this.state.user.email} user={this.state.userInfo} type={"reservations"} id={this.state.idReservation}/>
                                                     </Modal.Footer>
                                                 </Modal>
 

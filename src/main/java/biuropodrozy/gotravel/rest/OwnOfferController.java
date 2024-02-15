@@ -12,14 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The type Own offer controller.
@@ -66,16 +62,40 @@ public class OwnOfferController {
      * This endpoint requires the user to be authenticated.
      *
      * @param ownOffer The own offer to be created.
-     * @return ResponseEntity indicating successful creation of the own offer if the user is authenticated,
-     *         otherwise returns UNAUTHORIZED status.
+     * @return A ResponseEntity containing a message indicating the success of the operation and the ID of the newly created own offer.
      */
     @PostMapping("/createOwnOffer")
+    @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> createOwnOffer(@RequestBody final OwnOffer ownOffer) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
             User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            ownOfferService.saveOwnOffer(ownOffer, existingUser);
-            return ResponseEntity.ok().body("theTripHasBeenBooked");
+            long idOwnOffer = ownOfferService.saveOwnOffer(ownOffer, existingUser);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "theTripHasBeenBooked");
+            response.put("idOwnOffer", idOwnOffer);
+            return ResponseEntity.ok().body(response);
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    /**
+     * Updates the payment status of an own offer.
+     * This endpoint allows users with the role 'USER' to update the payment status of their own offer.
+     * The payment status is changed for the offer identified by the provided ID.
+     *
+     * @param idOwnOffer The ID of the own offer whose payment status is to be updated.
+     * @return A ResponseEntity with an appropriate message indicating whether the payment status was successfully updated or not.
+     */
+    @PutMapping("/updatePaymentStatus")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<?> updatePaymentStatus(@RequestBody final long idOwnOffer) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
+            userService.validateAndGetUserByUsername(userDetails.getUsername());
+            ownOfferService.updatePaymentStatus(idOwnOffer);
+            return ResponseEntity.ok().body("Payment status changed correctly.");
         }
         log.error("Unauthorized access.");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

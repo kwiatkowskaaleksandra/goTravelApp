@@ -58,9 +58,10 @@ public class OwnOfferServiceImpl implements OwnOfferService {
      * @param ownOffer The own offer to be saved.
      * @param user     The user associated with the own offer.
      * @throws ReservationException if the total price of the own offer is less than or equal to zero.
+     * @return The id of the booked trip.
      */
     @Override
-    public void saveOwnOffer(OwnOffer ownOffer, User user) {
+    public long saveOwnOffer(OwnOffer ownOffer, User user) {
         validateReservationData(ownOffer, user);
 
         if (ownOffer.getTotalPrice() <= 0) {
@@ -80,6 +81,7 @@ public class OwnOfferServiceImpl implements OwnOfferService {
         OwnOffer savedOwnOffer = ownOfferRepository.save(ownOffer);
         saveOwnOfferTypeOfRoom(savedOwnOffer);
         log.info("The trip has been booked.");
+        return savedOwnOffer.getIdOwnOffer();
     }
 
     /**
@@ -108,6 +110,20 @@ public class OwnOfferServiceImpl implements OwnOfferService {
         }
 
         return totalPrice;
+    }
+
+    /**
+     * Updates the payment status of the own offer with the specified ID.
+     * This method retrieves the own offer from the repository using the provided ID,
+     * sets the payment status to true, and saves the updated own offer back to the repository.
+     *
+     * @param idOwnOffer The ID of the own offer whose payment status is to be updated.
+     */
+    @Override
+    public void updatePaymentStatus(long idOwnOffer) {
+        OwnOffer ownOffer = ownOfferRepository.findByIdOwnOffer(idOwnOffer);
+        ownOffer.setPayment(true);
+        ownOfferRepository.save(ownOffer);
     }
 
     /**

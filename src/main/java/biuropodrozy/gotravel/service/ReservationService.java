@@ -14,8 +14,9 @@ public interface ReservationService {
      * Save reservation.
      *
      * @param reservation the reservation
+     * @return the id of the booked trip
      */
-    void saveReservation(Reservation reservation, User user);
+    long saveReservation(Reservation reservation, User user);
 
     /**
      * Get reservation by id reservation.
@@ -25,6 +26,14 @@ public interface ReservationService {
      */
     Reservation getReservationsByIdReservation(Long idReservation);
 
+    /**
+     * Updates the payment status of the reservation with the specified ID.
+     * This method retrieves the own offer from the repository using the provided ID,
+     * sets the payment status to true, and saves the updated reservation back to the repository.
+     *
+     * @param idReservation The ID of the reservation whose payment status is to be updated.
+     */
+    void updatePaymentStatus(long idReservation);
     /**
      * Get top by descending order by id reservation.
      *

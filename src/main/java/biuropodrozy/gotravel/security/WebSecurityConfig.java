@@ -29,10 +29,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class WebSecurityConfig {
 
     /**
-     * Represents the user role as a constant string value.
-     */
-    public static final String USER = "USER";
-    /**
      * Creates a new instance of the TokenAuthenticationFilter class.
      */
     @Bean
@@ -78,7 +74,7 @@ public class WebSecurityConfig {
                                 )).cors(withDefaults())
                 .csrf(csrf ->
                         csrf
-                                .ignoringRequestMatchers("/gotravel/signup/**", "/gotravel/authenticate/**", "/gotravel/refreshToken/**")
+                                .ignoringRequestMatchers("/gotravel/signup/**", "/gotravel/authenticate/**", "/gotravel/refreshToken/**", "/payment/**")
                                 .csrfTokenRepository(csrfTokenRepository())
                 );
 
