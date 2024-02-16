@@ -36,7 +36,43 @@ export const goTravelApi = {
     createReservation,
     getTotalPriceOwnOffer,
     createOwnOffer,
-    updatePaymentStatus
+    updatePaymentStatus,
+    addOpinion,
+    deleteOpinion,
+    countOpinionsById,
+    countOpinionsAndStars
+}
+
+function countOpinionsAndStars(idTrip) {
+    return instance.get("/api/opinions/countOpinionsAndStars" ,{
+        params: {
+            idTrip: idTrip
+        }
+    })
+}
+
+function deleteOpinion(user, token, idOpinion) {
+    return instance.delete("/api/opinions/deleteOpinion/" + idOpinion, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function addOpinion(user, token, opinion) {
+    return instance.post("/api/opinions/addOpinion", opinion, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
 }
 
 function updatePaymentStatus(user, token, type, idOwnOffer) {
@@ -234,8 +270,14 @@ function getAttractions(idTrip) {
     return instance.get("/api/attractions/" + idTrip)
 }
 
-function getOpinionsByIdTrip(idTrip) {
-    return instance.get("/api/opinions/" + idTrip)
+function getOpinionsByIdTrip(idTrip, sortType,  page, size) {
+    return instance.get("/api/opinions/" + idTrip, {
+        params: {
+            sortType: sortType,
+            page: page,
+            size: size
+        }
+    })
 }
 
 function getTripById(idTrip, selectedLang) {
@@ -253,6 +295,10 @@ function getTrips(typeOfTrip, page, size) {
 
 function countTrips(typeOfTrip) {
     return instance.get("/api/trips/countTrips/" + typeOfTrip)
+}
+
+function countOpinionsById(idTrips) {
+    return instance.get("/api/opinions/countOpinions/" + idTrips)
 }
 
 function getPhotos(idTrip) {

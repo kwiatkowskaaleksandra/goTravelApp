@@ -50,6 +50,9 @@ class Login extends Component {
             } else {
                 this.login({username, password})
             }
+        }).catch(error => {
+            handleLogError(error)
+            this.setState({isError: true})
         })
     }
 

@@ -1,12 +1,6 @@
 package biuropodrozy.gotravel.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,12 +27,19 @@ public class Opinion {
     /**
      * The description of the opinion.
      */
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
+
+    /**
+     * The number of stars given in the opinion.
+     */
+    private double stars;
 
     /**
      * The date when the opinion was given.
      */
-    private LocalDate date;
+    @Temporal(TemporalType.DATE)
+    private LocalDate dateOfAddingTheOpinion;
 
     /**
      * The user who provided the opinion.

@@ -22,7 +22,7 @@ const StripeButton = ({price, email, user, type, id}) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${user.accessToken}`
             }}).then(() => {
-                updatePaymentStatus().then(r => {
+                updatePaymentStatus().then(() => {
                     setShowModal(true);
                     setMessage('paymentAccepted')
                 })

@@ -19,7 +19,7 @@ public class PaymentRequest {
      */
     public enum Currency{
         USD, // United States Dollar
-        PLN; // Polish Zloty
+        PLN // Polish Zloty
     }
 
     /**

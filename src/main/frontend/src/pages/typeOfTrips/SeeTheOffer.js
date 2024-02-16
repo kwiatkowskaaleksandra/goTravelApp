@@ -2,16 +2,18 @@ import React, {Component} from "react";
 import NavigationBar from "../../others/NavigationBar";
 import Footer from "../../others/Footer";
 import {goTravelApi} from "../../others/GoTravelApi";
-import {BsCalendarWeek, BsCheck2All, BsPeople, BsTrash3} from "react-icons/bs";
+import {BsCalendarWeek, BsCheck2All, BsPeople} from "react-icons/bs";
 import {MdOutlineFoodBank} from "react-icons/md";
-import {FaRegPaperPlane} from "react-icons/fa";
+import {FaRegPaperPlane, FaTrashAlt} from "react-icons/fa";
 import {RiHotelLine} from "react-icons/ri";
 import Carousel from "react-bootstrap/Carousel";
 import AuthContext from "../../others/AuthContext";
-import Button from "react-bootstrap/Button";
-import axios from "axios";
 import {withTranslation} from "react-i18next";
-
+import {Card, Dropdown, Image, Tab, Tabs} from "react-bootstrap";
+import Rating from "./Rating";
+import ReactStars from "react-rating-stars-component";
+import {Message} from "semantic-ui-react";
+import {handleLogError} from "../../others/JWT";
 
 class SeeTheOffer extends Component {
 
@@ -25,15 +27,22 @@ class SeeTheOffer extends Component {
         country: '',
         transport: '',
         accommodation: '',
-        opinions: [],
-        dateFormatted: '',
         photos: [],
-        isUserLogin: false,
-        userId: 0,
         attractions: [],
-        opinionDesc: '',
-        userInfo: [],
-        userUsername: ''
+        key: 'generalInformation',
+        user: null,
+        sortType: '',
+        opinions: [],
+        averageOpinion: 0,
+        numberOfOpinion: 0,
+        description: '',
+        stars: 0,
+        starsKey: 0,
+        isError: false,
+        errorMessage: '',
+        page: 1,
+        size: 5,
+        howManyPages: 1,
     }
 
 
@@ -42,52 +51,23 @@ class SeeTheOffer extends Component {
         const user = Auth.getUser()
 
         if (user != null) {
-            this.setState({isUserLogin: true, userId: user.id})
-            goTravelApi.getUserInfo(user).then(res => {
-                this.setState({
-                    userInfo: res.data,
-                    userId: res.data.id,
-                    userUsername: res.data.username
-                })
+            this.setState({
+                user: user
             })
         }
         this.state.idTripSelected = document.location.href.split("/").pop()
         this.handleGetTrip()
-        this.handleGetOpinion()
+        this.countOpinions()
+        this.getNumberOfOpinionAndCountStars()
         this.handleGetPhoto()
         this.handleGetAttractions()
-
+        this.handleGetOpinion('ASC', this.state.page)
     }
 
-
-    handleGetOpinion = () => {
-        goTravelApi.getOpinionsByIdTrip(this.state.idTripSelected).then(res => {
-            this.setState({
-                opinions: res.data,
-                dateFormatted: new Date(res.data.date).toLocaleDateString("en-CA", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit"
-                })
-            })
-        })
-    }
-
-    handlePostOpinion = () => {
-        const opinion = {description: this.state.opinionDesc}
-
-        goTravelApi.csrf().then(res => {
-            axios.post("http://localhost:8080/api/opinions/addOpinion/"+this.state.userId+"/"+ this.state.idTripSelected, opinion, {
-                withCredentials: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': res.data.token
-                }}).then(() => {
-                this.handleGetOpinion()
-                this.setState({opinionDesc: ''})
-                window.location.reload()
-            })
+    countOpinions = () => {
+        goTravelApi.countOpinionsById(this.state.idTripSelected).then(res => {
+            const howMany = Math.ceil(res.data / this.state.size)
+            this.setState({howManyPages: howMany})
         })
     }
 
@@ -103,6 +83,67 @@ class SeeTheOffer extends Component {
         goTravelApi.getAttractions(this.state.idTripSelected).then(res => {
             this.setState({
                 attractions: res.data
+            })
+        })
+    }
+
+    getNumberOfOpinionAndCountStars = () => {
+        goTravelApi.countOpinionsAndStars(this.state.idTripSelected).then((response) => {
+            this.setState({
+                numberOfOpinion: response.data.countNumberOfOpinion,
+                averageOpinion: response.data.averageOpinionCalculated
+            })
+        }).catch(error => {
+            handleLogError(error);
+        });
+    }
+
+    handleGetOpinion = (sortType, page) => {
+        const size = this.state.size
+        let currentPage = page !== undefined ? page : 1;
+
+        if (page < 1) currentPage = 1
+        else if (page > this.state.howManyPages) currentPage = this.state.howManyPages
+
+        goTravelApi.getOpinionsByIdTrip(this.state.idTripSelected, sortType, currentPage - 1, size).then(response => {
+            this.setState({
+                sortType: sortType,
+                opinions: response.data.content,
+                page: currentPage
+            })
+        }).catch(error => {
+            handleLogError(error);
+        });
+    }
+
+    addOpinion = async () => {
+        const {t} = this.props
+        const csrfResponse = await goTravelApi.csrf();
+        const csrfToken = csrfResponse.data.token;
+
+        const opinion = {
+            description: this.state.description,
+            stars: this.state.stars,
+            trip: this.state.tripOffer
+        }
+
+        goTravelApi.addOpinion(this.state.user, csrfToken, opinion).then(() => {
+            this.getNumberOfOpinionAndCountStars()
+            this.countOpinions()
+            this.handleGetOpinion(this.state.sortType, 1)
+            this.setState({
+                stars: 0,
+                starsKey: this.state.starsKey + 1,
+                description: '',
+                isError: false,
+                errorMessage: '',
+                page: 1
+            })
+        }).catch(error => {
+            handleLogError(error)
+            this.setState({
+                isError: true,
+                errorMessage: t('goTravelNamespace3:'+error.response.data.message)
             })
         })
     }
@@ -159,61 +200,33 @@ class SeeTheOffer extends Component {
         window.location.href = "/reservationForm/" + this.state.idTripSelected
     }
 
-    handleGetDescription = (e) => {
-        this.setState({opinionDesc: e.target.value})
+     handleDeleteOpinion = async (idOpinion) => {
+         const csrfResponse = await goTravelApi.csrf();
+         const csrfToken = csrfResponse.data.token;
+
+         goTravelApi.deleteOpinion(this.state.user, csrfToken, idOpinion).then(() => {
+             this.getNumberOfOpinionAndCountStars()
+             this.countOpinions()
+             this.handleGetOpinion(this.state.sortType, this.state.page)
+         }).catch(error => {
+             handleLogError(error)
+         })
+     }
+
+    handleChangePage = (currentPage) => {
+        this.setState({page: currentPage})
+        this.handleGetOpinion(this.state.sortType, currentPage)
     }
 
-    handleDeleteOpinion = (id) => {
-
-        goTravelApi.csrf().then(res => {
-            axios.delete("http://localhost:8080/api/opinions/deleteOpinion/" + id, {
-                    withCredentials: true,
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': res.data.token
-                    }
-                }
-            ).then(() => {
-                this.handleGetOpinion()
-                window.location.reload()
-            })
-        })
-
-    }
+    handleTabSelect = (selectedKey) => {
+        this.setState({key: selectedKey});
+    };
 
     render() {
-
-        const tabs = document.querySelectorAll(".my-tabs .tabs li");
-        const sections = document.querySelectorAll(".my-tabs .tab-content");
-
-
-        tabs.forEach(tab => {
-            tab.addEventListener("click", e => {
-                e.preventDefault();
-                removeActiveTab();
-                addActiveTab(tab);
-            });
-        })
-
-        const removeActiveTab = () => {
-            tabs.forEach(tab => {
-                tab.classList.remove("is-active");
-            });
-            sections.forEach(section => {
-                section.classList.remove("is-active");
-            });
-        }
-
-        const addActiveTab = tab => {
-            tab.classList.add("is-active");
-            const href = tab.querySelector("a").getAttribute("href");
-            const matchingSection = document.querySelector(href);
-            matchingSection.classList.add("is-active");
-        }
-
+        const {key, isError, errorMessage} = this.state
         const {t} = this.props
-        //this.props.
+        const pages = Array.from({ length: this.state.howManyPages }, (_, index) => index + 1);
+
         return (
             <main>
                 <NavigationBar/>
@@ -221,7 +234,7 @@ class SeeTheOffer extends Component {
                 <header className={"head"}>
                     <section className={"d-flex justify-content-center mb-4 ms-5 me-5"}>
 
-                        <div className={"card"} style={{width: '80rem'}}>
+                        <div className={"card"} style={{width: '1000px'}}>
                             <center>
                                 <Carousel>
                                     {this.state.photos.map(photo =>
@@ -235,112 +248,185 @@ class SeeTheOffer extends Component {
                                         </Carousel.Item>
                                     )}
                                 </Carousel>
-                            </center>
 
-                            <div className="card-body">
-                                <div className="my-tabs">
-                                    <nav className="tabs">
-                                        <ul>
-                                            <li className="is-active" style={{fontFamily: "Comic Sans MS"}}><a href="#tab-one">{t('goTravelNamespace2:generalInformation')}</a></li>
-                                            <li><a href="#tab-two" style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace2:opinions')}</a></li>
-                                            <li><a href="#tab-three" style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace2:attractions')}</a></li>
-                                        </ul>
-                                    </nav>
+                                <div className="d-flex justify-content-center w-75 mt-2">
+                                    <div className="d-flex flex-column align-items-start">
+                                        <Tabs
+                                            id="controlled-tab"
+                                            activeKey={key}
+                                            onSelect={this.handleTabSelect}
+                                            className="mb-3 flex-row"
+                                            style={{width: '800px'}}
+                                        >
+                                            <Tab eventKey="generalInformation" title={t('goTravelNamespace2:generalInformation')}/>
+                                            <Tab eventKey="opinions" title={t('goTravelNamespace2:opinions')}/>
+                                            <Tab eventKey="attractions" title={t('goTravelNamespace2:attractions')}/>
+                                        </Tabs>
+                                        <div className={"ml-auto"}>
+                                            {key === 'generalInformation' &&
+                                                <div className={"d-flex flex-column align-items-start"} style={{width: '800px'}}>
+                                                    <h2 className={"infoTrip"}>{t('goTravelNamespace1:'+this.state.typeTrip)} - {t('goTravelNamespace2:'+this.state.city)} - {t('goTravelNamespace2:'+this.state.country)}</h2>
 
-                                    <section className="tab-content is-active" id="tab-one">
+                                                    <p className={"mt-3 ms-3 price"}><BsPeople style={{
+                                                        width: '25px',
+                                                        height: '25px',
+                                                        marginLeft: '5px'
+                                                    }}/> {this.state.tripOffer.price} {t('goTravelNamespace1:perPerson')}</p>
 
-                                        <h2 className={"infoTrip"}>{t('goTravelNamespace1:'+this.state.typeTrip)} - {t('goTravelNamespace2:'+this.state.city)} - {t('goTravelNamespace2:'+this.state.country)}</h2>
+                                                    <p className={"mt-3 ms-3 info"}><BsCalendarWeek style={{
+                                                        width: '15px',
+                                                        height: '15px',
+                                                        marginLeft: '5px'
+                                                    }}/> {this.state.tripOffer.numberOfDays} {t('goTravelNamespace2:nights')} </p>
 
-                                        <p className={"mt-3 ms-3 price"}><BsPeople style={{
-                                            width: '25px',
-                                            height: '25px',
-                                            marginLeft: '5px'
-                                        }}/> {this.state.tripOffer.price} {t('goTravelNamespace1:perPerson')}</p>
+                                                    <p className={"mt-3 ms-3 info"}><MdOutlineFoodBank style={{
+                                                        width: '25px',
+                                                        height: '25px'
+                                                    }}/> {t('goTravelNamespace2:'+this.state.tripOffer.food)} </p>
 
-                                        <p className={"mt-3 ms-3 info"}><BsCalendarWeek style={{
-                                            width: '15px',
-                                            height: '15px',
-                                            marginLeft: '5px'
-                                        }}/> {this.state.tripOffer.numberOfDays} {t('goTravelNamespace2:nights')} </p>
+                                                    <p className={"mt-3 ms-3 info"}><FaRegPaperPlane tyle={{
+                                                        width: '15px',
+                                                        height: '15px',
+                                                        marginLeft: '2px'
+                                                    }}/> {t('goTravelNamespace1:'+this.state.transport)}</p>
 
-                                        <p className={"mt-3 ms-3 info"}><MdOutlineFoodBank style={{
-                                            width: '25px',
-                                            height: '25px'
-                                        }}/> {t('goTravelNamespace2:'+this.state.tripOffer.food)} </p>
+                                                    <p className={"mt-3 ms-3 info"}><RiHotelLine tyle={{
+                                                        width: '15px',
+                                                        height: '15px',
+                                                        marginLeft: '2px'
+                                                    }}/> {t('goTravelNamespace2:'+this.state.accommodation)}</p>
 
-                                        <p className={"mt-3 ms-3 info"}><FaRegPaperPlane tyle={{
-                                            width: '15px',
-                                            height: '15px',
-                                            marginLeft: '2px'
-                                        }}/> {t('goTravelNamespace1:'+this.state.transport)}</p>
+                                                    <p className={"mt-3 ms-3 desc"}> {this.state.tripOffer.tripDescription}</p>
 
-                                        <p className={"mt-3 ms-3 info"}><RiHotelLine tyle={{
-                                            width: '15px',
-                                            height: '15px',
-                                            marginLeft: '2px'
-                                        }}/> {t('goTravelNamespace2:'+this.state.accommodation)}</p>
+                                                    <button className="btn btn-primary reservation" type="submit"
+                                                            onClick={this.handleReservation}>{t('goTravelNamespace2:bookNow')}
+                                                    </button>
+                                                </div>
+                                            }
+                                            {key === 'opinions' &&
+                                                <div className={"d-flex flex-column align-items-center"} style={{width: '800px'}}>
+                                                    <div className="justify-content-center align-items-center" style={{display: 'block', textAlign: 'center'}}>
+                                                        <div>
+                                                            <p style={{fontSize: '30px'}}>{this.state.averageOpinion}/5</p>
+                                                        </div>
+                                                        <div style={{marginTop: '-3%'}}>
+                                                            <Rating value={this.state.averageOpinion}/>
+                                                        </div>
+                                                        <div>
+                                                            <p>{t('goTravelNamespace3:numberOfOpinions')}: {this.state.numberOfOpinion}</p>
+                                                        </div>
+                                                    </div>
 
-                                        <p className={"mt-3 ms-3 desc"}> {this.state.tripOffer.tripDescription}</p>
 
-                                        <button className="btn btn-primary reservation" type="submit"
-                                                onClick={this.handleReservation}>{t('goTravelNamespace2:bookNow')}
-                                        </button>
+                                                    <div>
+                                                        <Dropdown className={"mb-2"} style={{marginLeft: '5%'}}>
+                                                            <Dropdown.Toggle variant="success" id="dropdown-basic" className={"dropdownSort"}>
+                                                                {this.state.sortType === 'DESC' ? t('goTravelNamespace3:sortFromNewest') : t('goTravelNamespace3:sortFromOldest')}
+                                                            </Dropdown.Toggle>
 
-                                    </section>
+                                                            <Dropdown.Menu style={{width: '200px'}}>
+                                                                <Dropdown.Item onClick={() => this.handleGetOpinion('DESC', 1)}>{t('goTravelNamespace3:sortFromNewest')}</Dropdown.Item>
+                                                                <Dropdown.Item onClick={() => this.handleGetOpinion('ASC', 1)}>{t('goTravelNamespace3:sortFromOldest')}</Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </div>
 
-                                    <section className="tab-content" id="tab-two">
-                                        {this.state.opinions.map(opinion =>
-                                            <div className="card mt-3" style={{width: '77rem'}} key={opinion.idOpinion}>
-                                                <div className="card-body">
-                                                    <h5 className="card-title">{opinion.user.username}</h5>
-                                                    <h6 className="card-subtitle mb-2 text-muted">{new Date(opinion.date).toLocaleDateString("en-CA", {
-                                                        year: "numeric",
-                                                        month: "2-digit",
-                                                        day: "2-digit"
-                                                    })}</h6>
-                                                    <p className="card-text">{opinion.description}</p>
-                                                    {opinion.user.username === this.state.userUsername && (
-                                                        <BsTrash3
-                                                            onClick={() => this.handleDeleteOpinion(opinion.idOpinion)}/>
+                                                    {this.state.user &&
+                                                        <div className={"justify-content-center"} style={{width: '800px'}}>
+                                                            <ul className="list-unstyled mx-auto">
+                                                                <li className="bg-white mb-3">
+                                                                    <div className="form-outline">
+                                                                        <textarea className="form-control" id="textArea" rows="4" value={this.state.description} onChange={(e) => this.setState({description: e.target.value})}></textarea>
+                                                                        <ReactStars key={this.state.starsKey}
+                                                                                    count={5}
+                                                                                    value={this.state.stars}
+                                                                                    onChange={(e) => this.setState({stars: e})}
+                                                                                    size={25}
+                                                                                    isHalf={true}
+                                                                                    emptyIcon={<i className="far fa-star"></i>}
+                                                                                    halfIcon={<i className="fa fa-star-half-alt"></i>}
+                                                                                    fullIcon={<i className="fa fa-star"></i>}
+                                                                                    activeColor="gold"
+                                                                        />
+                                                                        {isError && <Message className={"messageErrorRegister"}>{errorMessage}</Message>}
+                                                                    </div>
+                                                                </li>
+                                                                <button type="button" className="btn btn-primary float-end addOpinion mb-2" onClick={this.addOpinion}>{t('goTravelNamespace3:addOpinion')}</button>
+                                                            </ul>
+                                                        </div>
+                                                    }
+
+                                                    {this.state.opinions.map(opinion =>
+                                                        <div className={"align-items-start"} key={opinion.id} style={{ marginBottom: '20px' }}>
+
+                                                            <Card style={{width: '850px', display: 'block', textAlign: 'left'}}>
+                                                                <Card.Header>
+                                                                    <Image alt={""} roundedCircle
+                                                                           src={"https://png.pngtree.com/png-vector/20190116/ourlarge/pngtree-vector-avatar-icon-png-image_322275.jpg"}
+                                                                           width={30} height={30} style={{marginRight: '2%'}}/>
+                                                                    {opinion.user.username}
+                                                                </Card.Header>
+                                                                <Card.Body>
+                                                                    <blockquote className={"blockquote mb-0"}>
+                                                                        <p style={{fontSize: '15px'}}>
+                                                                            {opinion.description}
+                                                                        </p>
+                                                                        <Rating value={opinion.stars}/>
+                                                                    </blockquote>
+                                                                </Card.Body>
+                                                                <Card.Footer style={{fontSize: '12px'}}>
+                                                                    {opinion.dateOfAddingTheOpinion}
+
+                                                                    {this.state.user !== null && opinion.user.username === this.state.user.data.sub && (
+                                                                        <button style={{float: 'right', borderColor: '#f8f8f8', backgroundColor: '#f8f8f8'}} onClick={() => this.handleDeleteOpinion(opinion.idOpinion)}>
+                                                                            <FaTrashAlt style={{color: '#4ec3ff', width: '20', height: '20'}}/>
+                                                                        </button>
+                                                                    )}
+                                                                </Card.Footer>
+                                                            </Card>
+                                                        </div>
+                                                    )}
+
+                                                    <section className={"mt-5"} style={{placeSelf: 'end'}}>
+                                                        <nav aria-label="Page navigation example">
+                                                            <ul className="pagination justify-content-end">
+                                                                <li className="page-item">
+                                                                    <button className="page-link" onClick={() => this.handleChangePage(this.state.page - 1)} aria-label="Previous">
+                                                                        <span aria-hidden="true">&laquo;</span>
+                                                                    </button>
+                                                                </li>
+                                                                {pages.map(pageNumber => (
+                                                                    <li className={`page-item ${this.state.page === pageNumber ? 'active' : ''}`} key={pageNumber}>
+                                                                        <button className="page-link" onClick={() => this.handleChangePage(pageNumber)}>
+                                                                            {pageNumber}
+                                                                        </button>
+                                                                    </li>
+                                                                ))}
+                                                                <li className="page-item">
+                                                                    <button className="page-link" onClick={() => this.handleChangePage(this.state.page + 1)} aria-label="Next">
+                                                                        <span aria-hidden="true">&raquo;</span>
+                                                                    </button>
+                                                                </li>
+                                                            </ul>
+                                                        </nav>
+                                                    </section>
+                                                </div>
+                                            }
+                                            {key === 'attractions' &&
+                                                <div className={"d-flex flex-column align-items-start"} style={{width: '800px'}}>
+                                                    {this.state.attractions.map(attraction =>
+                                                        <div key={attraction.idAttraction} className={"mt-1 ms-3"}>
+                                                            <p className={"attraction"}><BsCheck2All/> {t('goTravelNamespace2:'+attraction.nameAttraction)}
+                                                            </p>
+                                                        </div>
                                                     )}
                                                 </div>
-                                            </div>
-                                        )}
-
-                                        <div>
-
-                                            {this.state.isUserLogin ? (
-                                                <div className="input-group mt-3" style={{width: '77rem'}}>
-                                                    <textarea className="form-control" aria-label="With textarea"
-                                                              placeholder={t('goTravelNamespace2:myOpinion')+'...'}
-                                                              onChange={this.handleGetDescription}></textarea>
-                                                    <Button type="submit" class="btn btn-primary"
-                                                            onClick={this.handlePostOpinion}>{t('goTravelNamespace2:addOpinions')}</Button>
-                                                </div>
-                                            ) : (
-                                                <div></div>
-                                            )
                                             }
-
                                         </div>
-
-
-                                    </section>
-
-                                    <section className="tab-content" id="tab-three">
-                                        {this.state.attractions.map(attraction =>
-                                            <div key={attraction.idAttraction} className={"mt-3 ms-3"}>
-                                                <p className={"attraction"}><BsCheck2All/> {t('goTravelNamespace2:'+attraction.nameAttraction)}
-                                                </p>
-                                            </div>
-                                        )}
-                                    </section>
-
+                                    </div>
                                 </div>
-                            </div>
+                            </center>
                         </div>
-
-
                     </section>
                 </header>
 

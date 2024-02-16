@@ -1,8 +1,11 @@
 package biuropodrozy.gotravel.service;
 
 import biuropodrozy.gotravel.model.Opinion;
+import biuropodrozy.gotravel.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * The interface Opinion service.
@@ -10,20 +13,30 @@ import java.util.List;
 public interface OpinionService {
 
     /**
-     * Get by id trip.
+     * Retrieves the count of opinions and average stars for a specific trip.
      *
-     * @param idTrip the id trip
-     * @return list of opinions
+     * @param idTrip the unique identifier of the trip
+     * @return a map containing the count of opinions and average stars
      */
-    List<Opinion> getOpinionsByIdTrip(Long idTrip);
+    Map<String, Object> getCountOpinionsAndStars(Long idTrip);
 
     /**
-     * Save nee opinion.
+     * Retrieves a page of opinions associated with a specific trip.
      *
-     * @param opinion the opinion
-     * @return the opinion
+     * @param idTrip    the unique identifier of the trip
+     * @param sortType  the type of sorting to be applied (e.g., "ASC", "DESC")
+     * @param pageable  pagination information for retrieving opinions
+     * @return a page of opinions associated with the specified trip
      */
-    Opinion saveOpinion(Opinion opinion);
+    Page<Opinion> getOpinionsByIdTrip(Long idTrip, String sortType, Pageable pageable);
+
+    /**
+     * Saves an opinion provided by a user.
+     *
+     * @param opinion the opinion to save
+     * @param user    the user providing the opinion
+     */
+    void saveOpinion(Opinion opinion, User user);
 
     /**
      * Get opinion by id opinion.
@@ -34,17 +47,17 @@ public interface OpinionService {
     Opinion getOpinionByIdOpinion(int idOpinion);
 
     /**
-     * Delete opinion.
+     * Deletes an opinion with the specified ID.
      *
-     * @param opinion the opinion
+     * @param idOpinion the ID of the opinion to delete
      */
-    void deleteOpinion(Opinion opinion);
+    void deleteOpinion(int idOpinion);
 
     /**
-     * Get opinion by id user.
+     * Retrieves the count of opinions for a specific trip.
      *
-     * @param idUser the id user
-     * @return list of opinions
+     * @param idTrip the ID of the trip
+     * @return the count of opinions for the specified trip
      */
-    List<Opinion> getOpinionsByIdUser(Long idUser);
+    int countOpinionsByIdTrip(Long idTrip);
 }

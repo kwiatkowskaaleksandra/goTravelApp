@@ -1,29 +1,30 @@
 package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.model.Opinion;
-import biuropodrozy.gotravel.model.Trip;
 import biuropodrozy.gotravel.model.User;
+import biuropodrozy.gotravel.security.services.UserDetailsImpl;
 import biuropodrozy.gotravel.service.OpinionService;
-import biuropodrozy.gotravel.service.TripService;
 import biuropodrozy.gotravel.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
 /**
  * The type Opinion controller.
  */
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 @RequestMapping("/api/opinions")
 public class OpinionController {
 
@@ -38,56 +39,81 @@ public class OpinionController {
     private final UserService userService;
 
     /**
-     * The TripService instance used for handling trip-related operations.
+     * Retrieves the count of opinions and the total number of stars for a given trip.
+     *
+     * @param idTrip the ID of the trip
+     * @return a ResponseEntity containing a map with the count of opinions and the total number of stars
      */
-    private final TripService tripService;
-
+    @GetMapping("/countOpinionsAndStars")
+    ResponseEntity<?> getCountOpinionsAndStars(@RequestParam Long idTrip) {
+        Map<String, Object> result = opinionService.getCountOpinionsAndStars(idTrip);
+        return ResponseEntity.ok().body(result);
+    }
 
     /**
-     * Get all opinions by id trip response entity.
+     * Retrieves all opinions associated with a specific trip.
      *
-     * @param idTrip the id trip
-     * @return the list of opinions response entity
+     * @param idTrip    the ID of the trip
+     * @param sortType  the sorting type for opinions
+     * @param page      the page number
+     * @param size      the size of the page
+     * @return a ResponseEntity containing a Page of opinions associated with the trip
      */
     @GetMapping("/{idTrip}")
-    ResponseEntity<List<Opinion>> getAllOpinionByIdTrip(@PathVariable final Long idTrip) {
-        return ResponseEntity.ok(opinionService.getOpinionsByIdTrip(idTrip));
+    ResponseEntity<Page<Opinion>> getAllOpinionByIdTrip(@PathVariable final Long idTrip, @RequestParam("sortType") String sortType,
+                                                        @RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(opinionService.getOpinionsByIdTrip(idTrip, sortType, pageable));
     }
 
-
     /**
-     * Create new opinion response entity.
+     * Retrieves the total count of opinions associated with a specific trip.
      *
-     * @param idUser the id user
-     * @param idTrip the id trip
-     * @param opinion the opinion
-     * @return the response entity
+     * @param idTrips    the ID of the trip
+     * @return a ResponseEntity containing the total count of opinions associated with the trip
      */
-    @PostMapping("/addOpinion/{idUser}/{idTrip}")
-    ResponseEntity<Opinion> createOpinion(@PathVariable final Long idUser, @PathVariable final Long idTrip,
-                                          @RequestBody final Opinion opinion) {
-
-        User user = userService.getUserById(idUser);
-        Trip trip = tripService.getTripByIdTrip(idTrip);
-        LocalDate localDate = LocalDate.now();
-        opinion.setUser(user);
-        opinion.setDate(localDate);
-        opinion.setTrip(trip);
-
-        return ResponseEntity.ok(opinionService.saveOpinion(opinion));
+    @GetMapping("/countOpinions/{idTrips}")
+    ResponseEntity<Integer> countOpinionsByIdTrip(@PathVariable Long idTrips) {
+        return ResponseEntity.ok(opinionService.countOpinionsByIdTrip(idTrips));
     }
 
     /**
-     * Delete opinion by id response entity.
+     * Creates a new opinion.
+     * Requires the user to be authenticated with the role 'USER'.
      *
-     * @param idOpinion the id opinion
-     * @return the response entity
+     * @param opinion the opinion to be created
+     * @return a ResponseEntity indicating the success of the operation
+     */
+    @PostMapping("/addOpinion")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<Void> createOpinion(@RequestBody final Opinion opinion) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
+            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
+            opinionService.saveOpinion(opinion, existingUser);
+            return ResponseEntity.ok().build();
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    /**
+     * Deletes an opinion by its ID.
+     * Requires the user to be authenticated with the role 'USER'.
+     *
+     * @param idOpinion the ID of the opinion to be deleted
+     * @return a ResponseEntity indicating the success of the operation
      */
     @DeleteMapping("/deleteOpinion/{idOpinion}")
+    @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> deleteOpinion(@PathVariable final int idOpinion) {
-        Opinion opinion = opinionService.getOpinionByIdOpinion(idOpinion);
-        opinionService.deleteOpinion(opinion);
-
-        return ResponseEntity.ok().build();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
+            userService.validateAndGetUserByUsername(userDetails.getUsername());
+            opinionService.deleteOpinion(idOpinion);
+            return ResponseEntity.ok().build();
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

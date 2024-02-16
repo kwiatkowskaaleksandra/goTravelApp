@@ -90,6 +90,7 @@
     font-size: 20px;
     font-weight: bold;
     text-align: center;
+    align-self: center
 }
 
 p.mt-3.ms-3.info {
@@ -107,6 +108,7 @@ p.mt-3.ms-3.price {
     font-size: 20px;
     font-weight: bold;
     color: #4ec3ff;
+    align-self: center
 }
 
 .reservation {
@@ -115,7 +117,7 @@ p.mt-3.ms-3.price {
     text-align: center;
     background-color: #4ec3ff;
     border-color: #4ec3ff;
-    margin: 10px auto 0;
+    margin: 10px auto 15px;
 }
 
 .attraction {
@@ -134,10 +136,11 @@ p.mt-3.ms-3.price {
     color: white;
 }
 
-.filterBtn{
+.filterBtn, .addOpinion {
     font-family: "Comic Sans MS";
     background-color: #4ec3ff;
     border-color: #4ec3ff;
+
 }
 
 .message {
@@ -151,4 +154,30 @@ p.mt-3.ms-3.price {
     display: flex;
     align-items: center;
     margin: 0 auto;
+}
+
+button#controlled-tab-tab-generalInformation, button#controlled-tab-tab-opinions, button#controlled-tab-tab-attractions {
+    width: 200px;
+    color: black;
+    font-family: "Comic Sans MS"
+}
+
+button#controlled-tab-tab-generalInformation.active, button#controlled-tab-tab-opinions.active, button#controlled-tab-tab-attractions.active {
+    color: #4ec3ff;
+    font-weight: bold;
+}
+
+.dropdownSort {
+    background-color: #4ec3ff;
+    border-color: #4ec3ff;
+}
+
+.dropdownSort:hover, .dropdownSort.active, .dropdownSort.btn-success:focus,
+.dropdownSort.btn-success:active, .dropdownSort.btn-success.show {
+    background-color: #3273dc;
+    border-color: #3273dc;
+}
+
+a.dropdown-item {
+    height: 30px;
 }
