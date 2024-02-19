@@ -29,14 +29,6 @@ public interface OpinionRepository extends JpaRepository<Opinion, Integer> {
     Opinion findOpinionByIdOpinion(int idOpinion);
 
     /**
-     * Get opinion by id user.
-     *
-     * @param idUser the id user
-     * @return list of opinions
-     */
-    List<Opinion> getOpinionByUser_Id(Long idUser);
-
-    /**
      * Retrieves the count of opinions associated with a specific trip.
      *
      * @param trip_idTrip the ID of the trip

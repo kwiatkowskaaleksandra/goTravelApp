@@ -36,6 +36,7 @@ class SettingsMyProfile extends Component {
         using2FA: false,
         showQrCodeButton: false,
         qrCode: '',
+        provider: ''
     }
 
     componentDidMount() {
@@ -44,8 +45,8 @@ class SettingsMyProfile extends Component {
 
         if (user != null) {
             goTravelApi.getUserInfo(user).then(res => {
+
                 this.setState({
-                    userInfo: res.data,
                     usernameID: res.data.username,
                     username: res.data.username,
                     firstname: res.data.firstname,
@@ -57,6 +58,7 @@ class SettingsMyProfile extends Component {
                     streetNumber: res.data.streetNumber,
                     zipCode: res.data.zipCode,
                     using2FA: res.data.using2FA,
+                    provider: res.data.provider,
                     user: user
                 })
             }).catch(error  => {
@@ -210,8 +212,8 @@ class SettingsMyProfile extends Component {
                                 >
                                     <Tab eventKey="userData" title={t('goTravelNamespace2:userData')} />
                                     <Tab eventKey="passwordChange" title={t('goTravelNamespace2:passwordChange')}/>
-                                    <Tab eventKey="emailChange" title={t('goTravelNamespace2:emailChange')}/>
-                                    <Tab eventKey="2FA" title={t('goTravelNamespace2:2FA')} />
+                                    <Tab eventKey="emailChange" title={t('goTravelNamespace2:emailChange')} disabled={this.state.provider !== 'LOCAL'}/>
+                                    <Tab eventKey="2FA" title={t('goTravelNamespace2:2FA')} disabled={this.state.provider !== 'LOCAL'}/>
                                     <Tab eventKey="deletionOfTheAccount" title={t('goTravelNamespace2:deletionOfTheAccount')} />
                             </Tabs>
                             </div>

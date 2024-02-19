@@ -1,7 +1,9 @@
 package biuropodrozy.gotravel.model;
 
+import biuropodrozy.gotravel.security.oauth2.OAuth2Provider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -114,6 +116,15 @@ public class User {
      */
     private String secret2FA;
 
+    /**
+     * The activity specifies the activity of the account
+     */
     private boolean activity;
+
+    /**
+     * The provider of OAuth2 authentication for the user.
+     */
+    @Enumerated(EnumType.STRING)
+    private OAuth2Provider provider;
 
 }

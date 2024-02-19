@@ -23,6 +23,7 @@ import { initReactI18next } from "react-i18next";
 import Settings from "./pages/user/Settings";
 import SettingsMyProfile from "./pages/user/SettingsMyProfile";
 import SettingsInvoices from "./pages/user/SettingsInvoices";
+import OAuth2Redirect from "./others/OAuth2Redirect";
 
 const apiKeys = {
     goTravelNamespace1: "VY4mV8mgc2hiYbiInxdPaQ",
@@ -88,6 +89,7 @@ function App() {
                         <Route path={"/about"} element={<About/>}/>
                         <Route path={"/airlines"} element={<Airlines/>}/>
                         <Route path={"/insurance"} element={<Insurance/>}/>
+                        <Route path={'/oauth2/redirect'} element={<OAuth2Redirect/>}/>
                     </Routes>
 
                 </div>

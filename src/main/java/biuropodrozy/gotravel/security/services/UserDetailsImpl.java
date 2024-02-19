@@ -1,21 +1,26 @@
 package biuropodrozy.gotravel.security.services;
 
 import biuropodrozy.gotravel.model.User;
+import biuropodrozy.gotravel.security.oauth2.OAuth2Provider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * The UserDetails implementation.
  */
 @Data
-public class UserDetailsImpl implements UserDetails {
+@NoArgsConstructor
+public class UserDetailsImpl implements OAuth2User, UserDetails {
 
     /**
      * The unique identifier for the user.
@@ -48,10 +53,21 @@ public class UserDetailsImpl implements UserDetails {
      */
     private String email;
 
+    private boolean activity;
+    /**
+     * The OAuth2Provider associated with the user.
+     */
+    private OAuth2Provider provider;
+
     /**
      * The collection of granted authorities for the user.
      */
     private Collection<? extends GrantedAuthority> authorities;
+
+    /**
+     * Additional attributes associated with the user.
+     */
+    private Map<String, Object> attributes;
 
     public UserDetailsImpl(Long id, String username, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
@@ -115,5 +131,25 @@ public class UserDetailsImpl implements UserDetails {
                 user.getEmail(),
                 user.getPassword(),
                 authorities);
+    }
+
+    /**
+     * Get the additional attributes associated with the user.
+     *
+     * @return A map of additional attributes.
+     */
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * Get the name associated with the user.
+     *
+     * @return The user's name.
+     */
+    @Override
+    public String getName() {
+        return String.valueOf(id);
     }
 }

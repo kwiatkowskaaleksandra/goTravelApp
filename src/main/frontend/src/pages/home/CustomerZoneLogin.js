@@ -3,10 +3,12 @@ import {Link, Navigate} from 'react-router-dom'
 import {Form, Message} from 'semantic-ui-react'
 import AuthContext from '../../others/AuthContext'
 import {goTravelApi} from '../../others/GoTravelApi'
-import {handleLogError, parseJwt} from '../../others/JWT'
+import {getSocialLoginUrl, handleLogError, parseJwt} from '../../others/JWT'
 import './CustomerZoneLogin.css'
 import {Nav} from "react-bootstrap"
 import {withTranslation} from "react-i18next";
+import {BsFacebook} from "react-icons/bs";
+import {FcGoogle} from "react-icons/fc";
 
 class Login extends Component {
 
@@ -144,9 +146,29 @@ class Login extends Component {
                                                 </button>
                                             </div>
 
-                                            <hr className="my-4"></hr>
+                                            <div className="line-container">
+                                                <hr className="line"/>
+                                                <span className="text">{t('or').toUpperCase()}</span>
+                                                <hr className="line"/>
+                                            </div>
+                                            <div className="col-sm-12" style={{width: '70%'}}>
+                                                <div className={"row"}
+                                                     style={{marginLeft: '45%', marginTop: '-8%'}}>
+                                                    <div className={"col"}>
+                                                        <a href={getSocialLoginUrl('facebook')} className="btn btn-primary btn-floating mx-1 bg-white border-white" style={{width: '50px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                                            <BsFacebook style={{color: 'blue', width: '30px', height: '30px'}}/>
+                                                        </a>
 
-                                            <div className="d-grid mb-2">
+                                                    </div>
+                                                    <div className={"col"}>
+                                                        <a href={getSocialLoginUrl('google')} className="btn btn-primary btn-floating mx-1 bg-white border-white" style={{width: '50px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                                            <FcGoogle style={{width: '30px', height: '30px'}}/>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="d-grid mb-2 mt-3">
                                                 <p>{t('youDontHaveAnAccountYet')}</p>
                                                 <Nav.Link as={Link} to={"/customerZone/registration"}
                                                           className="btn btn-primary btn-login text-uppercase fw-bold">{t('register')}</Nav.Link>

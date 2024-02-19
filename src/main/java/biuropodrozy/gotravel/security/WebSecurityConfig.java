@@ -1,6 +1,8 @@
 package biuropodrozy.gotravel.security;
 
 import biuropodrozy.gotravel.security.jwt.AuthenticationTokenFilter;
+import biuropodrozy.gotravel.security.oauth2.CustomAuthenticationSuccessHandler;
+import biuropodrozy.gotravel.security.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,16 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
+    /**
+     * The custom OAuth2 user service for handling user details and authentication using OAuth2.
+     */
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    /**
+     * The custom authentication success handler for handling successful user authentication.
+     */
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     /**
      * Creates a new instance of the TokenAuthenticationFilter class.
@@ -61,7 +73,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER")
                 .requestMatchers("/gotravel/**", "/api/**").permitAll()
-                .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**","/auth/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .headers(headers ->
@@ -76,7 +88,11 @@ public class WebSecurityConfig {
                         csrf
                                 .ignoringRequestMatchers("/gotravel/signup/**", "/gotravel/authenticate/**", "/gotravel/refreshToken/**", "/payment/**")
                                 .csrfTokenRepository(csrfTokenRepository())
-                );
+                )
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .userInfoEndpoint().userService(customOAuth2UserService)
+                        .and()
+                        .successHandler(customAuthenticationSuccessHandler));
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));

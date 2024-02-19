@@ -9,6 +9,7 @@ import biuropodrozy.gotravel.repository.RoleRepository;
 import biuropodrozy.gotravel.rest.dto.request.*;
 import biuropodrozy.gotravel.rest.dto.response.AuthResponse;
 import biuropodrozy.gotravel.rest.dto.response.TokenRefreshResponse;
+import biuropodrozy.gotravel.security.oauth2.OAuth2Provider;
 import biuropodrozy.gotravel.security.services.RefreshTokenService;
 import biuropodrozy.gotravel.security.services.UserDetailsImpl;
 import biuropodrozy.gotravel.security.jwt.JwtUtils;
@@ -45,6 +46,9 @@ public class AuthenticateController {
      */
     private final UserService userService;
 
+    /**
+     * Repository for accessing role data.
+     */
     @Autowired
     private final RoleRepository roleRepository;
 
@@ -53,6 +57,9 @@ public class AuthenticateController {
      */
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Utility class for handling JWT operations.
+     */
     @Autowired
     private final JwtUtils jwtUtils;
 
@@ -61,15 +68,20 @@ public class AuthenticateController {
      */
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Service for managing refresh tokens.
+     */
     @Autowired
     private final RefreshTokenService refreshTokenService;
 
-
     /**
-     * User login.
+     * Authenticates a user and generates JWT token and refresh token upon successful authentication.
+     * This endpoint allows a user to authenticate using their username and password. Upon successful
+     * authentication, it generates a JWT token and a refresh token for the user. The generated JWT token
+     * is returned in the response body along with other user details.
      *
-     * @param loginRequest the login request
-     * @return the auth response
+     * @param loginRequest The LoginRequest object containing the username and password for authentication.
+     * @return A ResponseEntity containing the JWT token, refresh token, user details, and roles upon successful authentication.
      */
     @PostMapping("/authenticate")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -94,6 +106,13 @@ public class AuthenticateController {
                 roles));
     }
 
+    /**
+     * Checks if a user is using Two-Factor Authentication (2FA).
+     * This endpoint allows checking if a user has enabled Two-Factor Authentication (2FA) by providing their username.
+     *
+     * @param username The username of the user whose 2FA status is to be checked.
+     * @return true if the user is using 2FA, false otherwise.
+     */
     @GetMapping("/isUsing2FA")
     public boolean isUsing2FA(@RequestParam("username") String username) {
         return userService.isUsing2FA(username);
@@ -111,11 +130,14 @@ public class AuthenticateController {
     }
 
     /**
-     * New user registration.
+     * Signs up a new user.
+     * This endpoint allows a new user to sign up by providing their signup details.
+     * It validates the signup request, saves the user in the system, and returns an HTTP 201 Created response upon successful signup.
      *
-     * @param signUpRequest the signup request
-     * @return the auth response
+     * @param signUpRequest The SignUpRequest object containing the signup details.
+     * @return A ResponseEntity indicating successful signup with an HTTP 201 Created status code.
      */
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
@@ -144,6 +166,7 @@ public class AuthenticateController {
         user.setUsing2FA(false);
         user.setSecret2FA(null);
         user.setActivity(true);
+        user.setProvider(OAuth2Provider.LOCAL);
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -173,6 +196,15 @@ public class AuthenticateController {
         return user;
     }
 
+    /**
+     * Refreshes an access token using a refresh token.
+     * This endpoint allows refreshing an access token using a refresh token.
+     * It verifies the refresh token, generates a new access token, and returns it in the response.
+     *
+     * @param request The TokenRefreshRequest object containing the refresh token.
+     * @return A ResponseEntity containing a new access token upon successful token refresh.
+     * @throws TokenRefreshException If the refresh token is not found in the database.
+     */
     @PostMapping("/refreshToken")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
@@ -188,6 +220,13 @@ public class AuthenticateController {
                         "Refresh token is not in database!"));
     }
 
+    /**
+     * Logs out a user.
+     * This endpoint allows a user to log out by deleting their refresh token.
+     * It deletes the refresh token associated with the authenticated user and returns a success message.
+     *
+     * @return A ResponseEntity indicating successful logout.
+     */
     @PostMapping("/signout")
     public ResponseEntity<?> logoutUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

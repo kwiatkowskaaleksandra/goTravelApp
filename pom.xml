@@ -139,6 +139,10 @@
             <artifactId>stripe-java</artifactId>
             <version>24.15.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
