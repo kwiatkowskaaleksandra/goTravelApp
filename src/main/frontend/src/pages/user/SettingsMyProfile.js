@@ -153,9 +153,12 @@ class SettingsMyProfile extends Component {
         })
     }
 
-    //TODO: zmiana emaila
-    changeEmail = async () => {
-
+    changeEmail = () => {
+        goTravelApi.sendConfirmationEmail(this.state.username).then(() => {
+            this.setState({showMessage: true})
+        }).catch(error => {
+            handleLogError(error)
+        })
     }
 
     changeOf2FAInclusion = async (enable) => {
@@ -352,7 +355,7 @@ class SettingsMyProfile extends Component {
                                     </div>
                                 }
                                 {key === 'passwordChange' &&
-                                    <div className={"d-flex justify-content-center"} style={{width: '750px'}}>
+                                    <div className={"d-flex justify-content-center"} style={{width: '750px', height: '400px'}}>
                                         <div style={{textAlign: 'center'}}>
                                             <form className="form-floating row gy-2 gx-3"
                                                   style={{marginLeft: '30px'}}>
@@ -414,7 +417,7 @@ class SettingsMyProfile extends Component {
                                     </div>
                                 }
                                 {key === 'emailChange' &&
-                                    <div className={"d-flex justify-content-center"} style={{width: '750px'}}>
+                                    <div className={"d-flex justify-content-center"} style={{width: '750px', height: '400px'}}>
                                         <div>
                                             <h5 style={{
                                                 fontWeight: 'bold',
@@ -516,9 +519,9 @@ class SettingsMyProfile extends Component {
                     <Modal.Body style={{fontFamily: 'Comic Sans MS'}}>
                         {t('goTravelNamespace3:activationLinkHasBeenSentToTheEmail')}
                     </Modal.Body>
-                    <Modal.Footer style={{display: 'flex', alignContent: 'center', marginRight: '25%'}}>
-                        <Button variant="btn btn-primary px-4 float-end mt-4 loginButton" style={{width: '150px'}}
-                                href={'/userProfile/settings'}>
+                    <Modal.Footer style={{display: 'flex', alignContent: 'center'}}>
+                        <Button variant="btn btn-primary px-4 float-end mt-4 saveChanges" style={{width: '100px'}}
+                                href={'/myProfile/settings'}>
                             Ok
                         </Button>
                     </Modal.Footer>

@@ -24,6 +24,11 @@ import Settings from "./pages/user/Settings";
 import SettingsMyProfile from "./pages/user/SettingsMyProfile";
 import SettingsInvoices from "./pages/user/SettingsInvoices";
 import OAuth2Redirect from "./others/OAuth2Redirect";
+import VerifyRegisterLink from "./pages/VerifyRegisterLink";
+import ConfirmNewEmail from "./pages/ConfirmNewEmail";
+import ChangeEmail from "./pages/ChangeEmail";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const apiKeys = {
     goTravelNamespace1: "VY4mV8mgc2hiYbiInxdPaQ",
@@ -90,6 +95,12 @@ function App() {
                         <Route path={"/airlines"} element={<Airlines/>}/>
                         <Route path={"/insurance"} element={<Insurance/>}/>
                         <Route path={'/oauth2/redirect'} element={<OAuth2Redirect/>}/>
+
+                        <Route path={'/verify'} element={<VerifyRegisterLink/>}/>
+                        <Route path={'/confirm'} element={<ChangeEmail/>}/>
+                        <Route path={'/confirmNewEmail'} element={<ConfirmNewEmail/>}/>
+                        <Route path={'/forgotPassword'} element={<ForgotPassword/>}/>
+                        <Route path={'/reset'} element={<ResetPassword/>}/>
                     </Routes>
 
                 </div>

@@ -74,14 +74,6 @@ public interface UserService {
     void deleteUser(User user);
 
     /**
-     * Get user by id user.
-     *
-     * @param idUser the id user
-     * @return the user
-     */
-    User getUserById(Long idUser);
-
-    /**
      * Performs password validation checks on the provided password request.
      *
      * @param passwordRequest The password request containing the new password and repeated password.
@@ -121,4 +113,38 @@ public interface UserService {
      * @return True if the user is using 2FA, otherwise false.
      */
     boolean isUsing2FA(String username);
+
+    /**
+     * Verifies a registration link.
+     * This method verifies a registration link using the provided verification code.
+     *
+     * @param verificationRegisterCode The verification code extracted from the registration link.
+     * @return true if the registration link is valid and can be verified, false otherwise.
+     */
+    boolean verifyRegisterLink(String verificationRegisterCode);
+
+    /**
+     * Updates the email address of a user.
+     * This method updates the email address of a user from the old email to the new email.
+     *
+     * @param oldEmail The current email address of the user.
+     * @param newEmail The new email address to be assigned to the user.
+     */
+    void updateUserEmail(String oldEmail, String newEmail);
+
+    /**
+     * Resets the password for a user and sends an email with instructions.
+     *
+     * @param email The email address of the user whose password is to be reset.
+     */
+    void resetPassword(String email);
+
+    /**
+     * Changes the password for a user using a reset password link.
+     *
+     * @param passwordRequest The password request containing the new password and confirmation.
+     * @param email The email address obtained from the reset password link.
+     */
+    void changePasswordFromResetLink(PasswordRequest passwordRequest, String email);
+
 }

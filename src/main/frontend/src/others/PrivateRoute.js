@@ -17,7 +17,7 @@ function PrivateRoute({ children }) {
 
     if (isAuthenticated === null) {
         return <div className="spinner-grow text-primary" role="status">
-            <span className="sr-only">Loading...</span>
+            <span className="sr-only" style={{marginLeft: '40px'}}>Loading...</span>
         </div>;
     }
 

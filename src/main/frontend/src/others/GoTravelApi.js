@@ -40,7 +40,67 @@ export const goTravelApi = {
     addOpinion,
     deleteOpinion,
     countOpinionsById,
-    countOpinionsAndStars
+    countOpinionsAndStars,
+    verifyRegisterLink,
+    sendConfirmationNewEmail,
+    confirmEmail,
+    sendConfirmationEmail,
+    forgotPassword,
+    resetPassword
+}
+
+function resetPassword(passwordParams, email, token) {
+    return instance.put("/api/users/resetPassword", passwordParams, {
+        params: {
+            email: email
+        },
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+        }
+    })
+}
+
+function forgotPassword(email) {
+    return instance.get("/gotravel/forgotPassword", {
+        params: {
+            email: email
+        }
+    })
+}
+
+function sendConfirmationEmail(username) {
+    return instance.get('/mail/sendConfirmationEmail/' + username)
+}
+
+function confirmEmail(newEmail, username) {
+    return instance.put('/mail/confirmEmail', null, {
+        params: {
+            newEmail: newEmail,
+            username: username
+        },
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
+function sendConfirmationNewEmail(oldEmail, newEmail) {
+    return instance.get('/mail/sendConfirmationNewEmail/' + oldEmail, {
+        params: {
+            newEmail: newEmail
+        }
+    })
+}
+
+function verifyRegisterLink(code) {
+    return instance.get("/gotravel/verifyRegisterLink", {
+        params: {
+            code: code
+        }
+    })
 }
 
 function countOpinionsAndStars(idTrip) {

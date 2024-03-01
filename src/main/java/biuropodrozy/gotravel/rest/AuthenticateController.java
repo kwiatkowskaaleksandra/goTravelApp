@@ -1,6 +1,8 @@
 package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.exception.TokenRefreshException;
+import net.bytebuddy.utility.RandomString;
+import biuropodrozy.gotravel.exception.UserException;
 import biuropodrozy.gotravel.model.RefreshToken;
 import biuropodrozy.gotravel.model.Role;
 import biuropodrozy.gotravel.model.RoleEnum;
@@ -17,7 +19,6 @@ import biuropodrozy.gotravel.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -49,7 +50,6 @@ public class AuthenticateController {
     /**
      * Repository for accessing role data.
      */
-    @Autowired
     private final RoleRepository roleRepository;
 
     /**
@@ -60,7 +60,6 @@ public class AuthenticateController {
     /**
      * Utility class for handling JWT operations.
      */
-    @Autowired
     private final JwtUtils jwtUtils;
 
     /**
@@ -71,7 +70,6 @@ public class AuthenticateController {
     /**
      * Service for managing refresh tokens.
      */
-    @Autowired
     private final RefreshTokenService refreshTokenService;
 
     /**
@@ -137,7 +135,6 @@ public class AuthenticateController {
      * @param signUpRequest The SignUpRequest object containing the signup details.
      * @return A ResponseEntity indicating successful signup with an HTTP 201 Created status code.
      */
-
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
@@ -148,6 +145,21 @@ public class AuthenticateController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Verifies a registration link using the provided verification code.
+     * This endpoint verifies a registration link by checking if the provided verification code is valid.
+     * If the verification is successful, it returns a response with status 200 OK.
+     * Otherwise, it throws a UserException with an error message indicating a link error.
+     *
+     * @param code The verification code extracted from the registration link.
+     * @return ResponseEntity with status 200 OK if the registration link is successfully verified.
+     * @throws UserException If there is an error in the verification link.
+     */
+    @GetMapping("/verifyRegisterLink")
+    public ResponseEntity<?> verifyRegister(@RequestParam("code") String code) {
+        if (userService.verifyRegisterLink(code)) return ResponseEntity.ok().build();
+        else throw new UserException("Link error.");
+    }
 
     /**
      * Mapping new user from signup request to user.
@@ -165,8 +177,9 @@ public class AuthenticateController {
 
         user.setUsing2FA(false);
         user.setSecret2FA(null);
-        user.setActivity(true);
+        user.setActivity(false);
         user.setProvider(OAuth2Provider.LOCAL);
+        user.setVerificationRegisterCode(RandomString.make(64));
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -238,5 +251,17 @@ public class AuthenticateController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
 
+    }
+
+    /**
+     * Endpoint to send a password reset link to the provided email address.
+     *
+     * @param email The email address of the user requesting the password reset.
+     * @return ResponseEntity indicating the status of the password reset link sending.
+     */
+    @GetMapping("/forgotPassword")
+    public ResponseEntity<?> sendingAPasswordResetLink(@RequestParam("email") String email) {
+        userService.resetPassword(email);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,0 +1,34 @@
+.registerHeader {
+    margin-top: 5%;
+    font-family: "Comic Sans MS";
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.registerMessage {
+    font-family: "Comic Sans MS";
+}
+
+.goTo {
+    background-color: #4ec3ff;
+    border-color: #4ec3ff;
+    transition: background-color 0.3s;
+    color: white;
+    font-weight: bold;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    font-family: "Comic Sans MS";
+    justify-content: center;
+}
+
+.goTo:hover {
+    background-color: #3273dc;
+    border-color: #3273dc;
+    color: white;
+    font-weight: bold;
+}
+
+.linkVerify {
+    justify-content: center !important;
+}

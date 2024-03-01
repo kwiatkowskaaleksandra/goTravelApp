@@ -3,7 +3,6 @@ package biuropodrozy.gotravel.model;
 import biuropodrozy.gotravel.security.oauth2.OAuth2Provider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -82,6 +81,15 @@ public class User {
      */
     private String zipCode;
 
+    /**
+     * The verification code generated during registration.
+     */
+    @Column(length = 64)
+    private String verificationRegisterCode;
+
+    /**
+     * The roles associated with the user.
+     */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

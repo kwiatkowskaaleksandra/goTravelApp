@@ -7,8 +7,10 @@ import biuropodrozy.gotravel.service.ReservationsTypeOfRoomService;
 import biuropodrozy.gotravel.service.TypeOfRoomService;
 import biuropodrozy.gotravel.service.impl.validation.ValidateReservationServiceImpl;
 import biuropodrozy.gotravel.service.impl.validation.ValidationData;
-import lombok.RequiredArgsConstructor;
+import biuropodrozy.gotravel.service.mail.MailService;
+import biuropodrozy.gotravel.service.mail.TemplateDataStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,7 +19,6 @@ import java.util.List;
 /**
  * The Reservations service implementation.
  */
-@RequiredArgsConstructor
 @Service
 @Slf4j
 public class ReservationServiceImpl implements ReservationService {
@@ -43,11 +44,44 @@ public class ReservationServiceImpl implements ReservationService {
     private final ValidateReservationServiceImpl validateReservation;
 
     /**
-     * Saves the provided reservation after validating reservation data and calculating the total price.
+     * Service for sending emails.
+     */
+    private final MailService mailService;
+
+    /**
+     * TemplateDataStrategy instance for reservation confirmation emails.
+     */
+    private final TemplateDataStrategy templateDataStrategyReservationConfirmation;
+
+    /**
+     * Constructs a new ReservationServiceImpl with the specified dependencies.
      *
-     * @param reservation The reservation to be saved.
-     * @param user        The user associated with the reservation.
-     * @return The id of the booked trip.
+     * @param reservationRepository             The repository for managing reservations.
+     * @param typeOfRoomService                 The service for managing types of rooms.
+     * @param reservationsTypeOfRoomService     The service for managing reservations of types of rooms.
+     * @param validateReservation              The service for validating reservations.
+     * @param mailService                       The service for sending emails.
+     * @param templateDataStrategyReservationConfirmation  The strategy for preparing template data for reservation confirmation emails.
+     */
+    public ReservationServiceImpl(ReservationRepository reservationRepository, TypeOfRoomService typeOfRoomService,
+                                  ReservationsTypeOfRoomService reservationsTypeOfRoomService, ValidateReservationServiceImpl validateReservation,
+                                  MailService mailService, @Qualifier("reservationConfirmation") TemplateDataStrategy templateDataStrategyReservationConfirmation) {
+        this.reservationRepository = reservationRepository;
+        this.typeOfRoomService = typeOfRoomService;
+        this.reservationsTypeOfRoomService = reservationsTypeOfRoomService;
+        this.validateReservation = validateReservation;
+        this.mailService = mailService;
+        this.templateDataStrategyReservationConfirmation = templateDataStrategyReservationConfirmation;
+    }
+
+    /**
+     * Saves a new reservation.
+     * This method saves a new reservation to the database, performs validation, calculates the total price,
+     * and sends a confirmation email to the user.
+     *
+     * @param reservation The reservation object to be saved.
+     * @param user The user making the reservation.
+     * @return The ID of the saved reservation.
      */
     @Override
     public long saveReservation(final Reservation reservation, User user) {
@@ -65,6 +99,14 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
         saveReservationsTypeOfRoom(savedReservation);
         log.info("The trip has been booked.");
+
+        mailService.sendMail(
+                user.getEmail(),
+                "Reservation confirmation",
+                "reservationConfirmation.ftl",
+                templateDataStrategyReservationConfirmation.prepareTemplateData(user, savedReservation)
+        );
+
         return savedReservation.getIdReservation();
     }
 

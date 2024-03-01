@@ -8,13 +8,18 @@ import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.repository.UserRepository;
 import biuropodrozy.gotravel.rest.dto.request.PasswordRequest;
 import biuropodrozy.gotravel.rest.dto.request.UserTotpRequest;
+import biuropodrozy.gotravel.security.oauth2.OAuth2Provider;
 import biuropodrozy.gotravel.security.services.TotpService;
 import biuropodrozy.gotravel.service.UserService;
-import lombok.RequiredArgsConstructor;
+import biuropodrozy.gotravel.service.mail.MailService;
+import biuropodrozy.gotravel.service.mail.TemplateDataStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Optional;
 
 /**
@@ -22,7 +27,6 @@ import java.util.Optional;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     /**
@@ -53,6 +57,54 @@ public class UserServiceImpl implements UserService {
      * Service for Time-based One-Time Passwords (TOTP).
      */
     private final TotpService totpService;
+
+    /**
+     * Service for sending emails.
+     */
+    private final MailService mailService;
+
+    /**
+     * TemplateDataStrategy instance for generating data required for new registration link templates.
+     */
+    private final TemplateDataStrategy templateDataStrategyNewRegisterLink;
+
+    /**
+     * TemplateDataStrategy instance for generating data required for confirming new email link templates.
+     */
+    private final TemplateDataStrategy templateDataStrategyConfirmNewEmailLink;
+
+    /**
+     * TemplateDataStrategy instance for generating data required for reset password.
+     */
+    private final TemplateDataStrategy templateDataStrategyResetPasswordLink;
+
+    /**
+     * Constructs a new UserServiceImpl instance with the specified dependencies.
+     *
+     * @param userRepository                         The repository for accessing user data.
+     * @param passwordEncoder                        The encoder for encoding passwords.
+     * @param totpService                            The service for handling Time-based One-Time Password (TOTP) functionality.
+     * @param mailService                            The service for sending emails.
+     * @param templateDataStrategyNewRegisterLink     The TemplateDataStrategy instance for generating data required for new registration link templates.
+     * @param templateDataStrategyConfirmNewEmailLink The TemplateDataStrategy instance for generating data required for confirming new email link templates.
+     * @param templateDataStrategyResetPasswordLink   The TemplateDataStrategy instance for generating data required for reset password.
+     */
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder,
+                           TotpService totpService,
+                           MailService mailService,
+                           @Qualifier("newRegistrationLink") TemplateDataStrategy templateDataStrategyNewRegisterLink,
+                           @Qualifier("confirmNewEmailLink") TemplateDataStrategy templateDataStrategyConfirmNewEmailLink,
+                           @Qualifier("resetPasswordLink") TemplateDataStrategy templateDataStrategyResetPasswordLink) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.totpService = totpService;
+        this.mailService = mailService;
+        this.templateDataStrategyNewRegisterLink = templateDataStrategyNewRegisterLink;
+        this.templateDataStrategyConfirmNewEmailLink = templateDataStrategyConfirmNewEmailLink;
+        this.templateDataStrategyResetPasswordLink = templateDataStrategyResetPasswordLink;
+    }
+
 
     /**
      * Get optional user by username.
@@ -159,6 +211,13 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         log.info("The user has successfully registered.");
+
+        mailService.sendMail(
+                user.getEmail(),
+                "New registration",
+                "registerEmailTemplate.ftl",
+                templateDataStrategyNewRegisterLink.prepareTemplateData(user, null)
+        );
     }
 
     /**
@@ -180,17 +239,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(User user) {
         user.setActivity(false);
         save(user);
-    }
-
-    /**
-     * Get user by id user.
-     *
-     * @param idUser the id user
-     * @return the user
-     */
-    @Override
-    public User getUserById(final Long idUser) {
-        return userRepository.findUserById(idUser);
     }
 
     /**
@@ -301,5 +349,123 @@ public class UserServiceImpl implements UserService {
     public boolean isUsing2FA(String username) {
         User user = validateAndGetUserByUsername(username);
         return user.isUsing2FA();
+    }
+
+    /**
+     * Verifies a registration link using the provided verification code.
+     * This method checks if a user with the given verification code exists and is inactive.
+     * If such a user is found, their verification code is cleared, and their activity status is set to true.
+     *
+     * @param verificationRegisterCode The verification code extracted from the registration link.
+     * @return true if the registration link is successfully verified and the user's activity status is updated, false otherwise.
+     */
+
+    @Override
+    public boolean verifyRegisterLink(String verificationRegisterCode) {
+        User user = userRepository.findByVerificationRegisterCode(verificationRegisterCode);
+
+        if (user == null || user.isActivity()) return false;
+        else {
+            user.setVerificationRegisterCode(null);
+            user.setActivity(true);
+            userRepository.save(user);
+        }
+        return true;
+    }
+
+    /**
+     * Validates email addresses.
+     * This method validates the provided old and new email addresses.
+     * It checks if there is a user with the provided old email address,
+     * if a user with the provided new email address already exists,
+     * and if the format of the new email address is correct.
+     *
+     * @param oldEmail The old email address to be validated.
+     * @param newEmail The new email address to be validated.
+     * @throws UserException If there is no user with the provided old email address
+     *                       or if the provided new email address is incorrectly formatted.
+     * @throws DuplicatedUserInfoException If a user with the provided new email address already exists.
+     */
+    private void validatorEmail(String oldEmail, String newEmail) {
+        if (!hasUserWithEmail(oldEmail)) {
+            log.error("There is no user with the provided email address.");
+            throw new UserException("thereIsNoUserWithTheProvidedEmail");
+        }
+        if (hasUserWithEmail(newEmail)) {
+            log.error(String.format("User with e-mail address: %s already exists.", newEmail));
+            throw new DuplicatedUserInfoException("emailAlreadyExists");
+        }
+        if (!newEmail.matches("(.*)@(.*)")) {
+            log.error("The e-mail address provided is incorrectly formatted.");
+            throw new UserException("emailIsIncorrectlyFormatted");
+        }
+    }
+
+    /**
+     * Updates the email address of a user.
+     * This method validates the provided old and new email addresses,
+     * updates the email address for the user with the old email address,
+     * and sends a confirmation email for the new email address if the user's provider is local.
+     *
+     * @param oldEmail The old email address of the user.
+     * @param newEmail The new email address to be assigned to the user.
+     * @throws UserException If there is no user with the provided old email address,
+     *                       or if the provided new email address is incorrectly formatted.
+     * @throws DuplicatedUserInfoException If a user with the provided new email address already exists.
+     */
+    @Override
+    public void updateUserEmail(String oldEmail, String newEmail) {
+        validatorEmail(oldEmail, newEmail);
+        User user = userRepository.findByEmail(oldEmail);
+        if (user != null && user.getProvider().equals(OAuth2Provider.LOCAL)) {
+            user.setEmail(newEmail);
+            mailService.sendMail(
+                    newEmail,
+                    "Confirm new email address",
+                    "confirmNewEmailTemplate.ftl",
+                    templateDataStrategyConfirmNewEmailLink.prepareTemplateData(user, null)
+            );
+        }
+    }
+
+    /**
+     * Resets the password for a user.
+     * This method sends an email to the user with instructions for resetting their password.
+     *
+     * @param email The email address of the user whose password is to be reset.
+     */
+    @Override
+    public void resetPassword(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null && user.getProvider().equals(OAuth2Provider.LOCAL) && user.isActivity()) {
+            mailService.sendMail(
+                    user.getEmail(),
+                    "Reset password",
+                    "resetPasswordEmailTemplate.ftl",
+                    templateDataStrategyResetPasswordLink.prepareTemplateData(user, null)
+            );
+        }
+    }
+
+    /**
+     * Changes the password for a user using a reset password link.
+     * This method decodes the email address from the reset password link, validates and changes the password,
+     * and updates the user's password in the database.
+     *
+     * @param passwordRequest The password request containing the new password and confirmation.
+     * @param email The encoded email address obtained from the reset password link.
+     */
+    @Override
+    public void changePasswordFromResetLink(PasswordRequest passwordRequest, String email) {
+        byte[] decodeData = Base64.getDecoder().decode(email);
+        String emailDecode = new String(decodeData, StandardCharsets.UTF_8);
+        User user =  userRepository.findByEmail(emailDecode);
+
+        if (user != null && user.getProvider().equals(OAuth2Provider.LOCAL) && user.isActivity()) {
+            passwordChecking(passwordRequest);
+            user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+            save(user);
+            log.info("Correct rest password.");
+        }
     }
 }

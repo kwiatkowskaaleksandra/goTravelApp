@@ -17,6 +17,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 /**
  * The type User controller.
  */
@@ -30,9 +33,11 @@ public class UserController {
      * Service for managing user-related operations.
      */
     private final UserService userService;
-    @Autowired
-    private final RefreshTokenService refreshTokenService;
 
+    /**
+     * Service for managing refresh tokens.
+     */
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * Get current user response entity.
@@ -47,9 +52,11 @@ public class UserController {
     }
 
     /**
-     * Delete user response entity.
+     * Deactivates the user account.
+     * This endpoint deactivates the user account associated with the authenticated user.
+     * It deletes the user from the system and revokes any associated refresh tokens.
      *
-     * @return the response entity
+     * @return ResponseEntity with status 200 OK and a success message if the account is deactivated successfully.
      */
     @PutMapping("/deleteUser")
     @PreAuthorize("hasRole('USER')")
@@ -67,9 +74,12 @@ public class UserController {
     }
 
     /**
-     * Update user info response entity.
-     * @param user the user
-     * @return the response entity
+     * Updates the user's data.
+     * This endpoint updates the user's data with the provided information.
+     * It retrieves the authenticated user, validates the input data, and updates the user's data accordingly.
+     *
+     * @param user The updated user information.
+     * @return ResponseEntity with status 200 OK and the updated user object if the update is successful.
      */
     @PutMapping("/updateUserData")
     @PreAuthorize("hasRole('USER')")
@@ -86,13 +96,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-
     /**
-     * Update password response entity.
+     * Updates the user's password.
+     * This endpoint updates the user's password with the provided new password.
+     * It retrieves the authenticated user, validates the input password request, and updates the password accordingly.
      *
-     * @return the user response entity
+     * @param passwordRequest The password request object containing the original password, repeated password, and new password.
+     * @return ResponseEntity with status 200 OK and a success message if the password is changed successfully.
      */
-
     @PutMapping("/updatePassword")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updatePassword(@Valid @RequestBody final PasswordRequest passwordRequest) {
@@ -107,7 +118,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-
+    /**
+     * Changes the inclusion of Two-Factor Authentication (2FA).
+     * This endpoint changes the inclusion of Two-Factor Authentication (2FA) for the authenticated user.
+     * It retrieves the authenticated user and updates the 2FA inclusion accordingly.
+     *
+     * @param twoFactorAuthenticationEnable A boolean value indicating whether to enable or disable 2FA.
+     * @return ResponseEntity with status 200 OK and the updated 2FA inclusion status if the operation is successful.
+     */
     @PutMapping("/changeOf2FAInclusion")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> changeOf2FAInclusion(@RequestParam boolean twoFactorAuthenticationEnable) {
@@ -119,5 +137,18 @@ public class UserController {
 
         log.error("Unauthorized access.");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    /**
+     * Handles the process of resetting a user's password.
+     *
+     * @param passwordRequest The request object containing the new password.
+     * @param email The email associated with the user's account.
+     * @return The updated user object after the password reset, or null if the process failed.
+     */
+    @PutMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordRequest passwordRequest, @RequestParam String email) {
+        userService.changePasswordFromResetLink(passwordRequest, email);
+        return ResponseEntity.ok().build();
     }
 }

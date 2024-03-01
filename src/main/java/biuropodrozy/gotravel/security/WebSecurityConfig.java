@@ -72,7 +72,7 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER")
-                .requestMatchers("/gotravel/**", "/api/**").permitAll()
+                .requestMatchers("/gotravel/**", "/api/**", "/mail/**").permitAll()
                 .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**","/auth/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -86,7 +86,7 @@ public class WebSecurityConfig {
                                 )).cors(withDefaults())
                 .csrf(csrf ->
                         csrf
-                                .ignoringRequestMatchers("/gotravel/signup/**", "/gotravel/authenticate/**", "/gotravel/refreshToken/**", "/payment/**")
+                                .ignoringRequestMatchers("/gotravel/signup/**", "/gotravel/authenticate/**", "/gotravel/refreshToken/**", "/payment/**", "/mail/confirmEmail/**")
                                 .csrfTokenRepository(csrfTokenRepository())
                 )
                 .oauth2Login(oauth2Login -> oauth2Login

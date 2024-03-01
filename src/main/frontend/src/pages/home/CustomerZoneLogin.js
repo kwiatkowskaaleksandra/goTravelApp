@@ -146,6 +146,10 @@ class Login extends Component {
                                                 </button>
                                             </div>
 
+                                            <div className="col-sm-12">
+                                                <a href="/forgotPassword" className="float-end text-primary">{t('goTravelNamespace3:doNotYouRememberThePassword')}</a>
+                                            </div>
+
                                             <div className="line-container">
                                                 <hr className="line"/>
                                                 <span className="text">{t('or').toUpperCase()}</span>

@@ -37,10 +37,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsernameAndActivity(String username, boolean activity);
 
     /**
-     * Find by id user.
+     * Retrieves a user by their verification register code.
+     * This method retrieves a user from the repository using the provided verification register code.
      *
-     * @param idUser the id user
-     * @return the user
+     * @param code The verification register code of the user to retrieve.
+     * @return The user associated with the provided verification register code, or null if not found.
      */
-    User findUserById(Long idUser);
+    User findByVerificationRegisterCode(String code);
+
+    /**
+     * Retrieves a user by their email address.
+     * This method retrieves a user from the repository using the provided email address.
+     *
+     * @param email The email address of the user to retrieve.
+     * @return The user associated with the provided email address, or null if not found.
+     */
+    User findByEmail(String email);
 }

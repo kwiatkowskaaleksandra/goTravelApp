@@ -4,9 +4,10 @@ import {Checkbox, Form, Message} from 'semantic-ui-react'
 import AuthContext from "../../others/AuthContext";
 import {handleLogError} from '../../others/JWT'
 import './CustomerZoneRegistration.css'
-import {Nav} from "react-bootstrap"
+import {Modal, Nav} from "react-bootstrap"
 import {goTravelApi} from "../../others/GoTravelApi";
 import {withTranslation} from "react-i18next";
+import Button from "react-bootstrap/Button";
 
 class CustomerZoneRegistration extends Component {
     static contextType = AuthContext
@@ -22,7 +23,8 @@ class CustomerZoneRegistration extends Component {
         isLoggedIn: false,
         isError: false,
         errorMessage: '',
-        acceptanceOfPolicy: false
+        acceptanceOfPolicy: false,
+        modalVisible: false
     }
 
     componentDidMount() {
@@ -72,9 +74,9 @@ class CustomerZoneRegistration extends Component {
                     repeatedPassword: '',
                     isLoggedIn: false,
                     isError: false,
-                    errorMessage: ''
+                    errorMessage: '',
+                    modalVisible: true
                 })
-                window.location.href = "/customerZone/login"
             })
                 .catch(error => {
                     handleLogError(error)
@@ -92,8 +94,9 @@ class CustomerZoneRegistration extends Component {
                         })
                     }
                 })
-
     }
+
+    handleCloseModal = () => {this.setState({modalVisible: false}); window.location.href = "/customerZone/login"};
 
     render() {
         const {t} = this.props
@@ -174,6 +177,19 @@ class CustomerZoneRegistration extends Component {
                                     </div>
                                 </div>
                             </div>
+                            <Modal show={this.state.modalVisible} onHide={this.handleCloseModal}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace3:newRegisterConfirmation')}</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body style={{fontFamily: "Comic Sans MS"}}>
+                                    {t('goTravelNamespace3:anActivationLinkToTheAccountHasBeenSentToTheProvidedEmailAddress')}
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={this.handleCloseModal} style={{fontFamily: "Comic Sans MS"}}>
+                                        {t('goTravelNamespace3:close')}
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
                         </div>
                     </div>
                 </main>

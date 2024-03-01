@@ -22,6 +22,9 @@ public class PasswordRequest {
     @NotBlank
     private String repeatedPassword;
 
+    /**
+     * The new password provided in the request.
+     */
     @NotBlank
     private String newPassword;
 }

@@ -6,8 +6,10 @@ import biuropodrozy.gotravel.repository.OwnOfferRepository;
 import biuropodrozy.gotravel.service.*;
 import biuropodrozy.gotravel.service.impl.validation.ValidateReservationServiceImpl;
 import biuropodrozy.gotravel.service.impl.validation.ValidationData;
-import lombok.RequiredArgsConstructor;
+import biuropodrozy.gotravel.service.mail.MailService;
+import biuropodrozy.gotravel.service.mail.TemplateDataStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,7 +19,6 @@ import java.util.stream.Collectors;
 /**
  * The Own offer service implementation.
  */
-@RequiredArgsConstructor
 @Service
 @Slf4j
 public class OwnOfferServiceImpl implements OwnOfferService {
@@ -53,6 +54,29 @@ public class OwnOfferServiceImpl implements OwnOfferService {
     private final OwnOfferTypeOfRoomService ownOfferTypeOfRoomService;
 
     /**
+     * Service for sending emails.
+     */
+    private final MailService mailService;
+
+    /**
+     * TemplateDataStrategy instance for reservation confirmation emails.
+     */
+    private final TemplateDataStrategy templateDataStrategyReservationConfirmation;
+
+    public OwnOfferServiceImpl(OwnOfferRepository ownOfferRepository, AccommodationService accommodationService,
+                               AttractionService attractionService, TypeOfRoomService typeOfRoomService, ValidateReservationServiceImpl validateReservation,
+                               OwnOfferTypeOfRoomService ownOfferTypeOfRoomService, MailService mailService, @Qualifier("reservationConfirmation") TemplateDataStrategy templateDataStrategyReservationConfirmation) {
+        this.ownOfferRepository = ownOfferRepository;
+        this.accommodationService = accommodationService;
+        this.attractionService = attractionService;
+        this.typeOfRoomService = typeOfRoomService;
+        this.validateReservation = validateReservation;
+        this.ownOfferTypeOfRoomService = ownOfferTypeOfRoomService;
+        this.mailService = mailService;
+        this.templateDataStrategyReservationConfirmation = templateDataStrategyReservationConfirmation;
+    }
+
+    /**
      * Saves the provided own offer after validating reservation data.
      *
      * @param ownOffer The own offer to be saved.
@@ -81,6 +105,14 @@ public class OwnOfferServiceImpl implements OwnOfferService {
         OwnOffer savedOwnOffer = ownOfferRepository.save(ownOffer);
         saveOwnOfferTypeOfRoom(savedOwnOffer);
         log.info("The trip has been booked.");
+
+        mailService.sendMail(
+                user.getEmail(),
+                "Reservation confirmation",
+                "reservationConfirmation.ftl",
+                templateDataStrategyReservationConfirmation.prepareTemplateData(user, savedOwnOffer)
+        );
+
         return savedOwnOffer.getIdOwnOffer();
     }
 
