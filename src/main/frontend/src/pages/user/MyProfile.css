@@ -71,3 +71,10 @@ button#controlled-tab-tab-activeOrders.active, button#controlled-tab-tab-purchas
     background-color: #4ec3ff;
     border-color: #4ec3ff;
 }
+
+.activeOffers {
+    background-color: #4ec3ff;
+    border-color: #4ec3ff;
+    margin-right: 20px;
+    margin-top: 40px;
+}

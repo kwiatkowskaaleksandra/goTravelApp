@@ -87,7 +87,7 @@ function Footer() {
             <div className='text-center p-4'>
                 © 2024 <b> Go Travel Poland Sp. z o.o.</b>
             </div>
-            <section className='d-flex justify-content-center justify-content-lg-between p-1 border-bottom'></section>
+            <section className='d-flex justify-content-center justify-content-lg-between p-3 border-bottom'></section>
         </MDBFooter>
     );
 }

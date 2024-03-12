@@ -59,13 +59,32 @@ public class OwnOfferServiceImpl implements OwnOfferService {
     private final MailService mailService;
 
     /**
+     * The service responsible for generating PDF invoices.
+     */
+    private final InvoiceGenerator invoiceGenerator;
+
+    /**
      * TemplateDataStrategy instance for reservation confirmation emails.
      */
     private final TemplateDataStrategy templateDataStrategyReservationConfirmation;
 
+    /**
+     * Constructs a new instance of OwnOfferServiceImpl with the provided dependencies.
+     *
+     * @param ownOfferRepository                           The repository for managing own offers.
+     * @param accommodationService                        The service for managing accommodations.
+     * @param attractionService                           The service for managing attractions.
+     * @param typeOfRoomService                           The service for managing types of rooms.
+     * @param validateReservation                         The service for validating reservations.
+     * @param ownOfferTypeOfRoomService                   The service for managing own offer type of rooms.
+     * @param mailService                                 The service for sending emails.
+     * @param invoiceGenerator                            The generator for creating invoices.
+     * @param templateDataStrategyReservationConfirmation The strategy for creating reservation confirmation templates.
+     */
+
     public OwnOfferServiceImpl(OwnOfferRepository ownOfferRepository, AccommodationService accommodationService,
                                AttractionService attractionService, TypeOfRoomService typeOfRoomService, ValidateReservationServiceImpl validateReservation,
-                               OwnOfferTypeOfRoomService ownOfferTypeOfRoomService, MailService mailService, @Qualifier("reservationConfirmation") TemplateDataStrategy templateDataStrategyReservationConfirmation) {
+                               OwnOfferTypeOfRoomService ownOfferTypeOfRoomService, MailService mailService, InvoiceGenerator invoiceGenerator, @Qualifier("reservationConfirmation") TemplateDataStrategy templateDataStrategyReservationConfirmation) {
         this.ownOfferRepository = ownOfferRepository;
         this.accommodationService = accommodationService;
         this.attractionService = attractionService;
@@ -73,6 +92,7 @@ public class OwnOfferServiceImpl implements OwnOfferService {
         this.validateReservation = validateReservation;
         this.ownOfferTypeOfRoomService = ownOfferTypeOfRoomService;
         this.mailService = mailService;
+        this.invoiceGenerator = invoiceGenerator;
         this.templateDataStrategyReservationConfirmation = templateDataStrategyReservationConfirmation;
     }
 
@@ -141,6 +161,8 @@ public class OwnOfferServiceImpl implements OwnOfferService {
             totalPrice += ((ownOffer.getNumberOfChildren() * ownOffer.getNumberOfDays() * 100) + (ownOffer.getNumberOfAdults() * ownOffer.getNumberOfDays() * 200));
         }
 
+        totalPrice += ownOffer.getInsuranceOwnOffer().getPrice();
+
         return totalPrice;
     }
 
@@ -159,45 +181,46 @@ public class OwnOfferServiceImpl implements OwnOfferService {
     }
 
     /**
-     * Get by id own offer.
+     * Retrieves a list of active orders (future departures) or past orders (departures that have already occurred)
+     * for the specified user based on the given period.
      *
-     * @param idOffer the id own offer
-     * @return the own offer
+     * @param user   The user for whom to retrieve the active or past orders.
+     * @param period The period indicating whether to retrieve active orders ("activeOrders") or past orders ("pastOrders").
+     * @return A list of own offers representing the active or past orders.
      */
+
     @Override
-    public OwnOffer getOwnOfferByIdOwnOffer(final Long idOffer) {
-        return ownOfferRepository.findByIdOwnOffer(idOffer);
+    public List<OwnOffer> getOwnOffersActiveOrders(User user, String period) {
+        return period.equals("activeOrders") ? ownOfferRepository.findFutureDeparturesForUser(user) : ownOfferRepository.findPastDeparturesForUser(user);
     }
 
     /**
-     * Get top by descending order by id own offer.
+     * Deletes the own offer with the specified ID, along with associated type of rooms and attractions.
      *
-     * @return own offer
+     * @param idOwnOffer The ID of the own offer to be deleted.
      */
     @Override
-    public OwnOffer getTopByOrderByIdOwnOffer() {
-        return ownOfferRepository.findTopByOrderByIdOwnOfferDesc();
-    }
+    public void deleteOwnOffer(final Long idOwnOffer) {
+        OwnOffer ownOffer = ownOfferRepository.findByIdOwnOffer(idOwnOffer);
+        List<OwnOfferTypeOfRoom> ownOfferTypeOfRooms = ownOfferTypeOfRoomService.findByOwnOffer_IdOwnOffer(ownOffer.getIdOwnOffer());
+        ownOfferTypeOfRooms.forEach((ownOfferTypeOfRoomService::deleteOwnOfferTypeOfRoom));
+        ownOffer.setOfferAttraction(null);
+        ownOfferRepository.save(ownOffer);
 
-    /**
-     * Find by username.
-     *
-     * @param username the username
-     * @return the own offers
-     */
-    @Override
-    public List<OwnOffer> getAllOwnOfferByUsername(final String username) {
-        return ownOfferRepository.findByUser_Username(username);
-    }
-
-    /**
-     * Delete own offer.
-     *
-     * @param ownOffer the own offer
-     */
-    @Override
-    public void deleteOwnOffer(final OwnOffer ownOffer) {
         ownOfferRepository.delete(ownOffer);
+    }
+
+    /**
+     * Generates an invoice for the own offer with the specified ID.
+     *
+     * @param idOwnOffer The ID of the own offer for which the invoice is to be generated.
+     * @return The byte array representing the generated invoice.
+     */
+
+    @Override
+    public byte[] getReservationInvoice(Long idOwnOffer) {
+        OwnOffer ownOffer = ownOfferRepository.findByIdOwnOffer(idOwnOffer);
+        return invoiceGenerator.generateInvoice(ownOffer);
     }
 
     /**

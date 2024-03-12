@@ -85,7 +85,7 @@ function NavigationBar() {
                                  aria-expanded="true">
                         <Row>
                             <Col>
-                                <center><NavDropdown.Item className="dropdown-item">
+                                <center><NavDropdown.Item className="dropdown-item-nav-bar">
                                     <Nav.Link as={Link} to={"/allOffers/exotics"} style={{color: 'black'}}> <img alt=""
                                                                                                        src={exotic}
                                                                                                        width="80"

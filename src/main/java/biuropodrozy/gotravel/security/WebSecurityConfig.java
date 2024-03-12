@@ -86,7 +86,7 @@ public class WebSecurityConfig {
                                 )).cors(withDefaults())
                 .csrf(csrf ->
                         csrf
-                                .ignoringRequestMatchers("/gotravel/signup/**", "/gotravel/authenticate/**", "/gotravel/refreshToken/**", "/payment/**", "/mail/confirmEmail/**")
+                                .ignoringRequestMatchers("/gotravel/signup/**", "/gotravel/authenticate/**", "/gotravel/refreshToken/**", "/payment/**", "/mail/confirmEmail/**", "/insurance/**")
                                 .csrfTokenRepository(csrfTokenRepository())
                 )
                 .oauth2Login(oauth2Login -> oauth2Login

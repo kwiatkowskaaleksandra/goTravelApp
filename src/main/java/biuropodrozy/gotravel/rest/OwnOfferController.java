@@ -3,11 +3,14 @@ package biuropodrozy.gotravel.rest;
 import biuropodrozy.gotravel.model.OwnOffer;
 import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.security.services.UserDetailsImpl;
+import biuropodrozy.gotravel.service.impl.AuthenticationHelper;
 import biuropodrozy.gotravel.service.OwnOfferService;
 import biuropodrozy.gotravel.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -35,6 +38,7 @@ public class OwnOfferController {
      * Service class for managing own offers.
      */
     private final UserService userService;
+    private final AuthenticationHelper authenticationHelper;
 
     /**
      * Retrieves the total price of the given own offer.
@@ -101,35 +105,60 @@ public class OwnOfferController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-//    /**
-//     * Get all own offers by username response entity.
-//     *
-//     * @param username the username
-//     * @return the list of own offer response entity
-//     */
-//    @GetMapping("/getByUsername/{username}")
-//    ResponseEntity<List<OwnOffer>> getAllByUsername(@PathVariable final String username) {
-//        return ResponseEntity.ok(ownOfferService.getAllOwnOfferByUsername(username));
-//    }
+    /**
+     * Retrieves active orders for the authenticated user based on the specified period.
+     *
+     * @param period The period for which to retrieve active orders (e.g., "today", "thisWeek", "thisMonth")
+     * @return ResponseEntity containing the active orders for the authenticated user
+     */
+    @GetMapping("/getReservationActiveOrders/{period}")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<?> getOwnOffersActiveOrders(@PathVariable String period) {
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            return ResponseEntity.ok(ownOfferService.getOwnOffersActiveOrders(authenticationUser, period));
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 
-//    /**
-//     * Delete own offer response entity.
-//     *
-//     * @param idOwnOffer the id own offer
-//     * @return the response entity
-//     */
-//    @DeleteMapping("/deleteOwnOffer/{idOwnOffer}")
-//    ResponseEntity<?> deleteOwnOffer(@PathVariable final Long idOwnOffer) {
-//        OwnOffer ownOffer = ownOfferService.getOwnOfferByIdOwnOffer(idOwnOffer);
-//
-//        List<OwnOfferTypeOfRoom> ownOfferTypeOfRooms = ownOfferTypeOfRoomService.findByOwnOffer_IdOwnOffer(ownOffer.getIdOwnOffer());
-//        ownOfferTypeOfRooms.forEach((ownOfferTypeOfRoomService::deleteOwnOfferTypeOfRoom));
-//
-//        ownOffer.setOfferAttraction(null);
-//        ownOfferService.saveOwnOffer(ownOffer);
-//
-//        ownOfferService.deleteOwnOffer(ownOffer);
-//        return ResponseEntity.ok().build();
-//    }
+    /**
+     * Deletes an own offer with the specified ID.
+     *
+     * @param idOwnOffer The ID of the own offer to be deleted
+     * @return ResponseEntity indicating the success or failure of the deletion operation
+     */
+    @DeleteMapping("/deleteReservation/{idOwnOffer}")
+    ResponseEntity<?> deleteOwnOffer(@PathVariable final Long idOwnOffer) {
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            ownOfferService.deleteOwnOffer(idOwnOffer);
+            return ResponseEntity.ok().build();
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 
+    /**
+     * Retrieves the invoice PDF for the specified own offer.
+     *
+     * @param idOwnOffer The ID of the own offer for which to retrieve the invoice
+     * @return ResponseEntity containing the invoice PDF as a byte array
+     */
+    @GetMapping("/getInvoice/{idOwnOffer}")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<?> getReservationActiveOrders(@PathVariable Long idOwnOffer) {
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            byte[] pdfBytes = ownOfferService.getReservationInvoice(idOwnOffer);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("filename", "invoice.pdf");
+            headers.setContentLength(pdfBytes.length);
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 }

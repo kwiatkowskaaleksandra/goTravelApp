@@ -1,7 +1,9 @@
 package biuropodrozy.gotravel.repository;
 
 import biuropodrozy.gotravel.model.Reservation;
+import biuropodrozy.gotravel.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,17 +23,20 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Reservation findReservationsByIdReservation(Long idReservation);
 
     /**
-     * Find reservation by id user.
+     * Retrieves a list of future reservations for a specific user.
      *
-     * @param idUser the id user
-     * @return list of reservations
+     * @param user the user for whom to retrieve future reservations
+     * @return a list of future reservations for the specified user
      */
-    List<Reservation> findReservationsByUser_Id(Long idUser);
+    @Query("SELECT r FROM Reservation r WHERE r.user = :user AND r.departureDate > CURRENT_DATE")
+    List<Reservation> findFutureDeparturesForUser(User user);
 
     /**
-     * Find top by descending order by id reservation.
+     * Retrieves a list of past reservations for a specific user.
      *
-     * @return the reservation
+     * @param user the user for whom to retrieve past reservations
+     * @return a list of past reservations for the specified user
      */
-    Reservation findTopByOrderByIdReservationDesc();
+    @Query("SELECT r FROM Reservation r WHERE r.user = :user AND r.departureDate <= CURRENT_DATE")
+    List<Reservation> findPastDeparturesForUser(User user);
 }

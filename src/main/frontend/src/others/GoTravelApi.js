@@ -18,7 +18,6 @@ export const goTravelApi = {
     getAttractions,
     getSearchedTrips,
     getAllTypeOfRoom,
-    getReservationByUser,
     getAllAttractions,
     getOwnOffersByUsername,
     countTrips,
@@ -46,7 +45,46 @@ export const goTravelApi = {
     confirmEmail,
     sendConfirmationEmail,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    getActiveOrders,
+    deleteReservation,
+    generateInvoice,
+    getAllInsurances
+}
+
+function getAllInsurances() {
+    return instance.get("/api/insurance/all")
+}
+
+function generateInvoice(user, idReservation, reservationOrigin) {
+    return instance.get("/api/" + reservationOrigin + '/getInvoice/' + idReservation, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearerAuth(user)
+        },
+        responseType: 'blob'
+    })
+}
+
+function deleteReservation(user, token, idReservation, reservationOrigin) {
+    return instance.delete('/api/' + reservationOrigin + '/deleteReservation/' + idReservation, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function getActiveOrders(user, reservationOrigin, period) {
+    return instance.get('/api/' + reservationOrigin + '/getReservationActiveOrders/'+period, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearerAuth(user)
+        }
+    })
 }
 
 function resetPassword(passwordParams, email, token) {
@@ -312,10 +350,6 @@ function getAccommodations() {
 
 function getCitiesByIdCountry(idCountry) {
     return instance.get("/api/cities/all/" + idCountry);
-}
-
-function getReservationByUser(username) {
-    return instance.get("/api/reservations/getReservationByUser/" + username);
 }
 
 function getAllTypeOfRoom() {

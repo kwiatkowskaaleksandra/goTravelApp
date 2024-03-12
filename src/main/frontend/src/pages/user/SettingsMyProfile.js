@@ -216,8 +216,8 @@ class SettingsMyProfile extends Component {
                                     <Tab eventKey="userData" title={t('goTravelNamespace2:userData')} />
                                     <Tab eventKey="passwordChange" title={t('goTravelNamespace2:passwordChange')}/>
                                     <Tab eventKey="emailChange" title={t('goTravelNamespace2:emailChange')} disabled={this.state.provider !== 'LOCAL'}/>
-                                    <Tab eventKey="2FA" title={t('goTravelNamespace2:2FA')} disabled={this.state.provider !== 'LOCAL'}/>
-                                    <Tab eventKey="deletionOfTheAccount" title={t('goTravelNamespace2:deletionOfTheAccount')} />
+                                    <Tab eventKey="2FA" title={t('goTravelNamespace3:2FA')} disabled={this.state.provider !== 'LOCAL'}/>
+                                    <Tab eventKey="deletionOfTheAccount" title={t('goTravelNamespace3:deletionOfTheAccount')} />
                             </Tabs>
                             </div>
                             <div className="ml-auto">
@@ -408,7 +408,7 @@ class SettingsMyProfile extends Component {
 
                                             </div>
                                             <div className={"row justify-content-md-start"}>
-                                                <label>*{t('goTravelNamespace2:afterChangingYourPasswordYouWillBeAutomaticallyLoggedOut')}</label>
+                                                <label>*{t('goTravelNamespace3:afterChangingYourPasswordYouWillBeAutomaticallyLoggedOut')}</label>
                                                 {isError &&
                                                     <Message negative className={"mt-3 messageError"}>{errorMessage}</Message>}
                                             </div>
@@ -434,7 +434,7 @@ class SettingsMyProfile extends Component {
                                 {key === '2FA' &&
                                     <div className={"d-flex justify-content-center"} style={{width: '750px'}}>
                                         <div style={{marginLeft: '30px'}}>
-                                            <h5 style={{fontWeight: 'bold'}}>{t('goTravelNamespace2:2FA')}</h5>
+                                            <h5 style={{fontWeight: 'bold'}}>{t('goTravelNamespace3:2FA')}</h5>
                                             <p>{t('goTravelNamespace3:2FAInformationPart1')}</p>
                                             <ul>
                                                 <li style={{

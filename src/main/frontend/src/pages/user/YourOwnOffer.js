@@ -45,7 +45,9 @@ class YourOwnOffer extends Component {
             summaryVisibility: false,
             bookedCorrectlyVisible: false,
             message: '',
-            idOwnOffer: 0
+            idOwnOffer: 0,
+            insurances: [],
+            selectedInsuranceId: 1
         }
     }
 
@@ -66,8 +68,8 @@ class YourOwnOffer extends Component {
         this.handleGetAccommodations()
         this.handleGetTypeOfRooms()
         this.handleGetAttractions()
+        this.getInsuranceInfo()
     }
-
     getCurrentDate() {
         const currentDate = new Date();
         const year = currentDate.getFullYear();
@@ -76,6 +78,16 @@ class YourOwnOffer extends Component {
         let day = currentDate.getDate();
         if (day < 10) day = '0' + day;
         return `${year}-${month}-${day}`;
+    }
+
+    getInsuranceInfo = () => {
+        goTravelApi.getAllInsurances().then(res => {
+            this.setState({
+                insurances: res.data
+            })
+        }).catch(error => {
+            handleLogError(error)
+        })
     }
 
     handleGetAttractions = () => {goTravelApi.getAllAttractions().then(res => {this.setState({attractions: res.data})})}
@@ -182,7 +194,10 @@ class YourOwnOffer extends Component {
             })),
             offerAttraction: checkedAttractionsName.map(atr => ({
                 idAttraction: atr
-            }))
+            })),
+            insuranceOwnOffer: {
+                idInsurance: parseInt(this.state.selectedInsuranceId)
+            }
         }
     }
 
@@ -237,7 +252,11 @@ class YourOwnOffer extends Component {
     }
 
     handleTabSelect = (selectedKey) => {
-        if (selectedKey === 'summary') this.handleGetTotalPrice()
+        if (selectedKey === 'summary') {
+            this.handleGetTotalPrice().catch(error => {
+                console.error("Error fetching total price:", error);
+            });
+        }
         this.setState({key: selectedKey});
     };
 
@@ -560,6 +579,26 @@ class YourOwnOffer extends Component {
                                                         <div className={"col"}>
                                                             <div className="row g-2 align-items-center">
                                                                 <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('insurance')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-50">
+                                                                    <select className="form-control search-slt"
+                                                                            style={{ width: '15rem', borderRadius: '5px' }}
+                                                                            value={this.state.selectedInsuranceId}
+                                                                            onChange={(e) => {this.setState({selectedInsuranceId: e.target.value,});}}>
+                                                                        {this.state.insurances.map(insurance =>
+                                                                            <option key={insurance.idInsurance} value={insurance.idInsurance}>{t(insurance.name)}</option>
+                                                                        )}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className={"col"}></div>
+                                                    </div>
+                                                    <div className={"row mt-4"}>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
                                                                     <div className={"form-check"}>
                                                                         <input className={"form-check-input"} type={"checkbox"}
                                                                                onChange={(e) => {
@@ -828,6 +867,20 @@ class YourOwnOffer extends Component {
                                                                            value={t('goTravelNamespace2:'+this.state.attractions.find(attraction => attraction.idAttraction === parseInt(name))?.nameAttraction)} disabled/>
                                                                 </div>
                                                             )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="row g-1 align-items-center mt-2"
+                                                         style={{width: '350px'}}>
+                                                        <div className="col colReservation"
+                                                             style={{width: '150px', marginRight: '4%'}}>
+                                                            <label className="col-form-label">{t('insurance')}</label>
+                                                        </div>
+                                                        <div className="col colReservation" style={{width: '200px'}}>
+                                                            <input type="text" className="form-control"
+                                                                   style={{width: '20rem'}}
+                                                                   aria-describedby="passwordHelpInline"
+                                                                   value={t(this.state.insurances.find(ins => ins.idInsurance === parseInt(this.state.selectedInsuranceId))?.name)}
+                                                                   disabled/>
                                                         </div>
                                                     </div>
                                                     <div className="row g-1 align-items-center mt-2"

@@ -49,6 +49,11 @@ public class ReservationServiceImpl implements ReservationService {
     private final MailService mailService;
 
     /**
+     * The service responsible for generating PDF invoices.
+     */
+    private final InvoiceGenerator invoiceGenerator;
+
+    /**
      * TemplateDataStrategy instance for reservation confirmation emails.
      */
     private final TemplateDataStrategy templateDataStrategyReservationConfirmation;
@@ -56,21 +61,23 @@ public class ReservationServiceImpl implements ReservationService {
     /**
      * Constructs a new ReservationServiceImpl with the specified dependencies.
      *
-     * @param reservationRepository             The repository for managing reservations.
-     * @param typeOfRoomService                 The service for managing types of rooms.
-     * @param reservationsTypeOfRoomService     The service for managing reservations of types of rooms.
-     * @param validateReservation              The service for validating reservations.
-     * @param mailService                       The service for sending emails.
-     * @param templateDataStrategyReservationConfirmation  The strategy for preparing template data for reservation confirmation emails.
+     * @param reservationRepository                       The repository for managing reservations.
+     * @param typeOfRoomService                           The service for managing types of rooms.
+     * @param reservationsTypeOfRoomService               The service for managing reservations of types of rooms.
+     * @param validateReservation                         The service for validating reservations.
+     * @param mailService                                 The service for sending emails.
+     * @param invoiceGenerator                            The service for generating invoices.
+     * @param templateDataStrategyReservationConfirmation The strategy for preparing template data for reservation confirmation emails.
      */
     public ReservationServiceImpl(ReservationRepository reservationRepository, TypeOfRoomService typeOfRoomService,
                                   ReservationsTypeOfRoomService reservationsTypeOfRoomService, ValidateReservationServiceImpl validateReservation,
-                                  MailService mailService, @Qualifier("reservationConfirmation") TemplateDataStrategy templateDataStrategyReservationConfirmation) {
+                                  MailService mailService, InvoiceGenerator invoiceGenerator, @Qualifier("reservationConfirmation") TemplateDataStrategy templateDataStrategyReservationConfirmation) {
         this.reservationRepository = reservationRepository;
         this.typeOfRoomService = typeOfRoomService;
         this.reservationsTypeOfRoomService = reservationsTypeOfRoomService;
         this.validateReservation = validateReservation;
         this.mailService = mailService;
+        this.invoiceGenerator = invoiceGenerator;
         this.templateDataStrategyReservationConfirmation = templateDataStrategyReservationConfirmation;
     }
 
@@ -111,17 +118,6 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     /**
-     * Get reservation by id reservation.
-     *
-     * @param idReservation the id reservation
-     * @return the reservation
-     */
-    @Override
-    public Reservation getReservationsByIdReservation(final Long idReservation) {
-        return reservationRepository.findReservationsByIdReservation(idReservation);
-    }
-
-    /**
      * Updates the payment status of the reservation with the specified ID.
      * This method retrieves the reservation from the repository using the provided ID,
      * sets the payment status to true, and saves the updated reservation back to the repository.
@@ -136,34 +132,42 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     /**
-     * Get top by descending order by id reservation.
+     * Retrieves a list of active reservations for the specified user based on the given period.
      *
-     * @return the reservation
+     * @param user    the user for whom to retrieve reservations
+     * @param period  the period for filtering reservations ("activeOrders" for future departures, "pastOrders" for past departures)
+     * @return a list of reservations matching the specified criteria
      */
     @Override
-    public Reservation getTopByOrderByIdReservation() {
-        return reservationRepository.findTopByOrderByIdReservationDesc();
+    public List<Reservation> getReservationActiveOrders(User user, String period) {
+        return period.equals("activeOrders") ? reservationRepository.findFutureDeparturesForUser(user) : reservationRepository.findPastDeparturesForUser(user);
     }
 
     /**
-     * Get reservation by id user.
+     * Deletes the reservation with the specified ID. This method first retrieves the reservation from the repository
+     * using the provided ID, deletes associated reservations type of rooms, and then deletes the reservation itself.
      *
-     * @param idUser the id user
-     * @return list of reservation
+     * @param idReservation The ID of the reservation to be deleted.
      */
     @Override
-    public List<Reservation> getReservationByIdUser(final Long idUser) {
-        return reservationRepository.findReservationsByUser_Id(idUser);
-    }
+    public void deleteReservation(final Long idReservation) {
+        Reservation reservation = reservationRepository.findReservationsByIdReservation(idReservation);
+        List<ReservationsTypeOfRoom> reservationsTypeOfRooms = reservationsTypeOfRoomService.findByReservation_IdReservation(idReservation);
+        reservationsTypeOfRooms.forEach((reservationsTypeOfRoomService::deleteReservationsTypeOfRoom));
 
-    /**
-     * Delete reservation.
-     *
-     * @param reservation the reservation
-     */
-    @Override
-    public void deleteReservation(final Reservation reservation) {
         reservationRepository.delete(reservation);
+    }
+
+    /**
+     * Generates and retrieves the invoice for the reservation with the specified ID.
+     *
+     * @param idReservation The ID of the reservation for which to generate the invoice.
+     * @return A byte array representing the generated invoice.
+     */
+    @Override
+    public byte[] getReservationInvoice(Long idReservation) {
+        Reservation reservation = reservationRepository.findReservationsByIdReservation(idReservation);
+        return invoiceGenerator.generateInvoice(reservation);
     }
 
     /**
@@ -173,7 +177,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @return The total price of the reservation.
      */
     private double calculateReservationPrice(Reservation reservation) {
-        return (reservation.getNumberOfAdults() * reservation.getTrip().getPrice()) + (reservation.getNumberOfChildren() * (reservation.getTrip().getPrice() / 2));
+        return (reservation.getNumberOfAdults() * reservation.getTrip().getPrice()) + (reservation.getNumberOfChildren() * (reservation.getTrip().getPrice() / 2) + reservation.getInsuranceReservation().getPrice());
     }
 
     /**

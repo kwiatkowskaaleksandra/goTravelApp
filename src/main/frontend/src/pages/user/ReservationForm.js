@@ -39,7 +39,9 @@ class ReservationForm extends Component {
         bookedCorrectlyVisible: false,
         message: '',
         idOwnOffer: 0,
-        totalCost: 0
+        totalCost: 0,
+        insurances: [],
+        selectedInsuranceId: 1
     }
 
     componentDidMount() {
@@ -58,6 +60,7 @@ class ReservationForm extends Component {
         this.state.idTripSelected = document.location.href.split("/").pop()
         this.handleGetTrip()
         this.handleGetTypeOfRoom()
+        this.getInsuranceInfo()
     }
 
     getCurrentDate() {
@@ -68,6 +71,16 @@ class ReservationForm extends Component {
         let day = currentDate.getDate();
         if (day < 10) day = '0' + day;
         return `${year}-${month}-${day}`;
+    }
+
+    getInsuranceInfo = () => {
+        goTravelApi.getAllInsurances().then(res => {
+            this.setState({
+                insurances: res.data
+            })
+        }).catch(error => {
+            handleLogError(error)
+        })
     }
 
     handleGetTrip = () => {
@@ -85,6 +98,8 @@ class ReservationForm extends Component {
     handleGetTypeOfRoom = () => {
         goTravelApi.getAllTypeOfRoom().then(res => {
             this.setState({typeOfRoom: res.data})
+        }).catch(error => {
+            handleLogError(error)
         })
     }
 
@@ -132,7 +147,10 @@ class ReservationForm extends Component {
                 typeOfRoom: {
                     type: room.type
                 }
-            }))
+            })),
+            insuranceReservation: {
+                idInsurance: parseInt(this.state.selectedInsuranceId)
+            }
         }
 
         if (this.state.rooms.some(room => room.type === "" || room.type === "choose" || room.quantity === "" || room.quantity === "0")) {
@@ -549,7 +567,23 @@ class ReservationForm extends Component {
                                                             </div>
                                                         </div>
 
-                                                        <div className={"col"}></div>
+                                                        <div className={"col"}>
+                                                            <div className="row g-2 align-items-center">
+                                                                <div className="col colReservation w-20">
+                                                                    <label className="col-form-label">{t('insurance')}</label>
+                                                                </div>
+                                                                <div className="col colReservation w-50">
+                                                                    <select className="form-control search-slt"
+                                                                            style={{ width: '15rem', borderRadius: '5px' }}
+                                                                            value={this.state.selectedInsuranceId}
+                                                                            onChange={(e) => {this.setState({selectedInsuranceId: e.target.value,});}}>
+                                                                            {this.state.insurances.map(insurance =>
+                                                                                <option key={insurance.idInsurance} value={insurance.idInsurance}>{t(insurance.name)}</option>
+                                                                            )}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                     <div className={"row mt-4"}>
@@ -853,6 +887,20 @@ class ReservationForm extends Component {
                                                                style={{width: '20rem'}}
                                                                aria-describedby="passwordHelpInline"
                                                                value={this.returnTripFormat(this.state.departureDate)}
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div className="row g-1 align-items-center mt-2"
+                                                     style={{width: '350px'}}>
+                                                    <div className="col colReservation"
+                                                         style={{width: '150px', marginRight: '4%'}}>
+                                                        <label className="col-form-label">{t('insurance')}</label>
+                                                    </div>
+                                                    <div className="col colReservation" style={{width: '200px'}}>
+                                                        <input type="text" className="form-control"
+                                                               style={{width: '20rem'}}
+                                                               aria-describedby="passwordHelpInline"
+                                                               value={t(this.state.insurances.find(ins => ins.idInsurance === parseInt(this.state.selectedInsuranceId))?.name)}
                                                                disabled/>
                                                     </div>
                                                 </div>

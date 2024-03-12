@@ -36,33 +36,28 @@ public interface OwnOfferService {
      * @param idOwnOffer The ID of the own offer whose payment status is to be updated.
      */
     void updatePaymentStatus(long idOwnOffer);
-    /**
-     * Get by id own offer.
-     *
-     * @param idOffer the id own offer
-     * @return the own offer
-     */
-    OwnOffer getOwnOfferByIdOwnOffer(Long idOffer);
 
     /**
-     * Get top by descending order by id own offer.
+     * Retrieves a list of own offers with active orders for the specified user and period.
      *
-     * @return own offer
+     * @param user The user for whom to retrieve own offers
+     * @param period The period for which to retrieve own offers (e.g., "future", "past")
+     * @return A list of own offers with active orders
      */
-    OwnOffer getTopByOrderByIdOwnOffer();
+    List<OwnOffer> getOwnOffersActiveOrders(User user, String period);
 
     /**
-     * Find by username.
+     * Deletes the own offer with the specified ID.
      *
-     * @param username the username
-     * @return the own offers
+     * @param idOwnOffer The ID of the own offer to be deleted
      */
-    List<OwnOffer> getAllOwnOfferByUsername(String username);
+    void deleteOwnOffer(Long idOwnOffer);
 
     /**
-     * Delete own offer.
+     * Retrieves the invoice PDF for the own offer with the specified ID.
      *
-     * @param ownOffer the own offer
+     * @param idOwnOffer The ID of the own offer for which to retrieve the invoice
+     * @return The byte array containing the PDF invoice
      */
-    void deleteOwnOffer(OwnOffer ownOffer);
+    byte[] getReservationInvoice(Long idOwnOffer);
 }

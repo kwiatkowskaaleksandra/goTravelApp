@@ -42,7 +42,7 @@ class Settings extends Component {
                                                 <div className="settingCard">
                                                     <TbMessages id="messages" className="icon" />
                                                     <span style={{ marginLeft: '20px', flex: '2', width: '66%' }}>
-                                                        <Card.Title>{t('goTravelNamespace2:contactWithTheEmployee')}</Card.Title>
+                                                        <Card.Title>{'cos'}</Card.Title>
                                                     </span>
                                                 </div>
                                             </Card.Link>

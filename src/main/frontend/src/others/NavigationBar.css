@@ -3,7 +3,7 @@
 }
 
 .dropdown-item {
-    height: 130px;
+    height: 130px !important;
 }
 
 .custom-dropdown-menu {

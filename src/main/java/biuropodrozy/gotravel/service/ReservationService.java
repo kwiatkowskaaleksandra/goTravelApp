@@ -19,14 +19,6 @@ public interface ReservationService {
     long saveReservation(Reservation reservation, User user);
 
     /**
-     * Get reservation by id reservation.
-     *
-     * @param idReservation the id reservation
-     * @return the reservation
-     */
-    Reservation getReservationsByIdReservation(Long idReservation);
-
-    /**
      * Updates the payment status of the reservation with the specified ID.
      * This method retrieves the own offer from the repository using the provided ID,
      * sets the payment status to true, and saves the updated reservation back to the repository.
@@ -34,26 +26,29 @@ public interface ReservationService {
      * @param idReservation The ID of the reservation whose payment status is to be updated.
      */
     void updatePaymentStatus(long idReservation);
-    /**
-     * Get top by descending order by id reservation.
-     *
-     * @return the reservation
-     */
-    Reservation getTopByOrderByIdReservation();
 
     /**
-     * Get reservation by id user.
+     * Retrieves active reservation orders for a user within the specified period.
      *
-     * @param idUser the id user
-     * @return list of reservation
+     * @param user   The user for whom to retrieve active reservation orders
+     * @param period The period for which to retrieve reservation orders (e.g., "current", "future")
+     * @return A list of active reservation orders
      */
-    List<Reservation> getReservationByIdUser(Long idUser);
+    List<Reservation> getReservationActiveOrders(User user, String period);
 
     /**
-     * Delete reservation.
+     * Deletes the reservation with the specified ID.
      *
-     * @param reservation the reservation
+     * @param idReservation The ID of the reservation to be deleted
      */
-    void deleteReservation(Reservation reservation);
+    void deleteReservation(Long idReservation);
+
+    /**
+     * Retrieves the invoice PDF for the reservation with the specified ID.
+     *
+     * @param idReservation The ID of the reservation for which to retrieve the invoice
+     * @return The invoice PDF as a byte array
+     */
+    byte[] getReservationInvoice(Long idReservation);
 
 }

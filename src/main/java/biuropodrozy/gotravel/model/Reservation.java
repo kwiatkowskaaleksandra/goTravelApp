@@ -85,4 +85,11 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "idTrip")
     private Trip trip;
+
+    /**
+     * The insurance associated with this reservation.
+     */
+    @ManyToOne
+    @JoinColumn(name = "idInsurance")
+    private Insurance insuranceReservation;
 }

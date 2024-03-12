@@ -117,4 +117,11 @@ public class OwnOffer {
     })
     @JoinTable(name = "attractions_ownTrip", joinColumns = {@JoinColumn(name = "idOwnOffer")}, inverseJoinColumns = {@JoinColumn(name = "idAttraction")})
     private Set<Attraction> offerAttraction;
+
+    /**
+     * The insurance associated with this own offer.
+     */
+    @ManyToOne
+    @JoinColumn(name = "idInsurance")
+    private Insurance insuranceOwnOffer;
 }

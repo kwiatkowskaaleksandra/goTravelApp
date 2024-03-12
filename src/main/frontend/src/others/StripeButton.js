@@ -8,7 +8,7 @@ import { TbFaceIdError } from "react-icons/tb";
 import { TbFaceId } from "react-icons/tb";
 import {goTravelApi} from "./GoTravelApi";
 
-const StripeButton = ({price, email, user, type, id}) => {
+const StripeButton = ({price, email, user, type, id, style}) => {
     const publicKey = 'pk_test_51OjQutLhNMYMxIBY18SVEedcok3ZYV9FSo4u6fGQmide0oewqhhPtTAvg0EEhpB7n57gxRVEuns0zUig0hh1zvJ700I2d0dMIf'
     const stripePrice = price * 100
 
@@ -47,7 +47,7 @@ const StripeButton = ({price, email, user, type, id}) => {
     }
 
     return (
-        <div>
+        <div style={style}>
             <StripeCheckout
                 style={{height: '40px', fontFamily:'Comic Sans MS', backgroundColor: 'red', border: 'none'}}
                 amount={stripePrice}
