@@ -4,6 +4,9 @@ import biuropodrozy.gotravel.model.Trip;
 import biuropodrozy.gotravel.repository.TripRepository;
 import biuropodrozy.gotravel.rest.dto.request.TripFilteringRequest;
 import biuropodrozy.gotravel.service.TripService;
+import biuropodrozy.gotravel.service.impl.tripRecommendation.FuzzyLogicService;
+import biuropodrozy.gotravel.service.impl.tripRecommendation.TripMatcher;
+import biuropodrozy.gotravel.model.UserTripPreferences;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,6 +29,19 @@ public class TripServiceImpl implements TripService {
      */
     private final TripRepository tripRepository;
 
+    /**
+     * Service for evaluating user preferences using fuzzy logic.
+     */
+    private final FuzzyLogicService fuzzyLogicService;
+
+    /**
+     * Service for matching trips with user preferences.
+     */
+    private final TripMatcher tripMatcher;
+
+    /**
+     * Maximum price of the trip.
+     */
     private static final int MAX_PRICE = 100000000;
 
     /**
@@ -47,7 +63,7 @@ public class TripServiceImpl implements TripService {
      * Get by id trip.
      *
      * @param idTrip the id trip
-     * @return thre trip
+     * @return the trip
      */
     @Override
     public Trip getTripByIdTrip(final Long idTrip) {
@@ -142,5 +158,37 @@ public class TripServiceImpl implements TripService {
         List<Trip> pageContent = tripList.subList(start, Math.min(end, totalElements));
 
         return new PageImpl<>(pageContent, PageRequest.of(pageIndex, pageSize), totalElements);
+    }
+
+    /**
+     * Generates trip recommendations based on user preferences.
+     *
+     * @param userPreferences The user's trip preferences.
+     * @return A list of recommended trips.
+     */
+    @Override
+    public List<Trip> tripRecommendation(UserTripPreferences userPreferences) {
+        double score = fuzzyLogicService.evaluateUserPreferences(userPreferences);
+        List<Trip> potentialTrips = tripRepository.findAll();
+        double minPrice = tripRepository.findFirstByOrderByPriceAsc().getPrice();
+        double maxPrice = tripRepository.findFirstByOrderByPriceDesc().getPrice();
+
+        return potentialTrips.stream()
+                .filter(trip -> tripMatcher.matchTripWithScore(trip, minPrice, maxPrice, score, userPreferences))
+                .toList();
+    }
+
+    /**
+     * Retrieves the most booked trips.
+     *
+     * @return A list of the most booked trips.
+     */
+    @Override
+    public List<Trip> getMostBookedTrips() {
+        Pageable topFive = PageRequest.of(0,5);
+        List<Object[]> mostBookedTripsResult = tripRepository.findTop5MostBookedTrips(topFive);
+        return mostBookedTripsResult.stream()
+                .map(result -> (Trip) result[0])
+                .collect(Collectors.toList());
     }
 }

@@ -26,6 +26,10 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * The provider responsible for generating authentication tokens.
      */
     private final JwtUtils jwtUtils;
+
+    /**
+     * Service for managing refresh tokens.
+     */
     private final RefreshTokenService refreshTokenService;
 
     /**

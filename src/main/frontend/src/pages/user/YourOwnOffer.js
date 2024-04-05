@@ -44,6 +44,7 @@ class YourOwnOffer extends Component {
             user: null,
             summaryVisibility: false,
             bookedCorrectlyVisible: false,
+            showModalReservationConfirmation: false,
             message: '',
             idOwnOffer: 0,
             insurances: [],
@@ -132,7 +133,7 @@ class YourOwnOffer extends Component {
 
     typeOfRoomsStep = () => {return this.state.selectedAccommodationId !== '0' ? {"display": "block"} : {"display": "none"};}
 
-    handleCloseModal = () => {this.setState({showModal: false, key: 'additionalInformation'});};
+    handleCloseModalReservationConfirmation = () => {this.setState({showModalReservationConfirmation: false, key: 'additionalInformation'});};
 
     handleCheckboxChangeAttractions = (e) => {
         const {id, checked} = e.target;
@@ -166,7 +167,7 @@ class YourOwnOffer extends Component {
             this.setState({
                 isError: true,
                 errorMessage: t('goTravelNamespace3:pleaseIndicateTheNumberAndTypeOfRoomsWhenBooking'),
-                showModal: true,
+                showModalReservationConfirmation: true,
                 summaryVisibility: false
             });
             return;
@@ -214,7 +215,7 @@ class YourOwnOffer extends Component {
         }).catch(error => {
             handleLogError(error)
             const errorData = error.response
-            this.setState({isError: true, errorMessage: t('goTravelNamespace3:'+errorData.data.message), showModal: true, summaryVisibility: false})
+            this.setState({isError: true, errorMessage: t('goTravelNamespace3:'+errorData.data.message), showModalReservationConfirmation: true, summaryVisibility: false})
         })
     }
 
@@ -237,7 +238,7 @@ class YourOwnOffer extends Component {
                  this.setState({
                      isError: true,
                      errorMessage: t('goTravelNamespace3:' + errorData.data.message),
-                     showModal: true
+                     showModalReservationConfirmation: true
                  })
              })
          }
@@ -424,9 +425,9 @@ class YourOwnOffer extends Component {
                                                             </div>
                                                         </div>
                                                     ))}
-                                                    <Modal show={this.state.showModal} onHide={this.handleCloseModal}>
-                                                        <Modal.Header closeButton><Modal.Title>{t('goTravelNamespace3:accommodationInfoPart1')}</Modal.Title></Modal.Header>
-                                                        <Modal.Body style={{textAlign: 'justify'}}>
+                                                    <Modal size={"lg"} show={this.state.showModal} onHide={() => this.setState({showModal: false})}>
+                                                        <Modal.Header style={{fontFamily: 'Comic Sans MS'}} closeButton><Modal.Title>{t('goTravelNamespace3:accommodationInfoPart1')}</Modal.Title></Modal.Header>
+                                                        <Modal.Body style={{textAlign: 'justify', fontFamily: 'Comic Sans MS'}}>
                                                             <br/>
                                                             <table className={"table"}>
                                                                 <thead>
@@ -462,7 +463,7 @@ class YourOwnOffer extends Component {
                                                             </table>
                                                         </Modal.Body>
                                                         <Modal.Footer>
-                                                            <Button variant="secondary" onClick={this.handleCloseModal}>{t('goTravelNamespace3:back')}</Button>
+                                                            <Button variant="secondary" onClick={() => this.setState({showModal: false})}>{t('goTravelNamespace3:back')}</Button>
                                                         </Modal.Footer>
                                                     </Modal>
 
@@ -910,7 +911,7 @@ class YourOwnOffer extends Component {
                                     }
                                 </div>
                             </div>
-                            <Modal show={this.state.showModal} onHide={this.handleCloseModal}>
+                            <Modal size={"lg"} show={this.state.showModalReservationConfirmation} onHide={this.handleCloseModalReservationConfirmation}>
                                 <Modal.Header closeButton>
                                     <Modal.Title style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace3:reservationConfirmation')}</Modal.Title>
                                 </Modal.Header>
@@ -919,12 +920,12 @@ class YourOwnOffer extends Component {
                                         <Message negative  className={"mt-3 messageError"} style={{fontFamily: "Comic Sans MS", width: '400px'}}>{this.state.errorMessage}</Message>}
                                 </Modal.Body>
                                 <Modal.Footer>
-                                    <Button variant="secondary" onClick={this.handleCloseModal} style={{fontFamily: "Comic Sans MS"}}>
+                                    <Button variant="secondary" onClick={this.handleCloseModalReservationConfirmation} style={{fontFamily: "Comic Sans MS"}}>
                                         {t('goTravelNamespace3:close')}
                                     </Button>
                                 </Modal.Footer>
                             </Modal>
-                            <Modal show={this.state.bookedCorrectlyVisible} onHide={this.handleCloseModalBookedCorrectly}>
+                            <Modal size={"lg"} show={this.state.bookedCorrectlyVisible} onHide={this.handleCloseModalBookedCorrectly}>
                                 <Modal.Header closeButton>
                                     <Modal.Title style={{fontFamily: "Comic Sans MS"}}>{t('goTravelNamespace3:reservationConfirmation')}</Modal.Title>
                                 </Modal.Header>

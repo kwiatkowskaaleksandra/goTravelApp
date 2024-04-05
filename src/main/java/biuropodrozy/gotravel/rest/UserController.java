@@ -5,15 +5,14 @@ import biuropodrozy.gotravel.rest.dto.request.PasswordRequest;
 import biuropodrozy.gotravel.security.services.RefreshTokenService;
 import biuropodrozy.gotravel.security.services.UserDetailsImpl;
 import biuropodrozy.gotravel.service.UserService;
+import biuropodrozy.gotravel.service.impl.AuthenticationHelper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -34,6 +33,11 @@ public class UserController {
      * Service for managing refresh tokens.
      */
     private final RefreshTokenService refreshTokenService;
+
+    /**
+     * Helper class for authentication.
+     */
+    private final AuthenticationHelper authenticationHelper;
 
     /**
      * Get current user response entity.
@@ -57,11 +61,10 @@ public class UserController {
     @PutMapping("/deleteUser")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            userService.deleteUser(existingUser);
-            refreshTokenService.deleteByUserId(existingUser.getId());
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            userService.deleteUser(authenticationUser);
+            refreshTokenService.deleteByUserId(authenticationUser.getId());
             return ResponseEntity.ok().body("The account has been deactivated.");
         }
 
@@ -80,12 +83,11 @@ public class UserController {
     @PutMapping("/updateUserData")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<User> updateUser(@Valid @RequestBody final User user) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            existingUser = userService.updateUserData(existingUser, user);
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            authenticationUser = userService.updateUserData(authenticationUser, user);
             log.info("Correct user information update.");
-            return ResponseEntity.ok(existingUser);
+            return ResponseEntity.ok(authenticationUser);
         }
 
         log.error("Unauthorized access.");
@@ -103,10 +105,9 @@ public class UserController {
     @PutMapping("/updatePassword")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updatePassword(@Valid @RequestBody final PasswordRequest passwordRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            userService.changePassword(existingUser, passwordRequest);
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            userService.changePassword(authenticationUser, passwordRequest);
             return ResponseEntity.ok().body("Password has been changed.");
         }
 
@@ -125,10 +126,9 @@ public class UserController {
     @PutMapping("/changeOf2FAInclusion")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> changeOf2FAInclusion(@RequestParam boolean twoFactorAuthenticationEnable) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            return ResponseEntity.ok().body(userService.changeOf2FAInclusion(existingUser, twoFactorAuthenticationEnable));
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            return ResponseEntity.ok().body(userService.changeOf2FAInclusion(authenticationUser, twoFactorAuthenticationEnable));
         }
 
         log.error("Unauthorized access.");

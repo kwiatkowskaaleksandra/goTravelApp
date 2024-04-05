@@ -73,7 +73,7 @@ class CardTrip extends Component {
                                                     </Card.Text>
                                                     <Card.Link
                                                         className={"seeTheOffer btn btn-primary btn-sm"}
-                                                        href={tr.typeOfTrip.name + '/' + tr.idTrip}>{t('seeTheOffer')}</Card.Link>
+                                                        href={tr.typeOfTrip.name + '/' + tr.idTrip}>{t('goTravelNamespace4:seeTheOffer')}</Card.Link>
                                                 </Card.Body>
 
                                             </div>

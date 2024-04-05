@@ -14,22 +14,46 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service for managing refresh tokens.
+ */
 @Service
 public class RefreshTokenService {
 
+    /**
+     * The expiration time for refresh tokens in milliseconds.
+     */
     @Value("${gotravel.app.jwtRefreshExpirationMs}")
     private Long refreshTokenExpiration;
 
+    /**
+     * Repository for managing refresh tokens.
+     */
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+    /**
+     * Repository for managing users.
+     */
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Retrieves a refresh token by its token string.
+     *
+     * @param token the token string
+     * @return an Optional containing the refresh token, or empty if not found
+     */
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
+    /**
+     * Creates a new refresh token for the specified user.
+     *
+     * @param userId the ID of the user
+     * @return the created refresh token
+     */
     public RefreshToken createRefreshToken(Long userId) {
         RefreshToken refreshToken = new RefreshToken();
 
@@ -44,6 +68,13 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
+    /**
+     * Verifies if a refresh token has expired.
+     *
+     * @param token the refresh token
+     * @return the same refresh token if not expired
+     * @throws TokenRefreshException if the token has expired
+     */
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
@@ -53,8 +84,13 @@ public class RefreshTokenService {
         return token;
     }
 
+    /**
+     * Deletes refresh tokens associated with the specified user ID.
+     *
+     * @param userId the ID of the user
+     */
     @Transactional
-    public int deleteByUserId(Long userId) {
-        return refreshTokenRepository.deleteByUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId)));
+    public void deleteByUserId(Long userId) {
+        refreshTokenRepository.deleteByUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId)));
     }
 }

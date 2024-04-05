@@ -10,7 +10,7 @@ import java.util.List;
 public interface CountryService {
 
     /**
-     * Getl all countries.
+     * Get all countries.
      *
      * @return list of countries.
      */

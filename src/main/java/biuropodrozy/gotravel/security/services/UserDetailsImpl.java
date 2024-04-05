@@ -53,7 +53,11 @@ public class UserDetailsImpl implements OAuth2User, UserDetails {
      */
     private String email;
 
+    /**
+     * The account activity
+     */
     private boolean activity;
+
     /**
      * The OAuth2Provider associated with the user.
      */
@@ -120,6 +124,12 @@ public class UserDetailsImpl implements OAuth2User, UserDetails {
         return true;
     }
 
+    /**
+     * Constructs a UserDetailsImpl object from the given User object.
+     *
+     * @param user the User object
+     * @return the UserDetailsImpl object constructed from the User object
+     */
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))

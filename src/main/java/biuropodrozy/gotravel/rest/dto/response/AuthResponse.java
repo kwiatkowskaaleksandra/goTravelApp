@@ -3,7 +3,7 @@ package biuropodrozy.gotravel.rest.dto.response;
 import java.util.List;
 
 /**
- * The record of Auth response.
- * @param accessToken the access token
+ * Represents the response object for authentication.
+ * Contains the access token, refresh token, user ID, username, email, and roles.
  */
 public record AuthResponse(String accessToken, String refreshToken, Long id, String username, String email, List<String> roles) { }

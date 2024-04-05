@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
+/**
+ * Entity representing the type of trip.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,12 +17,21 @@ import java.util.Set;
 @Table(name = "typeOfTrip")
 public class TypeOfTrip {
 
+    /**
+     * The unique identifier for the type of trip.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idTypeOfTrip;
 
+    /**
+     * The name of the type of trip.
+     */
     private String name;
 
+    /**
+     * The set of trips associated with this type of trip.
+     */
     @OneToMany(mappedBy = "typeOfTrip")
     private Set<Trip> trips;
 }

@@ -12,26 +12,52 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * Utility class for handling JWT operations.
+ */
 @Component
 @Slf4j
 public class JwtUtils {
 
+    /**
+     * The JWT secret key.
+     */
     @Value("${gotravel.app.jwtSecret}")
     private String jwtSecret;
 
+    /**
+     * The JWT expiration time in milliseconds.
+     */
     @Value("${gotravel.app.jwtExpirationMs}")
     private Long jwtExpirationMs;
 
+    /**
+     * Generates a JWT token from authentication details.
+     *
+     * @param authentication the authentication details
+     * @return the generated JWT token
+     */
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return generateTokenFromUsername(userPrincipal.getUsername());
     }
 
+    /**
+     * Retrieves the JWT signing key.
+     *
+     * @return the JWT signing key
+     */
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
+    /**
+     * Generates a JWT token from a username.
+     *
+     * @param username the username
+     * @return the generated JWT token
+     */
     public String generateTokenFromUsername(String username) {
         return Jwts.builder()
                 .setSubject(username)
@@ -41,11 +67,23 @@ public class JwtUtils {
                 .compact();
     }
 
+    /**
+     * Retrieves the username from a JWT token.
+     *
+     * @param token the JWT token
+     * @return the username
+     */
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
+    /**
+     * Validates a JWT token.
+     *
+     * @param authToken the JWT token to validate
+     * @return true if the token is valid, false otherwise
+     */
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);

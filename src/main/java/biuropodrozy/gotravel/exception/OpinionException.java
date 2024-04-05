@@ -13,7 +13,7 @@ public class OpinionException extends RuntimeException {
     /**
      * Constructs a new OpinionException with the specified detail message.
      *
-     * @param message the detail message (which is saved for later retrieval by the getMessage() method)
+     * @param message the detail message
      */
     public OpinionException(final String message) {
         super(message);

@@ -127,6 +127,7 @@ function NavigationBar() {
                     </NavDropdown>
                     <Nav.Link as={Link} to={"/allOffers/lastMinute"} className="navbar-menu">{t('lastMinute').toUpperCase()}</Nav.Link>
                     <Nav.Link as={Link} to={"/allOffers/promotions"} className="navbar-menu">{t('promotions').toUpperCase()}</Nav.Link>
+                    <Nav.Link as={Link} to={"/allOffers/proposedForYou"} className="navbar-menu">{t('goTravelNamespace3:proposedForYou').toUpperCase()}</Nav.Link>
                     <Nav.Link as={Link} to={"/yourOwnOffer"} className="navbar-menu">{t('yourOwnOffer').toUpperCase()}</Nav.Link>
 
                     <Nav.Link as={Link} to={"/customerZone/login"} className="btn btn-primary btn-sm float-right mt-5"

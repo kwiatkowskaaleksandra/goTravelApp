@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 /**
- * The type Type of room.
+ * The type 'Type of room'.
  */
 @Data
 @NoArgsConstructor

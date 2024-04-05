@@ -1,0 +1,136 @@
+FUNCTION_BLOCK preferencesEvaluation
+
+VAR_INPUT
+    activityLevel: REAL; // 0 to 10, where 0 is not active at all and 10 is very active
+    priceLevel: REAL; // 0 to 10, where 0 is very cheap and 10 is very expensive
+    duration: REAL; // Możesz zdefiniować na podstawie długości trwania, np. 0 do 10, gdzie 0 to bardzo krótkie wypady, a 10 to bardzo długie podróże
+    tripType: REAL; // Przykładowo, można zakodować typy wycieczek: 0 do 5
+    food: REAL;
+END_VAR
+
+VAR_OUTPUT
+    recommendationScore: REAL; // 0 to 100, where 0 is no match and 100 is a perfect match
+END_VAR
+
+FUZZIFY activityLevel
+    TERM relaxing := (0, 1) (2, 0); // ma wartość 1 dla activityLevel 0 i liniowo maleje do 0, gdy activityLevel wzrasta do 2. Oznacza to, że wycieczki z poziomem aktywności 0 do 1 będą uznawane za relaksujące, a te bliższe 2 będą stopniowo mniej relaksujące.
+    TERM mild := (1, 0) (3, 1) (5, 0);
+    TERM flexible := (4, 0) (5, 1) (6, 0);
+    TERM energetic := (5, 0) (7, 1) (9, 0);
+    TERM intensive := (8, 0) (10, 1);
+END_FUZZIFY
+
+FUZZIFY priceLevel
+   TERM super_saver := (0, 1) (2, 0);
+   TERM economical := (1, 0) (3, 1) (5, 0);
+   TERM flexible := (4, 0) (5, 1) (6, 0);
+   TERM moderate := (5, 0) (7, 1) (9, 0);
+   TERM exclusive := (8, 0) (10, 1);
+END_FUZZIFY
+
+FUZZIFY duration
+    TERM very_short := (0, 1) (2, 0); // Bardzo krótkie wycieczki trwają 1-2 dni
+    TERM short := (1, 0) (3, 1) (5, 0); // Krótkie wycieczki trwają 3-5 dni
+    TERM flexible := (4, 0) (6, 1) (8, 0); // Średnie wycieczki trwają 6-8 dni
+    TERM long := (7, 0) (9, 1) (13, 0); // Długie wycieczki trwają 9-13 dni
+    TERM very_long := (12, 0) (14, 1); // Bardzo długie wycieczki trwają dłużej niż 14 dni
+END_FUZZIFY
+
+FUZZIFY tripType
+    TERM mountains := (0, 1) (1, 0); // Góry 0
+    TERM sea := (1, 0) (2, 1) (3, 0); // Morze 1
+    TERM cruise := (2, 0) (3, 1) (4, 0); // Rejs 2
+    TERM city := (3, 0) (4, 1) (5, 0); // Miasto 3
+    TERM safari := (4, 0) (5, 1); // Safari 4
+END_FUZZIFY
+
+FUZZIFY food
+    TERM none := (0, 1) (0.5, 1);
+    TERM breakfast := (0, 0) (1, 1) (2, 0);
+    TERM dinner := (1.5, 0) (2.5, 1) (3.5, 0);
+    TERM supper := (3, 0) (4, 1) (5, 0);
+    TERM breakfastDinner := (4.5, 0) (5.5, 1) (6.5, 0);
+    TERM breakfastSupper := (6, 0) (7, 1) (8, 0);
+    TERM dinnerSupper := (7.5, 0) (8.5, 1) (9.5, 0);
+    TERM breakfastDinnerSupper := (9, 0) (10, 1);
+END_FUZZIFY
+
+DEFUZZIFY recommendationScore
+    TERM very_low := (0, 1) (20, 0);
+    TERM low := (10, 0) (30, 1) (50, 0);
+    TERM moderate := (40, 0) (60, 1) (80, 0);
+    TERM high := (70, 0) (90, 1) (110, 0);
+    TERM very_high := (100, 0) (120, 1);
+    METHOD: COG; // Center of Gravity for defuzzification
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    RULE 1 : IF activityLevel IS relaxing AND priceLevel IS super_saver AND duration IS very_short AND tripType IS sea AND food IS breakfast THEN recommendationScore IS high;
+    RULE 2 : IF activityLevel IS relaxing AND priceLevel IS economical AND duration IS short AND tripType IS mountains AND food IS breakfastSupper THEN recommendationScore IS moderate;
+    RULE 3 : IF activityLevel IS energetic AND priceLevel IS moderate AND duration IS short AND tripType IS city AND food IS breakfastDinner THEN recommendationScore IS high;
+    RULE 4 : IF activityLevel IS energetic AND priceLevel IS exclusive AND duration IS flexible AND tripType IS city AND food IS dinnerSupper THEN recommendationScore IS very_high;
+    RULE 5 : IF activityLevel IS intensive AND priceLevel IS exclusive AND duration IS long AND tripType IS safari AND food IS breakfastDinnerSupper THEN recommendationScore IS very_high;
+    RULE 6 : IF activityLevel IS intensive AND priceLevel IS super_saver AND duration IS very_long AND tripType IS cruise AND food IS none THEN recommendationScore IS moderate;
+    RULE 7 : IF activityLevel IS flexible AND priceLevel IS flexible AND duration IS flexible AND tripType IS sea AND food IS breakfast THEN recommendationScore IS low;
+    RULE 8 : IF activityLevel IS flexible AND priceLevel IS economical AND duration IS long AND tripType IS mountains AND food IS supper THEN recommendationScore IS high;
+    RULE 9 : IF activityLevel IS mild AND priceLevel IS moderate AND duration IS short AND tripType IS city AND food IS breakfastDinner THEN recommendationScore IS high;
+    RULE 10 : IF activityLevel IS mild AND priceLevel IS exclusive AND duration IS very_short AND tripType IS city AND food IS dinnerSupper THEN recommendationScore IS moderate;
+    RULE 11 : IF activityLevel IS relaxing AND priceLevel IS economical AND duration IS flexible AND tripType IS cruise AND food IS breakfastSupper THEN recommendationScore IS high;
+    RULE 12 : IF activityLevel IS energetic AND priceLevel IS super_saver AND duration IS flexible AND tripType IS safari AND food IS breakfastDinnerSupper THEN recommendationScore IS low;
+    RULE 13 : IF activityLevel IS mild AND priceLevel IS exclusive AND duration IS very_long AND tripType IS safari AND food IS dinner THEN recommendationScore IS very_high;
+    RULE 14 : IF activityLevel IS relaxing AND priceLevel IS exclusive AND duration IS long AND tripType IS sea AND food IS breakfastDinner THEN recommendationScore IS high;
+    RULE 15 : IF activityLevel IS intensive AND priceLevel IS moderate AND duration IS short AND tripType IS mountains AND food IS supper THEN recommendationScore IS moderate;
+    RULE 16 : IF activityLevel IS energetic AND priceLevel IS economical AND duration IS flexible AND tripType IS mountains AND food IS breakfastSupper THEN recommendationScore IS high;
+    RULE 17 : IF activityLevel IS mild AND priceLevel IS super_saver AND duration IS very_short AND tripType IS city AND food IS breakfastDinnerSupper THEN recommendationScore IS low;
+    RULE 18 : IF activityLevel IS relaxing AND priceLevel IS super_saver AND duration IS short AND tripType IS cruise AND food IS dinner THEN recommendationScore IS moderate;
+    RULE 19 : IF activityLevel IS flexible AND priceLevel IS flexible AND duration IS long AND tripType IS safari AND food IS none THEN recommendationScore IS low;
+    RULE 20 : IF activityLevel IS flexible AND priceLevel IS economical AND duration IS very_long AND tripType IS sea AND food IS breakfastDinner THEN recommendationScore IS moderate;
+    RULE 21 : IF activityLevel IS energetic AND priceLevel IS super_saver AND duration IS short AND tripType IS mountains AND food IS breakfast THEN recommendationScore IS high;
+    RULE 22 : IF activityLevel IS intensive AND priceLevel IS moderate AND duration IS flexible AND tripType IS sea AND food IS breakfastDinnerSupper THEN recommendationScore IS high;
+    RULE 23 : IF activityLevel IS mild AND priceLevel IS economical AND duration IS short AND tripType IS city AND food IS breakfastSupper THEN recommendationScore IS moderate;
+    RULE 24 : IF activityLevel IS relaxing AND priceLevel IS exclusive AND duration IS very_short AND tripType IS city AND food IS dinner THEN recommendationScore IS moderate;
+    RULE 25 : IF activityLevel IS intensive AND priceLevel IS economical AND duration IS very_long AND tripType IS safari AND food IS none THEN recommendationScore IS low;
+    RULE 26 : IF activityLevel IS energetic AND priceLevel IS exclusive AND duration IS long AND tripType IS cruise AND food IS breakfastDinner THEN recommendationScore IS very_high;
+    RULE 27 : IF activityLevel IS mild AND priceLevel IS flexible AND duration IS flexible AND tripType IS mountains AND food IS supper THEN recommendationScore IS moderate;
+    RULE 28 : IF activityLevel IS flexible AND priceLevel IS moderate AND duration IS short AND tripType IS sea AND food IS breakfastDinner THEN recommendationScore IS high;
+    RULE 29 : IF activityLevel IS intensive AND priceLevel IS super_saver AND duration IS very_short AND tripType IS city AND food IS breakfastSupper THEN recommendationScore IS low;
+    RULE 30 : IF activityLevel IS energetic AND priceLevel IS economical AND duration IS short AND tripType IS city AND food IS dinnerSupper THEN recommendationScore IS high;
+    RULE 31 : IF activityLevel IS relaxing AND priceLevel IS moderate AND duration IS long AND tripType IS sea AND food IS breakfastDinnerSupper THEN recommendationScore IS high;
+    RULE 32 : IF activityLevel IS relaxing AND priceLevel IS exclusive AND duration IS very_long AND tripType IS mountains AND food IS none THEN recommendationScore IS moderate;
+    RULE 33 : IF activityLevel IS flexible AND priceLevel IS exclusive AND duration IS flexible AND tripType IS safari AND food IS breakfast THEN recommendationScore IS high;
+    RULE 34 : IF activityLevel IS mild AND priceLevel IS super_saver AND duration IS long AND tripType IS cruise AND food IS breakfastDinner THEN recommendationScore IS low;
+    RULE 35 : IF activityLevel IS intensive AND priceLevel IS exclusive AND duration IS very_short AND tripType IS sea AND food IS supper THEN recommendationScore IS low;
+    RULE 36 : IF activityLevel IS relaxing AND priceLevel IS exclusive AND duration IS short AND tripType IS city AND food IS breakfastDinnerSupper THEN recommendationScore IS very_high;
+    RULE 37 : IF activityLevel IS energetic AND priceLevel IS super_saver AND duration IS short AND tripType IS mountains AND food IS none THEN recommendationScore IS moderate;
+    RULE 38 : IF activityLevel IS flexible AND priceLevel IS economical AND duration IS very_short AND tripType IS safari AND food IS dinner THEN recommendationScore IS low;
+    RULE 39 : IF activityLevel IS relaxing AND priceLevel IS moderate AND duration IS very_long AND tripType IS cruise AND food IS breakfastSupper THEN recommendationScore IS moderate;
+    RULE 40 : IF activityLevel IS mild AND priceLevel IS exclusive AND duration IS long AND tripType IS sea AND food IS breakfastDinner THEN recommendationScore IS high;
+    RULE 41 : IF activityLevel IS intensive AND priceLevel IS flexible AND duration IS short AND tripType IS mountains AND food IS breakfastDinner THEN recommendationScore IS high;
+    RULE 42 : IF activityLevel IS energetic AND priceLevel IS exclusive AND duration IS very_short AND tripType IS safari AND food IS supper THEN recommendationScore IS moderate;
+    RULE 43 : IF activityLevel IS mild AND priceLevel IS super_saver AND duration IS flexible AND tripType IS city AND food IS breakfastSupper THEN recommendationScore IS high;
+    RULE 44 : IF activityLevel IS relaxing AND priceLevel IS moderate AND duration IS long AND tripType IS city AND food IS dinner THEN recommendationScore IS moderate;
+    RULE 45 : IF activityLevel IS mild AND priceLevel IS economical AND duration IS very_long AND tripType IS cruise AND food IS none THEN recommendationScore IS low;
+    RULE 46 : IF activityLevel IS flexible AND priceLevel IS exclusive AND duration IS long AND tripType IS sea AND food IS breakfastDinnerSupper THEN recommendationScore IS very_high;
+    RULE 47 : IF activityLevel IS intensive AND priceLevel IS economical AND duration IS very_short AND tripType IS mountains AND food IS breakfast THEN recommendationScore IS moderate;
+    RULE 48 : IF activityLevel IS energetic AND priceLevel IS flexible AND duration IS short AND tripType IS sea AND food IS dinnerSupper THEN recommendationScore IS high;
+    RULE 49 : IF activityLevel IS mild AND priceLevel IS exclusive AND duration IS flexible AND tripType IS city AND food IS breakfastDinner THEN recommendationScore IS high;
+    RULE 50 : IF activityLevel IS relaxing AND priceLevel IS super_saver AND duration IS short AND tripType IS city AND food IS supper THEN recommendationScore IS low;
+    RULE 51 : IF activityLevel IS intensive AND priceLevel IS moderate AND duration IS flexible AND tripType IS safari AND food IS breakfastSupper THEN recommendationScore IS moderate;
+    RULE 52 : IF activityLevel IS energetic AND priceLevel IS economical AND duration IS very_long AND tripType IS cruise AND food IS none THEN recommendationScore IS low;
+    RULE 53 : IF activityLevel IS flexible AND priceLevel IS exclusive AND duration IS long AND tripType IS mountains AND food IS breakfastDinner THEN recommendationScore IS high;
+    RULE 54 : IF activityLevel IS relaxing AND priceLevel IS super_saver AND duration IS short AND tripType IS mountains AND food IS dinnerSupper THEN recommendationScore IS moderate;
+    RULE 55 : IF activityLevel IS mild AND priceLevel IS exclusive AND duration IS short AND tripType IS safari AND food IS breakfastDinnerSupper THEN recommendationScore IS very_high;
+    RULE 56 : IF activityLevel IS relaxing AND priceLevel IS moderate AND duration IS very_short AND tripType IS safari AND food IS none THEN recommendationScore IS low;
+    RULE 57 : IF activityLevel IS flexible AND priceLevel IS economical AND duration IS long AND tripType IS sea AND food IS breakfast THEN recommendationScore IS moderate;
+    RULE 58 : IF activityLevel IS mild AND priceLevel IS flexible AND duration IS very_long AND tripType IS cruise AND food IS supper THEN recommendationScore IS high;
+    RULE 59 : IF activityLevel IS energetic AND priceLevel IS exclusive AND duration IS flexible AND tripType IS cruise AND food IS breakfastDinner THEN recommendationScore IS very_high;
+    RULE 60 : IF activityLevel IS intensive AND priceLevel IS super_saver AND duration IS short AND tripType IS cruise AND food IS breakfastSupper THEN recommendationScore IS low;
+    RULE 61 : IF (NOT (activityLevel IS relaxing OR activityLevel IS mild OR activityLevel IS flexible OR activityLevel IS energetic OR activityLevel IS intensive)) OR
+                         (NOT (priceLevel IS super_saver OR priceLevel IS economical OR priceLevel IS flexible OR priceLevel IS moderate OR priceLevel IS exclusive)) OR
+                         (NOT (duration IS very_short OR duration IS short OR duration IS flexible OR duration IS long OR duration IS very_long)) OR
+                         (NOT (tripType IS mountains OR tripType IS sea OR tripType IS cruise OR tripType IS city OR tripType IS safari)) OR
+                         (NOT (food IS none OR food IS breakfast OR food IS dinner OR food IS supper OR food IS breakfastDinner OR food IS breakfastSupper OR food IS dinnerSupper OR food IS breakfastDinnerSupper))
+              THEN recommendationScore IS very_low;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

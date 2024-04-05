@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class DuplicatedUserInfoException extends RuntimeException {
 
     /**
-     * Instantiates a new duplicated user info exception.
+     * Constructs a new DuplicatedUserInfoException with the specified detail message.
      *
-     * @param message the message
+     * @param message the detail message
      */
     public DuplicatedUserInfoException(final String message) {
         super(message);

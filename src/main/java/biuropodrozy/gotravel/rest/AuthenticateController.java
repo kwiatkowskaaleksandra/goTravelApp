@@ -1,6 +1,7 @@
 package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.exception.TokenRefreshException;
+import biuropodrozy.gotravel.service.impl.AuthenticationHelper;
 import net.bytebuddy.utility.RandomString;
 import biuropodrozy.gotravel.exception.UserException;
 import biuropodrozy.gotravel.model.RefreshToken;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -71,6 +73,11 @@ public class AuthenticateController {
      * Service for managing refresh tokens.
      */
     private final RefreshTokenService refreshTokenService;
+
+    /**
+     * Helper class for authentication.
+     */
+    private final AuthenticationHelper authenticationHelper;
 
     /**
      * Authenticates a user and generates JWT token and refresh token upon successful authentication.
@@ -241,10 +248,11 @@ public class AuthenticateController {
      * @return A ResponseEntity indicating successful logout.
      */
     @PostMapping("/signout")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> logoutUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            Long userId = userDetails.getId();
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            Long userId = authenticationUser.getId();
             refreshTokenService.deleteByUserId(userId);
             return ResponseEntity.ok("Log out successful!");
         }

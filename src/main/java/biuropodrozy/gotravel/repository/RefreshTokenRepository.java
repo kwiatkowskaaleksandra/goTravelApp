@@ -8,11 +8,25 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository interface for managing refresh tokens.
+ */
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
+    /**
+     * Finds a refresh token by its token value.
+     *
+     * @param token the token value to search for
+     * @return an Optional containing the refresh token, if found
+     */
     Optional<RefreshToken> findByToken(String token);
 
+    /**
+     * Deletes refresh tokens associated with a specific user.
+     *
+     * @param user the user whose refresh tokens will be deleted
+     */
     @Modifying
-    int deleteByUser(User user);
+    void deleteByUser(User user);
 }

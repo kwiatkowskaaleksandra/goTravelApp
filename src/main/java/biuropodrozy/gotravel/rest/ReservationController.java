@@ -30,6 +30,9 @@ public class ReservationController {
      */
     private final ReservationService reservationService;
 
+    /**
+     * Helper class for authentication.
+     */
     private final AuthenticationHelper authenticationHelper;
 
     /**

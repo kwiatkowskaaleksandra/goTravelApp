@@ -30,6 +30,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
      */
     public final UserService userService;
 
+    /**
+     * Repository for managing user roles.
+     */
     private final RoleRepository roleRepository;
 
     /**
@@ -37,6 +40,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
      */
     private final List<OAuth2UserInfoExtractor> oAuth2UserInfoExtractors;
 
+    /**
+     * Constructs a new CustomOAuth2UserService with the specified dependencies.
+     *
+     * @param userService             the service for managing users
+     * @param roleRepository          the repository for managing user roles
+     * @param oAuth2UserInfoExtractors the list of OAuth2 user info extractors
+     */
     @Autowired
     public CustomOAuth2UserService(@Lazy UserService userService, RoleRepository roleRepository, List<OAuth2UserInfoExtractor> oAuth2UserInfoExtractors) {
         this.userService = userService;

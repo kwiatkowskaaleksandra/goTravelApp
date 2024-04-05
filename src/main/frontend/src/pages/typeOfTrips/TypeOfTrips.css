@@ -181,3 +181,34 @@ button#controlled-tab-tab-generalInformation.active, button#controlled-tab-tab-o
 a.dropdown-item {
     height: 30px;
 }
+
+.recommendationAlert, button.recommendationAlert {
+    border-color: #4ec3ff;
+    background-color: #D7F1FF;
+    color: black;
+    text-align: justify;
+    font-family: "Comic Sans MS";
+}
+
+button.recommendationAlert:hover {
+    font-weight: bold;
+    color: black;
+    background-color: #4ec3ff;
+    border-color: #4ec3ff;
+}
+
+.recommendationSettings {
+    width: 35px;
+    height: 35px;
+    color: #4ec3ff;
+    transition: transform 0.3s ease-in-out;
+}
+
+.recommendationSettings:hover {
+    transform: scale(1.5);
+}
+
+.question {
+    font-weight: bold;
+    font-family: "Comic Sans MS";
+}

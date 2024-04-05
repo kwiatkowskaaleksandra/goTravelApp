@@ -47,6 +47,9 @@ public class SignUpRequest {
     @Email
     private String email;
 
+    /**
+     * Set of roles assigned to the user.
+     */
     private Set<String> role;
 
 }

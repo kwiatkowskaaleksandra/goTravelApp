@@ -1,9 +1,12 @@
 package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.model.Trip;
+import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.rest.dto.request.TripFilteringRequest;
 import biuropodrozy.gotravel.rest.dto.response.DeepLResponse;
 import biuropodrozy.gotravel.service.TripService;
+import biuropodrozy.gotravel.model.UserTripPreferences;
+import biuropodrozy.gotravel.service.impl.AuthenticationHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -11,9 +14,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 /**
  * The type Trip controller.
@@ -28,6 +35,11 @@ public class TripController {
      * Service for managing Trip-related operations.
      */
     private final TripService tripService;
+
+    /**
+     * Helper class for authentication.
+     */
+    private final AuthenticationHelper authenticationHelper;
 
     /**
      * Retrieves the trip by its ID and selected language.
@@ -140,4 +152,30 @@ public class TripController {
         return ResponseEntity.ok(trips);
     }
 
+    /**
+     * Provides trip recommendations based on user preferences.
+     *
+     * @param userPreferences the user trip preferences
+     * @return ResponseEntity containing the trip recommendations
+     */
+    @PostMapping("/tripRecommendation")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<?> tripRecommendation(@RequestBody UserTripPreferences userPreferences) {
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            return ResponseEntity.ok().body(tripService.tripRecommendation(userPreferences));
+        }
+        log.error("Unauthorized access.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    /**
+     * Retrieves the most booked trips.
+     *
+     * @return ResponseEntity containing the list of most booked trips
+     */
+    @GetMapping("/mostBookedTrips")
+    ResponseEntity<List<Trip>> getMostBookedTrips() {
+        return ResponseEntity.ok().body(tripService.getMostBookedTrips());
+    }
 }

@@ -29,11 +29,13 @@ import ConfirmNewEmail from "./pages/ConfirmNewEmail";
 import ChangeEmail from "./pages/ChangeEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import TripRecommendation from "./pages/typeOfTrips/TripRecommendation";
 
 const apiKeys = {
     goTravelNamespace1: "VY4mV8mgc2hiYbiInxdPaQ",
     goTravelNamespace2: "mqTxtTc1WY7iJiBT6wFjbA",
-    goTravelNamespace3: "zi8ssd9snl1UMwdXCB19Zg"
+    goTravelNamespace3: "zi8ssd9snl1UMwdXCB19Zg",
+    goTravelNamespace4: "QE3fJ4uGBKNTb5lIuYdLyQ"
 };
 
 i18next
@@ -43,7 +45,7 @@ i18next
     .init({
         fallbackLng: "pl",
 
-        ns: ["goTravelNamespace1", "goTravelNamespace2", "goTravelNamespace3"],
+        ns: ["goTravelNamespace1", "goTravelNamespace2", "goTravelNamespace3", "goTravelNamespace4"],
         defaultNS: "goTravelNamespace1",
 
         supportedLngs: ["pl","en"],
@@ -89,6 +91,7 @@ function App() {
                         <Route path={"/myProfile/settings"} element={<PrivateRoute><SettingsMyProfile/></PrivateRoute>}/>
                         <Route path={"/myProfile/invoices"} element={<PrivateRoute><SettingsInvoices/></PrivateRoute>}/>
                         <Route path={"/yourOwnOffer"} element={<PrivateRoute><YourOwnOffer/></PrivateRoute>}/>
+                        <Route path={"/allOffers/proposedForYou"} element={<PrivateRoute><TripRecommendation/></PrivateRoute>}/>
 
                         <Route path={"/contact"} element={<Contact/>}/>
                         <Route path={"/about"} element={<About/>}/>

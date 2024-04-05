@@ -13,7 +13,7 @@ public class PasswordException extends RuntimeException {
     /**
      * Constructs a new PasswordException with the specified detail message.
      *
-     * @param message the detail message (which is saved for later retrieval by the getMessage() method)
+     * @param message the detail message
      */
     public PasswordException(final String message) {
         super(message);

@@ -49,7 +49,48 @@ export const goTravelApi = {
     getActiveOrders,
     deleteReservation,
     generateInvoice,
-    getAllInsurances
+    getAllInsurances,
+    getUserTripPreferences,
+    getRecommendation,
+    saveUserPreferences,
+    getMostBookedTrips
+}
+
+function getMostBookedTrips() {
+    return instance.get("/api/trips/mostBookedTrips")
+}
+
+function saveUserPreferences(user, preferences, token) {
+    return instance.post("/api/userTripPreferences/savePreferences", preferences, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function getRecommendation(user, preferences, token) {
+    return instance.post("/api/trips/tripRecommendation", preferences, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function getUserTripPreferences(user) {
+    return instance.get("/api/userTripPreferences/getPreferences", {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearerAuth(user)
+        }
+    })
 }
 
 function getAllInsurances() {

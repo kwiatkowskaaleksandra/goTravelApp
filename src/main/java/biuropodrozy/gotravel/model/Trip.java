@@ -67,6 +67,9 @@ public class Trip {
      */
     private String food;
 
+    /**
+     * The type of trip associated with this trip.
+     */
     @ManyToOne
     @JoinColumn(name = "idTypeOfTrip")
     private TypeOfTrip typeOfTrip;
@@ -92,6 +95,11 @@ public class Trip {
      */
     @Column(columnDefinition = "LONGTEXT")
     private String tripDescription;
+
+    /**
+     * The activity level associated with this trip.
+     */
+    private double activityLevel;
 
     /**
      * The set of opinions associated with the trip.

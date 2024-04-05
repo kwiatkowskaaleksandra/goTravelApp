@@ -2,6 +2,7 @@ package biuropodrozy.gotravel.service;
 
 import biuropodrozy.gotravel.model.Trip;
 import biuropodrozy.gotravel.rest.dto.request.TripFilteringRequest;
+import biuropodrozy.gotravel.model.UserTripPreferences;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +56,18 @@ public interface TripService {
      */
     Page<Trip> filteringTrips(TripFilteringRequest filteringRequest, Pageable pageable);
 
+    /**
+     * Recommends a list of trips based on the user's trip preferences.
+     *
+     * @param userPreferences The user's trip preferences based on which the trips will be recommended.
+     * @return A list of recommended trips matching the user's preferences.
+     */
+    List<Trip> tripRecommendation(UserTripPreferences userPreferences);
+
+    /**
+     * Retrieves a list of the most booked trips.
+     *
+     * @return A list of the most booked trips.
+     */
+    List<Trip> getMostBookedTrips();
 }

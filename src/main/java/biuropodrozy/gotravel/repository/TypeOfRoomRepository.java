@@ -14,7 +14,7 @@ public interface TypeOfRoomRepository extends JpaRepository<TypeOfRoom, Integer>
     /**
      * Finf by type.
      *
-     * @param type the type
+     * @param type the type of room
      * @return the type of room
      */
     TypeOfRoom findByType(String type);

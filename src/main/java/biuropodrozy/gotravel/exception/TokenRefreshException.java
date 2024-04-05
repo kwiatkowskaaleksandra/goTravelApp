@@ -14,7 +14,7 @@ public class TokenRefreshException extends RuntimeException {
      * Constructs a new TokenRefreshException with the specified token and message.
      *
      * @param token   the token for which the refresh failed
-     * @param message the detail message explaining the failure
+     * @param message the detail message
      */
     public TokenRefreshException(String token, String message) {
         super(String.format("Failed for [%s]: %s", token, message));

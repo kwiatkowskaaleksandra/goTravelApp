@@ -34,7 +34,6 @@ import java.util.ResourceBundle;
  * A utility class for generating invoices in PDF format.
  * This class provides methods to generate invoices for reservations and own offers.
  */
-
 @Component
 @Slf4j
 public class InvoiceGenerator {

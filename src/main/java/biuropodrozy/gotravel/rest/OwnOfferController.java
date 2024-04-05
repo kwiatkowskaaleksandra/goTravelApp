@@ -2,10 +2,8 @@ package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.model.OwnOffer;
 import biuropodrozy.gotravel.model.User;
-import biuropodrozy.gotravel.security.services.UserDetailsImpl;
 import biuropodrozy.gotravel.service.impl.AuthenticationHelper;
 import biuropodrozy.gotravel.service.OwnOfferService;
-import biuropodrozy.gotravel.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -13,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -35,9 +31,8 @@ public class OwnOfferController {
     private final OwnOfferService ownOfferService;
 
     /**
-     * Service class for managing own offers.
+     * Helper class for authentication.
      */
-    private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
 
     /**
@@ -51,10 +46,9 @@ public class OwnOfferController {
     @PostMapping("/getTotalPrice")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getTotalPrice(@RequestBody OwnOffer ownOffer) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            double price = ownOfferService.getTotalPrice(ownOffer, existingUser);
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            double price = ownOfferService.getTotalPrice(ownOffer, authenticationUser);
             return ResponseEntity.ok().body(price);
         }
         log.error("Unauthorized access.");
@@ -71,10 +65,9 @@ public class OwnOfferController {
     @PostMapping("/createOwnOffer")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> createOwnOffer(@RequestBody final OwnOffer ownOffer) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            long idOwnOffer = ownOfferService.saveOwnOffer(ownOffer, existingUser);
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            long idOwnOffer = ownOfferService.saveOwnOffer(ownOffer, authenticationUser);
             Map<String, Object> response = new HashMap<>();
             response.put("message", "theTripHasBeenBooked");
             response.put("idOwnOffer", idOwnOffer);
@@ -95,9 +88,8 @@ public class OwnOfferController {
     @PutMapping("/updatePaymentStatus")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> updatePaymentStatus(@RequestBody final long idOwnOffer) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            userService.validateAndGetUserByUsername(userDetails.getUsername());
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
             ownOfferService.updatePaymentStatus(idOwnOffer);
             return ResponseEntity.ok().body("Payment status changed correctly.");
         }

@@ -115,6 +115,12 @@ public class User {
     private Set<OwnOffer> ownOffers;
 
     /**
+     * Set of user trip preferences associated with this user.
+     */
+    @OneToMany(mappedBy = "user")
+    private Set<UserTripPreferences> userTripPreferences;
+
+    /**
      * Flag indicating if the user is using two-factor authentication.
      */
     private boolean using2FA;

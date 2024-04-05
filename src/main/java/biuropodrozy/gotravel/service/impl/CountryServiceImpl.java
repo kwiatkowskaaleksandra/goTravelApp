@@ -21,7 +21,7 @@ public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
 
     /**
-     * Getl all countries.
+     * Get all countries.
      *
      * @return list of countries.
      */

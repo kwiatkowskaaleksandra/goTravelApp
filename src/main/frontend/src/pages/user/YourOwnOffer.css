@@ -23,10 +23,6 @@ button#controlled-tab-tab-attractions.active, button#controlled-tab-tab-addition
     font-weight: bold;
 }
 
-.modal-content {
-    width: 700px;
-}
-
 .quantityButton {
     border-color: #b2b2b2;
     margin-right: 10px;

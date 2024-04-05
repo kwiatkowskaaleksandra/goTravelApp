@@ -2,9 +2,8 @@ package biuropodrozy.gotravel.rest;
 
 import biuropodrozy.gotravel.model.Opinion;
 import biuropodrozy.gotravel.model.User;
-import biuropodrozy.gotravel.security.services.UserDetailsImpl;
 import biuropodrozy.gotravel.service.OpinionService;
-import biuropodrozy.gotravel.service.UserService;
+import biuropodrozy.gotravel.service.impl.AuthenticationHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -34,9 +31,9 @@ public class OpinionController {
     private final OpinionService opinionService;
 
     /**
-     * The UserService instance used for handling user-related operations.
+     * Helper class for authentication.
      */
-    private final UserService userService;
+    private final AuthenticationHelper authenticationHelper;
 
     /**
      * Retrieves the count of opinions and the total number of stars for a given trip.
@@ -87,10 +84,9 @@ public class OpinionController {
     @PostMapping("/addOpinion")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<Void> createOpinion(@RequestBody final Opinion opinion) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            User existingUser = userService.validateAndGetUserByUsername(userDetails.getUsername());
-            opinionService.saveOpinion(opinion, existingUser);
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
+            opinionService.saveOpinion(opinion, authenticationUser);
             return ResponseEntity.ok().build();
         }
         log.error("Unauthorized access.");
@@ -107,9 +103,8 @@ public class OpinionController {
     @DeleteMapping("/deleteOpinion/{idOpinion}")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> deleteOpinion(@PathVariable final int idOpinion) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            userService.validateAndGetUserByUsername(userDetails.getUsername());
+        User authenticationUser = authenticationHelper.validateAuthentication();
+        if (authenticationUser != null) {
             opinionService.deleteOpinion(idOpinion);
             return ResponseEntity.ok().build();
         }
