@@ -123,4 +123,9 @@ public class Trip {
     @OneToMany(mappedBy = "trip")
     private Set<Reservation> reservations;
 
+    /**
+     * The set of favorite trips.
+     */
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FavoriteTrips> favoriteTrips;
 }

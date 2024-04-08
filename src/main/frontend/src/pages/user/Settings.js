@@ -6,9 +6,8 @@ import {Col, Container, Row} from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import { FaUserCog } from "react-icons/fa";
 import {withTranslation} from "react-i18next";
-import { TbMessages } from "react-icons/tb";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
-import { SiYourtraveldottv } from "react-icons/si";
+import { MdFavorite } from "react-icons/md";
 
 class Settings extends Component {
 
@@ -36,13 +35,13 @@ class Settings extends Component {
                                             </Card.Link>
                                         </Card.Body>
                                     </Card>
-                                    <Card style={{ marginBottom: '30px' }} className="my-card" onMouseEnter={() => { document.getElementById('messages').style.color = '#3273dc' }} onMouseLeave={() => { document.getElementById('messages').style.color = '#4ec3ff' }}>
+                                    <Card style={{ marginBottom: '30px' }} className="my-card" onMouseEnter={() => { document.getElementById('favorite').style.color = '#3273dc' }} onMouseLeave={() => { document.getElementById('favorite').style.color = '#4ec3ff' }}>
                                         <Card.Body>
-                                            <Card.Link href="/" style={{ textDecoration: 'none' }}>
+                                            <Card.Link href="/myProfile/favorites" style={{ textDecoration: 'none' }}>
                                                 <div className="settingCard">
-                                                    <TbMessages id="messages" className="icon" />
+                                                    <MdFavorite id="favorite" className="icon" />
                                                     <span style={{ marginLeft: '20px', flex: '2', width: '66%' }}>
-                                                        <Card.Title>{'cos'}</Card.Title>
+                                                        <Card.Title>{t('goTravelNamespace3:favorite')}</Card.Title>
                                                     </span>
                                                 </div>
                                             </Card.Link>
@@ -58,18 +57,6 @@ class Settings extends Component {
                                                     <HiOutlineClipboardDocumentList id="invoices" className="icon" />
                                                     <span style={{ marginLeft: '20px', flex: '2', width: '66%' }}>
                                                         <Card.Title>{t('goTravelNamespace2:invoices')}</Card.Title>
-                                                    </span>
-                                                </div>
-                                            </Card.Link>
-                                        </Card.Body>
-                                    </Card>
-                                    <Card style={{ marginBottom: '30px' }} className="my-card" onMouseEnter={() => { document.getElementById('recommendationSettings').style.color = '#3273dc' }} onMouseLeave={() => { document.getElementById('recommendationSettings').style.color = '#4ec3ff' }}>
-                                        <Card.Body>
-                                            <Card.Link href="/" style={{ textDecoration: 'none' }}>
-                                                <div className="settingCard">
-                                                    <SiYourtraveldottv id="recommendationSettings" className="icon" />
-                                                    <span style={{ marginLeft: '20px', flex: '2', width: '66%' }}>
-                                                        <Card.Title>{t('goTravelNamespace2:recommendationSettings')}</Card.Title>
                                                     </span>
                                                 </div>
                                             </Card.Link>

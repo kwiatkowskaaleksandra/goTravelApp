@@ -102,7 +102,7 @@ class SeeTheOffer extends Component {
         const size = this.state.size
         let currentPage = page !== undefined ? page : 1;
 
-        if (page < 1) currentPage = 1
+        if (page < 1 || (currentPage - 1) <= 0) currentPage = 1
         else if (page > this.state.howManyPages) currentPage = this.state.howManyPages
 
         goTravelApi.getOpinionsByIdTrip(this.state.idTripSelected, sortType, currentPage - 1, size).then(response => {

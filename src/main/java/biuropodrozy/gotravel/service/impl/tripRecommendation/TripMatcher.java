@@ -232,8 +232,8 @@ public class TripMatcher {
     private double determineTripType(String description) {
         String[][] keywords = {
                 {"góra", "szczyt", "trekking", "wspinaczka", "narty", "szlak", "przełęcz", "termalne", "pasmo", "klif", "hala", "alpinizm", "śnieg", "kaskada", "jaskinia", "schronisko", "widok", "trawers", "górski", "peak"},
-                {"morze", "plaża", "nurkowanie", "surfing", "kajakarstwo", "windsurfing", "podwodny", "fale", "ryba", "piach", "zatoka", "ocean", "plażowy", "piaszczysty", "kamienisty", "łódź", "żaglówka", "latarnia", "rafa", "molo"},
-                {"rejs", "statek", "port", "przystań", "okręt", "kapitan", "kajuta", "żegluga", "rejsowy", "flota", "jacht", "krążownik", "pokład", "kotwica", "marynarz"},
+                {"morze", "plaża", "nurkowanie", "surfing", "kajakarstwo", "windsurfing", "podwodny", "fale", "ryba", "piach", "zatoka", "ocean", "plażowy", "piaszczysty", "kamienisty", "łódź", "żaglówka", "latarnia", "rafa", "molo", "wyspa", "widok", "opalać"},
+                {"rejs", "statek", "port", "przystań", "okręt", "kapitan", "kajuta", "żegluga", "rejsowy", "flota", "jacht", "krążownik", "pokład", "kotwica", "marynarz", "ocean"},
                 {"miasto", "metropolia", "zwiedzanie", "architektura", "muzeum", "zabytek", "ratusz", "rynek", "katedra", "ulica", "miejski", "targ", "kamienica", "wieżowiec", "oprowadzanie", "historyczny", "modernizm", "sztuka", "kultura", "park"},
                 {"safari", "dzika", "przyroda", "egzotyka", "dżungla", "zwierzę", "przygoda", "jungle trek", "namiot", "dżip", "las", "eksploracja", "rzeka", "sawanna", "obserwacja", "natura", "ekosystem", "biwak", "słoń", "lew", "tropikalny"}
         };
@@ -251,22 +251,32 @@ public class TripMatcher {
             }
         }
 
+        int[] matches = new int[keywords.length];
+
         for (int i = 0; i < keywords.length; i++) {
             for (String key : keywords[i]) {
                 for (String lemma : lemmas) {
                     if (lemma.equalsIgnoreCase(key)) {
-                        return switch (i) {
-                            case 0 -> 0.5;
-                            case 1 -> 2.0;
-                            case 2 -> 3.0;
-                            case 3 -> 4.0;
-                            case 4 -> 5.0;
-                            default -> -1.0;
-                        };
+                            matches[i]++;
                     }
                 }
             }
         }
-        return -1;
+
+        int maxIndex = 0;
+        for (int i = 1; i < matches.length; i++) {
+            if (matches[i] > matches[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+
+        return switch (maxIndex) {
+            case 0 -> 0.5;
+            case 1 -> 2.0;
+            case 2 -> 3.0;
+            case 3 -> 4.0;
+            case 4 -> 5.0;
+            default -> -1.0;
+        };
     }
 }

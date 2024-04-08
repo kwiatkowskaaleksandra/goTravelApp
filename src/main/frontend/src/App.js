@@ -30,6 +30,7 @@ import ChangeEmail from "./pages/ChangeEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import TripRecommendation from "./pages/typeOfTrips/TripRecommendation";
+import SettingsFavorites from "./pages/user/SettingsFavorites";
 
 const apiKeys = {
     goTravelNamespace1: "VY4mV8mgc2hiYbiInxdPaQ",
@@ -90,6 +91,7 @@ function App() {
                         <Route path={"/myProfile"} element={<PrivateRoute><Settings/></PrivateRoute>}/>
                         <Route path={"/myProfile/settings"} element={<PrivateRoute><SettingsMyProfile/></PrivateRoute>}/>
                         <Route path={"/myProfile/invoices"} element={<PrivateRoute><SettingsInvoices/></PrivateRoute>}/>
+                        <Route path={"/myProfile/favorites"} element={<PrivateRoute><SettingsFavorites/></PrivateRoute>}/>
                         <Route path={"/yourOwnOffer"} element={<PrivateRoute><YourOwnOffer/></PrivateRoute>}/>
                         <Route path={"/allOffers/proposedForYou"} element={<PrivateRoute><TripRecommendation/></PrivateRoute>}/>
 

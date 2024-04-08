@@ -53,7 +53,49 @@ export const goTravelApi = {
     getUserTripPreferences,
     getRecommendation,
     saveUserPreferences,
-    getMostBookedTrips
+    getMostBookedTrips,
+    getFavoritesTrips,
+    addToFavorites,
+    removeTripFromFavorites
+}
+
+function removeTripFromFavorites(idTrip, user, token) {
+    return instance.delete("api/favoriteTrips/removeTripFromFavorites", {
+        params: {
+            idTrip: idTrip
+        },
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function addToFavorites(idTrip, user, token) {
+    return instance.post("/api/favoriteTrips/addToFavorites", null,{
+        params: {
+            idTrip: idTrip
+        },
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function getFavoritesTrips(user) {
+    return instance.get("/api/favoriteTrips/getFavoritesTrips", {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearerAuth(user)
+        }
+    })
 }
 
 function getMostBookedTrips() {

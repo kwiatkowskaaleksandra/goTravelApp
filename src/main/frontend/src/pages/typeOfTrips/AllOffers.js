@@ -239,7 +239,7 @@ class AllOffers extends Component {
                                         handleClear={this.handleClear}
                             />
                             <div className="p-2 w-75">
-                                <CardTrip trips={this.state.trips}/>
+                                <CardTrip trips={this.state.trips} mode={"allTrips"}/>
                                 {this.state.error ? (
                                     <div className="message">
                                         <GiArchiveResearch style={{ width: '180px', height: '180px', color: '#4ec3ff' }} />

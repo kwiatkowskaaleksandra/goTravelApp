@@ -141,4 +141,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private OAuth2Provider provider;
 
+    /**
+     * The set of favorite trips.
+     */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FavoriteTrips> favoriteTrips;
 }

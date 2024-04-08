@@ -67,9 +67,7 @@ class TripRecommendation extends Component {
     getMostBookedTrips = () => {
         goTravelApi.getMostBookedTrips().then(res => {
             this.setState({
-                trips: res.data,
-                noPreferences: true,
-                message: 'noMatches'
+                trips: res.data
             })
         }).catch(err => {
             handleLogError(err)
@@ -105,6 +103,10 @@ class TripRecommendation extends Component {
         goTravelApi.getRecommendation(this.state.userInfo, preferences, csrfToken).then(res => {
             if (res.data.length === 0) {
                 this.getMostBookedTrips()
+                this.setState({
+                    noPreferences: true,
+                    message: 'noMatches'
+                })
             } else this.setState({trips: res.data})
         })
     }
@@ -189,7 +191,7 @@ class TripRecommendation extends Component {
                                 <div style={{textAlign: 'right'}}>
                                     <MdSettingsSuggest className={"recommendationSettings"} onClick={() => this.setState({showRecommendationSettings: true})}/>
                                 </div>
-                                <CardTrip trips={currentTrips}/>
+                                <CardTrip trips={currentTrips} mode={"allTrips"}/>
                                 <section className={"mt-5"}>
                                     <nav aria-label="Page navigation example">
                                         <ul className="pagination justify-content-end">
