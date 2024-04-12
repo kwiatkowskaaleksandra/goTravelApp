@@ -1,11 +1,11 @@
 //package biuropodrozy.gotravel.rest;
 //
-//import biuropodrozy.gotravel.model.Reservation;
-//import biuropodrozy.gotravel.model.ReservationsTypeOfRoom;
-//import biuropodrozy.gotravel.model.TypeOfRoom;
-//import biuropodrozy.gotravel.service.ReservationService;
-//import biuropodrozy.gotravel.service.ReservationsTypeOfRoomService;
-//import biuropodrozy.gotravel.service.TypeOfRoomService;
+//import biuropodrozy.gotravel.reservation.Reservation;
+//import biuropodrozy.gotravel.reservationTypeOfRoom.ReservationsTypeOfRoom;
+//import biuropodrozy.gotravel.typeOfRoom.TypeOfRoom;
+//import biuropodrozy.gotravel.reservation.ReservationService;
+//import biuropodrozy.gotravel.reservationTypeOfRoom.ReservationsTypeOfRoomService;
+//import biuropodrozy.gotravel.typeOfRoom.TypeOfRoomService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

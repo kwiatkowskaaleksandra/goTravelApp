@@ -2,13 +2,13 @@
 //
 //import biuropodrozy.gotravel.exception.ReservationException;
 //import biuropodrozy.gotravel.exception.UserException;
-//import biuropodrozy.gotravel.model.Reservation;
-//import biuropodrozy.gotravel.model.Trip;
-//import biuropodrozy.gotravel.model.User;
-//import biuropodrozy.gotravel.service.ReservationService;
-//import biuropodrozy.gotravel.service.ReservationsTypeOfRoomService;
-//import biuropodrozy.gotravel.service.TripService;
-//import biuropodrozy.gotravel.service.UserService;
+//import biuropodrozy.gotravel.reservation.Reservation;
+//import biuropodrozy.gotravel.trip.Trip;
+//import biuropodrozy.gotravel.user.User;
+//import biuropodrozy.gotravel.reservation.ReservationService;
+//import biuropodrozy.gotravel.reservationTypeOfRoom.ReservationsTypeOfRoomService;
+//import biuropodrozy.gotravel.trip.TripService;
+//import biuropodrozy.gotravel.user.UserService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

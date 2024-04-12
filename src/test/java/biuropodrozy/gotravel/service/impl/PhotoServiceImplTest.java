@@ -1,8 +1,9 @@
 package biuropodrozy.gotravel.service.impl;
 
-import biuropodrozy.gotravel.model.Photo;
-import biuropodrozy.gotravel.model.Trip;
-import biuropodrozy.gotravel.repository.PhotoRepository;
+import biuropodrozy.gotravel.photo.Photo;
+import biuropodrozy.gotravel.photo.PhotoServiceImpl;
+import biuropodrozy.gotravel.trip.Trip;
+import biuropodrozy.gotravel.photo.PhotoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

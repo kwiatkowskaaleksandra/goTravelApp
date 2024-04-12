@@ -1,11 +1,11 @@
 //package biuropodrozy.gotravel.rest;
 //
-//import biuropodrozy.gotravel.model.Opinion;
-//import biuropodrozy.gotravel.model.Trip;
-//import biuropodrozy.gotravel.model.User;
-//import biuropodrozy.gotravel.service.OpinionService;
-//import biuropodrozy.gotravel.service.TripService;
-//import biuropodrozy.gotravel.service.UserService;
+//import biuropodrozy.gotravel.opinion.Opinion;
+//import biuropodrozy.gotravel.trip.Trip;
+//import biuropodrozy.gotravel.user.User;
+//import biuropodrozy.gotravel.opinion.OpinionService;
+//import biuropodrozy.gotravel.trip.TripService;
+//import biuropodrozy.gotravel.user.UserService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

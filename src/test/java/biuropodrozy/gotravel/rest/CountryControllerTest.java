@@ -1,7 +1,8 @@
 package biuropodrozy.gotravel.rest;
 
-import biuropodrozy.gotravel.model.Country;
-import biuropodrozy.gotravel.service.CountryService;
+import biuropodrozy.gotravel.country.Country;
+import biuropodrozy.gotravel.country.CountryController;
+import biuropodrozy.gotravel.country.CountryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

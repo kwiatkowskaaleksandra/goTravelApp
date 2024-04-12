@@ -1,7 +1,8 @@
 package biuropodrozy.gotravel.service.impl;
 
-import biuropodrozy.gotravel.model.Country;
-import biuropodrozy.gotravel.repository.CountryRepository;
+import biuropodrozy.gotravel.country.Country;
+import biuropodrozy.gotravel.country.CountryRepository;
+import biuropodrozy.gotravel.country.CountryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

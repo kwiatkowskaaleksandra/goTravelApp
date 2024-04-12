@@ -1,6 +1,6 @@
 package biuropodrozy.gotravel.security.oauth2;
 
-import biuropodrozy.gotravel.model.RefreshToken;
+import biuropodrozy.gotravel.refreshToken.RefreshToken;
 import biuropodrozy.gotravel.security.jwt.JwtUtils;
 import biuropodrozy.gotravel.security.services.RefreshTokenService;
 import biuropodrozy.gotravel.security.services.UserDetailsImpl;

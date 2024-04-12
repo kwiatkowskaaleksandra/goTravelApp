@@ -1,0 +1,10 @@
+button#controlled-tab-tab-reservations, button#controlled-tab-tab-ownOffer {
+    width: 200px;
+    color: black;
+    font-family: "Comic Sans MS"
+}
+
+button#controlled-tab-tab-reservations.active, button#controlled-tab-tab-ownOffer.active {
+    color: #4ec3ff;
+    font-weight: bold;
+}

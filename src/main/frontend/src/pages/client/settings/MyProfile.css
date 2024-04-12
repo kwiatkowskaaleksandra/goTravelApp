@@ -1,0 +1,80 @@
+.head {
+    margin-top: 30px;
+    flex-direction: row;
+}
+
+.input-group-text {
+    width: 35%;
+    justify-content: center;
+}
+
+label#floatingInputValue {
+    font-family: unset;
+}
+
+p.btn.btn-primary.w-25{
+    font-family: "Comic Sans MS";
+}
+
+.my-card {
+    width: 20rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.my-card:hover {
+    transform: scale(1.20);
+    z-index: 1;
+}
+
+.settingCard {
+    font-family: "Comic Sans MS";
+    justify-content: center;
+    text-align: center;
+    justify-items: center;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    color: #4ec3ff;
+}
+
+.settingCard:hover, .my-card:hover {
+    color: #3273dc;
+}
+
+.icon {
+    width: 33%;
+    height: 130px;
+    color: #4ec3ff;
+    flex: 1;
+}
+
+button#controlled-tab-tab-userData, button#controlled-tab-tab-passwordChange, button#controlled-tab-tab-emailChange,
+button#controlled-tab-tab-2FA, button#controlled-tab-tab-deletionOfTheAccount, button#controlled-tab-tab-activeOrders, button#controlled-tab-tab-purchasedTrips {
+    width: 200px;
+    color: black;
+    font-family: "Comic Sans MS"
+}
+
+button#controlled-tab-tab-userData.active, button#controlled-tab-tab-passwordChange.active, button#controlled-tab-tab-emailChange.active,
+button#controlled-tab-tab-2FA.active, button#controlled-tab-tab-deletionOfTheAccount.active,
+button#controlled-tab-tab-activeOrders.active, button#controlled-tab-tab-purchasedTrips.active {
+    color: #4ec3ff;
+    font-weight: bold;
+}
+
+.messageError {
+    background-color: #f8d7da;
+    border-color: #f8d7da;
+}
+
+.saveChanges, .twoFactorAuthenticationEnable {
+    background-color: #4ec3ff;
+    border-color: #4ec3ff;
+}
+
+.activeOffers {
+    background-color: #4ec3ff;
+    border-color: #4ec3ff;
+    margin-right: 20px;
+    margin-top: 40px;
+}

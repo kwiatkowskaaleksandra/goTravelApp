@@ -2,14 +2,14 @@
 //
 //import biuropodrozy.gotravel.exception.DuplicatedUserInfoException;
 //import biuropodrozy.gotravel.exception.UserSignUpException;
-//import biuropodrozy.gotravel.model.User;
-//import biuropodrozy.gotravel.rest.dto.request.UserTotpRequest;
-//import biuropodrozy.gotravel.rest.dto.response.AuthResponse;
-//import biuropodrozy.gotravel.rest.dto.request.LoginRequest;
-//import biuropodrozy.gotravel.rest.dto.request.SignUpRequest;
+//import biuropodrozy.gotravel.user.User;
+//import biuropodrozy.gotravel.user.dto.request.UserTotpRequest;
+//import biuropodrozy.gotravel.authenticate.dto.response.AuthResponse;
+//import biuropodrozy.gotravel.authenticate.dto.request.LoginRequest;
+//import biuropodrozy.gotravel.authenticate.dto.request.SignUpRequest;
 //import biuropodrozy.gotravel.security.TokenProvider;
 //import biuropodrozy.gotravel.security.services.TotpService;
-//import biuropodrozy.gotravel.service.UserService;
+//import biuropodrozy.gotravel.user.UserService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

@@ -82,7 +82,9 @@ class Login extends Component {
             const {accessToken} = response.data
             const {refreshToken} = response.data
             const data = parseJwt(accessToken)
-            const user = {data, accessToken, refreshToken}
+            const {roles} = response.data
+
+            const user = {data, accessToken, refreshToken, roles}
 
             const Auth = this.context
             Auth.userLogin(user)
@@ -147,7 +149,7 @@ class Login extends Component {
                                             </div>
 
                                             <div className="col-sm-12">
-                                                <a href="/forgotPassword" className="float-end text-primary">{t('goTravelNamespace3:doNotYouRememberThePassword')}</a>
+                                                <a href="/client/fromMails/ForgotPassword" className="float-end text-primary">{t('goTravelNamespace3:doNotYouRememberThePassword')}</a>
                                             </div>
 
                                             <div className="line-container">

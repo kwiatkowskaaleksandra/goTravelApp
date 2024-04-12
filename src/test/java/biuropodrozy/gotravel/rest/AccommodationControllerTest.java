@@ -1,7 +1,7 @@
 //package biuropodrozy.gotravel.rest;
 //
-//import biuropodrozy.gotravel.model.Accommodation;
-//import biuropodrozy.gotravel.service.AccommodationService;
+//import biuropodrozy.gotravel.accommodation.Accommodation;
+//import biuropodrozy.gotravel.accommodation.AccommodationService;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.mockito.InjectMocks;

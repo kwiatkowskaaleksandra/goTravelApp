@@ -1,11 +1,11 @@
 package biuropodrozy.gotravel.security.services;
 
 import biuropodrozy.gotravel.exception.TokenRefreshException;
-import biuropodrozy.gotravel.model.RefreshToken;
-import biuropodrozy.gotravel.model.User;
-import biuropodrozy.gotravel.repository.RefreshTokenRepository;
-import biuropodrozy.gotravel.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import biuropodrozy.gotravel.refreshToken.RefreshToken;
+import biuropodrozy.gotravel.refreshToken.RefreshTokenRepository;
+import biuropodrozy.gotravel.user.User;
+import biuropodrozy.gotravel.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +18,7 @@ import java.util.UUID;
  * Service for managing refresh tokens.
  */
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
 
     /**
@@ -29,14 +30,12 @@ public class RefreshTokenService {
     /**
      * Repository for managing refresh tokens.
      */
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     /**
      * Repository for managing users.
      */
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     /**
      * Retrieves a refresh token by its token string.

@@ -1,8 +1,8 @@
 //package biuropodrozy.gotravel.service.impl;
 //
 //import biuropodrozy.gotravel.exception.UserNotFoundException;
-//import biuropodrozy.gotravel.model.User;
-//import biuropodrozy.gotravel.repository.UserRepository;
+//import biuropodrozy.gotravel.user.User;
+//import biuropodrozy.gotravel.user.UserRepository;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

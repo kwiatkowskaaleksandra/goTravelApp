@@ -1,0 +1,29 @@
+.tripInfo {
+    font-family: "Comic Sans MS"
+}
+
+.tripCard {
+    width: 20rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.tripCard:hover {
+    transform: scale(1.20);
+    z-index: 1;
+}
+
+.tripBtn, .saveTheOffer {
+    background: none;
+    color: #4ec3ff;
+    margin-right: 20px;
+    border-color: #4ec3ff;
+}
+
+.img-hover-zoom {
+    transition: transform 0.5s ease;
+}
+
+.img-hover-zoom:hover {
+    transform: scale(1.5);
+}
+

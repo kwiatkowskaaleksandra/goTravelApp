@@ -1,9 +1,9 @@
 //package biuropodrozy.gotravel.service.impl;
 //
-//import biuropodrozy.gotravel.model.Opinion;
-//import biuropodrozy.gotravel.model.Trip;
-//import biuropodrozy.gotravel.model.User;
-//import biuropodrozy.gotravel.repository.OpinionRepository;
+//import biuropodrozy.gotravel.opinion.Opinion;
+//import biuropodrozy.gotravel.trip.Trip;
+//import biuropodrozy.gotravel.user.User;
+//import biuropodrozy.gotravel.opinion.OpinionRepository;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

@@ -56,11 +56,104 @@ export const goTravelApi = {
     getMostBookedTrips,
     getFavoritesTrips,
     addToFavorites,
-    removeTripFromFavorites
+    removeTripFromFavorites,
+    getAllTypeOfTrips,
+    saveNewTrip,
+    validateTrip,
+    deleteTheOffer,
+    getAllActiveReservationNotAccepted,
+    changeAcceptStatus,
+    getAllActiveOwnOffersNotAccepted
+}
+
+function changeAcceptStatus(user, token, idOffer, acceptStatus, mode) {
+    return instance.put("/api/" + mode + "/changeAcceptStatus", null, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'Authorization': bearerAuth(user),
+            'X-CSRF-TOKEN': token,
+        },
+        params: {
+            idOffer: idOffer,
+            acceptStatus: acceptStatus
+        }
+    })
+}
+
+function getAllActiveOwnOffersNotAccepted(user, page, size) {
+    return instance.get("/api/ownOffer/getAllActiveOwnOffersNotAccepted", {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'Authorization': bearerAuth(user)
+        },
+        params: {
+            page: page,
+            size: size
+        }
+    })
+}
+
+function getAllActiveReservationNotAccepted(user, page, size) {
+    return instance.get("/api/reservations/getAllActiveReservationNotAccepted", {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'Authorization': bearerAuth(user)
+        },
+        params: {
+            page: page,
+            size: size
+        }
+    })
+}
+
+function deleteTheOffer(idTrip, user, token) {
+    return instance.delete("/api/trips/deleteTheOffer/" + idTrip, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function validateTrip(trip, user, token) {
+    return instance.post("/api/trips/validate", trip, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function saveNewTrip(trip, user, token) {
+    return instance.post("/api/trips/saveNewTrip", trip, {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'Authorization': bearerAuth(user)
+        }
+    })
+}
+
+function getAllTypeOfTrips() {
+    return instance.get("/api/typeOfTrip/getAllTypeOfTrips")
 }
 
 function removeTripFromFavorites(idTrip, user, token) {
-    return instance.delete("api/favoriteTrips/removeTripFromFavorites", {
+    return instance.delete("/api/favoriteTrips/removeTripFromFavorites", {
         params: {
             idTrip: idTrip
         },

@@ -1,8 +1,8 @@
 //package biuropodrozy.gotravel.service.impl;
 //
-//import biuropodrozy.gotravel.model.Reservation;
-//import biuropodrozy.gotravel.model.ReservationsTypeOfRoom;
-//import biuropodrozy.gotravel.repository.ReservationsTypeOfRoomRepository;
+//import biuropodrozy.gotravel.reservation.Reservation;
+//import biuropodrozy.gotravel.reservationTypeOfRoom.ReservationsTypeOfRoom;
+//import biuropodrozy.gotravel.reservationTypeOfRoom.ReservationsTypeOfRoomRepository;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

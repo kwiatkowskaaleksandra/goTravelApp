@@ -1,11 +1,11 @@
 package biuropodrozy.gotravel.security.oauth2;
 
-import biuropodrozy.gotravel.model.Role;
-import biuropodrozy.gotravel.model.RoleEnum;
-import biuropodrozy.gotravel.model.User;
-import biuropodrozy.gotravel.repository.RoleRepository;
+import biuropodrozy.gotravel.role.Role;
+import biuropodrozy.gotravel.role.RoleEnum;
+import biuropodrozy.gotravel.role.RoleRepository;
 import biuropodrozy.gotravel.security.services.UserDetailsImpl;
-import biuropodrozy.gotravel.service.UserService;
+import biuropodrozy.gotravel.user.User;
+import biuropodrozy.gotravel.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;

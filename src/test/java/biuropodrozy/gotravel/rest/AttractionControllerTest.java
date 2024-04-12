@@ -1,8 +1,8 @@
 //package biuropodrozy.gotravel.rest;
 //
-//import biuropodrozy.gotravel.model.Attraction;
-//import biuropodrozy.gotravel.model.Trip;
-//import biuropodrozy.gotravel.service.AttractionService;
+//import biuropodrozy.gotravel.attraction.Attraction;
+//import biuropodrozy.gotravel.trip.Trip;
+//import biuropodrozy.gotravel.attraction.AttractionService;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.mockito.InjectMocks;

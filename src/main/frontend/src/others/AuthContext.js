@@ -29,9 +29,9 @@ class AuthProvider extends Component {
         if (Date.now() > user.data.exp * 1000) {
             try {
                 const res = await goTravelApi.refreshToken(user.refreshToken);
-                const { accessToken, refreshToken } = res.data;
+                const { accessToken, refreshToken, roles} = res.data;
                 const data = parseJwt(accessToken);
-                localStorage.setItem('user', JSON.stringify({ data, accessToken, refreshToken }));
+                localStorage.setItem('user', JSON.stringify({ data, accessToken, refreshToken, roles }));
                 return true;
             } catch (error) {
                 handleLogError(error)

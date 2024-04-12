@@ -1,7 +1,7 @@
 package biuropodrozy.gotravel.security.services;
 
-import biuropodrozy.gotravel.model.User;
 import biuropodrozy.gotravel.security.oauth2.OAuth2Provider;
+import biuropodrozy.gotravel.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;

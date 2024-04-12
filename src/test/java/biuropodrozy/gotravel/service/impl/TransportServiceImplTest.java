@@ -1,7 +1,7 @@
 //package biuropodrozy.gotravel.service.impl;
 //
-//import biuropodrozy.gotravel.model.Transport;
-//import biuropodrozy.gotravel.repository.TransportRepository;
+//import biuropodrozy.gotravel.transport.Transport;
+//import biuropodrozy.gotravel.transport.TransportRepository;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

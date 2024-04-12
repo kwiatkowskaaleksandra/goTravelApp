@@ -1,0 +1,41 @@
+.personalData {
+    font-family: "Comic Sans MS";
+}
+
+.containerForm {
+    width: 60rem;
+    justify-content: center;
+}
+
+.col.colReservation {
+    text-align: right;
+}
+
+.row {
+    justify-content: flex-end;
+}
+
+button#controlled-tab-tab-personalData, button#controlled-tab-tab-tripDetails, button#controlled-tab-tab-reservationDetails,
+button#controlled-tab-tab-summary {
+    width: 200px;
+    color: black;
+    font-family: "Comic Sans MS"
+}
+
+button#controlled-tab-tab-personalData.active, button#controlled-tab-tab-tripDetails.active, button#controlled-tab-tab-reservationDetails.active,
+button#controlled-tab-tab-summary.active {
+    color: #4ec3ff;
+    font-weight: bold;
+}
+
+.quantityButton {
+    border-color: #b2b2b2;
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
+}
+
+.confirmBtn {
+    background-color: #4ec3ff;
+    border-color: #4ec3ff;
+}

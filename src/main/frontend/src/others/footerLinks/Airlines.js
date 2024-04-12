@@ -1,5 +1,5 @@
-import NavigationBar from "../NavigationBar";
-import Footer from "../Footer";
+import NavigationBar from "../../pages/home/NavigationBar";
+import Footer from "../../pages/home/Footer";
 import React from "react";
 import {useTranslation} from "react-i18next";
 

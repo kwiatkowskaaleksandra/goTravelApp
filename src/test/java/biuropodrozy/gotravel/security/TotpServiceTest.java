@@ -1,6 +1,6 @@
 package biuropodrozy.gotravel.security;
 
-import biuropodrozy.gotravel.model.User;
+import biuropodrozy.gotravel.user.User;
 import biuropodrozy.gotravel.security.services.TotpService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

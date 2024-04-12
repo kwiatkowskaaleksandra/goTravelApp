@@ -1,6 +1,6 @@
 package biuropodrozy.gotravel.security.services;
 
-import biuropodrozy.gotravel.model.User;
+import biuropodrozy.gotravel.user.User;
 import org.apache.commons.codec.binary.Base32;
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.stereotype.Service;

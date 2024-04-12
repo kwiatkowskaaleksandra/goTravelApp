@@ -1,5 +1,5 @@
-import NavigationBar from "../NavigationBar";
-import Footer from "../Footer";
+import NavigationBar from "../../pages/home/NavigationBar";
+import Footer from "../../pages/home/Footer";
 import React, {useEffect, useState} from "react";
 import {FaUmbrella} from "react-icons/fa";
 import {BsCheck2All} from "react-icons/bs";
