@@ -29,7 +29,7 @@ public class AttractionController {
      * @return the list of attractions' response entity
      */
     @GetMapping("/{idTrip}")
-    ResponseEntity<List<Attraction>> readAllTrips(@PathVariable final Long idTrip) {
+    ResponseEntity<List<Attraction>> readAllAttractionByTrips(@PathVariable final Long idTrip) {
         return ResponseEntity.ok(attractionService.getAllByTrips_idTrip(idTrip));
     }
 

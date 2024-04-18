@@ -87,7 +87,7 @@ public class OwnOfferController {
      */
     @PutMapping("/updatePaymentStatus")
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<?> updatePaymentStatus(@RequestBody final long idOwnOffer) {
+    ResponseEntity<?> updatePaymentStatus(@RequestParam Long idOwnOffer) {
         User authenticationUser = authenticationHelper.validateAuthentication();
         if (authenticationUser != null) {
             ownOfferService.updatePaymentStatus(idOwnOffer);
@@ -104,7 +104,7 @@ public class OwnOfferController {
      * @param period The period for which to retrieve active orders ("activeOrders", "purchasedTrips")
      * @return ResponseEntity containing the active orders for the authenticated user
      */
-    @GetMapping("/getReservationActiveOrders/{period}")
+    @GetMapping("/getOwnOffersActiveOrders/{period}")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> getOwnOffersActiveOrders(@PathVariable String period) {
         User authenticationUser = authenticationHelper.validateAuthentication();
@@ -143,7 +143,7 @@ public class OwnOfferController {
      */
     @GetMapping("/getInvoice/{idOwnOffer}")
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<?> getReservationActiveOrders(@PathVariable Long idOwnOffer) {
+    ResponseEntity<?> getOwnOfferInvoice(@PathVariable Long idOwnOffer) {
         User authenticationUser = authenticationHelper.validateAuthentication();
         if (authenticationUser != null) {
             byte[] pdfBytes = ownOfferService.getReservationInvoice(idOwnOffer);

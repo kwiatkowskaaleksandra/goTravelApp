@@ -350,7 +350,10 @@ function addOpinion(user, token, opinion) {
 }
 
 function updatePaymentStatus(user, token, type, idOwnOffer) {
-    return instance.put("api/"+type+"/updatePaymentStatus", idOwnOffer, {
+    return instance.put("api/"+type+"/updatePaymentStatus", null, {
+        params:{
+          "idOwnOffer": idOwnOffer
+        },
         withCredentials: true,
         headers: {
             'Access-Control-Allow-Origin': '*',

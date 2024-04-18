@@ -44,8 +44,8 @@ const OwnOfferAccordion = ({t, ownOffers, generateInvoice, cancelReservationModa
                             <Col xs={12}>
                                 {userType === 'client' &&
                                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    {mode === 'active' && <button className="btn btn-primary activeOffers" type="submit" onClick={(e) => cancelReservationModal(ownOffer.idOwnOffer)}>{t('goTravelNamespace3:cancelYourReservation')}</button> }
-                                    {ownOffer.payment && ownOffer.accepted && <button className="btn btn-primary activeOffers" type="submit" onClick={(e) => generateInvoice(ownOffer.idOwnOffer)}>{t('goTravelNamespace3:downloadTheInvoice')}</button>}
+                                    {mode === 'active' && <button className="btn btn-primary activeOffers" type="submit" onClick={() => cancelReservationModal(ownOffer.idOwnOffer)}>{t('goTravelNamespace3:cancelYourReservation')}</button> }
+                                    {ownOffer.payment && ownOffer.accepted && <button className="btn btn-primary activeOffers" type="submit" onClick={() => generateInvoice(ownOffer.idOwnOffer)}>{t('goTravelNamespace3:downloadTheInvoice')}</button>}
                                     {!ownOffer.payment && ownOffer.accepted && <StripeButton price={ownOffer.totalPrice} email={user.data.sub} user={user} type={"ownOffer"} id={ownOffer.idOwnOffer} style={{marginTop: '40px'}}/>}
                                 </div>
                                 }

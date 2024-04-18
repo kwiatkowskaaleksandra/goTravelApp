@@ -371,7 +371,7 @@ class YourOwnOffer extends Component {
                                             <div style={{textAlign: 'center'}}>
                                                 <div className={"row"}>
                                                     <div className={"col"}>
-                                                        <p className={"filterNameOwnTrip"}>{t('goTravelNamespace3:accommodation')}: <BsInfoCircle onClick={(e) => this.setState({showModal: true})}/></p>
+                                                        <p className={"filterNameOwnTrip"}>{t('goTravelNamespace3:accommodation')}: <BsInfoCircle onClick={() => this.setState({showModal: true})}/></p>
                                                     </div>
                                                     <div className={"col"}>
                                                         <select style={{width: '500px'}} className="form-control search-slt" id="exampleFormControlSelect1"

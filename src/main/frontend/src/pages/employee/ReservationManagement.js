@@ -5,7 +5,7 @@ import {withTranslation} from "react-i18next";
 import AuthContext from "../../others/AuthContext";
 import {goTravelApi} from "../../others/GoTravelApi";
 import {handleLogError} from "../../others/JWT";
-import {Accordion, Col, Row, Tab, Tabs} from "react-bootstrap";
+import {Tab, Tabs} from "react-bootstrap";
 import {GiEmptyHourglass} from "react-icons/gi";
 import "./reservation.css"
 import ReservationAccordion from "../client/settings/ReservationAccordion";

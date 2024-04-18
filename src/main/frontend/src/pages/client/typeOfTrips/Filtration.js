@@ -52,7 +52,7 @@ class Filtration extends Component {
                 <div className={"mb-3"}>
                     <p className={"filterName"}>{t('transport')}: </p>
                     <select className="form-control search-slt" id="exampleFormControlSelect1"
-                            name={"selectedTransport"} onChange={this.props.handleChangeTransport} value={this.state.selectedTransport}>
+                            name={"selectedTransport"} onChange={this.props.handleChangeTransport}>
 
                         <option value={this.state.selectedTransport}>{t('choose')}</option>
                         {this.state.transports.map(transport =>
@@ -64,10 +64,10 @@ class Filtration extends Component {
                 <div className="input-group mb-3">
                     <p className={"filterName"}>{t('numberOfDays')}: </p>
                     <span className="input-group-text" style={{width: '2.5rem', height: "3rem"}}>{t('from')}:</span>
-                    <input type="number" className="form-control" aria-label="Cena od" placeholder="0" min="0" value={this.state.numberOfDaysMin}
+                    <input type="number" className="form-control" aria-label="Cena od" placeholder="0" min="0"
                            name={"numberOfDaysMin"} onChange={this.props.handleChangeNumberOfDaysMin} style={{width: '3rem',  height: "3rem"}}/>
                     <span className="input-group-text" style={{width: '3rem',  height: "3rem"}}>{t('to')}:</span>
-                    <input type="number" className="form-control" aria-label="Cena do" placeholder="0" min="0" value={this.state.numberOfDaysMax}
+                    <input type="number" className="form-control" aria-label="Cena do" placeholder="0" min="0"
                            name={"numberOfDaysMax"} onChange={this.props.handleChangeNumberOfDaysMax} style={{width: '3rem',  height: "3rem"}}/>
                 </div>
 

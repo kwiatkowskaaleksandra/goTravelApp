@@ -149,7 +149,7 @@ public class ReservationServiceImpl implements ReservationService {
         int totalElements = getAll.size();
         int pageSize = pageable.getPageSize();
         int pageNumber = pageable.getPageNumber();
-        int pageIndex = pageNumber - 1;
+        int pageIndex = Math.max(0, pageNumber - 1);
         int start = pageIndex * pageSize;
         int end = Math.min(start + pageSize, totalElements);
 

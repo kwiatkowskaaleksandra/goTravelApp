@@ -110,7 +110,7 @@ h3.carusel-first {
     left: calc((100% - 50%) / 2);
 }
 
-col-lg-4 col-md-6 {
+.col-lg-4 .col-md-6 {
     position: relative;
     min-height: 1px;
     padding-right: 15px;

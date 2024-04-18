@@ -68,7 +68,7 @@ public class ReservationController {
      */
     @PutMapping("/updatePaymentStatus")
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<?> updatePaymentStatus(@RequestBody final long idReservation) {
+    ResponseEntity<?> updatePaymentStatus(@RequestParam final long idReservation) {
         User authentication = authenticationHelper.validateAuthentication();
         if (authentication != null) {
             reservationService.updatePaymentStatus(idReservation);

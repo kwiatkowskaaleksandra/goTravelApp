@@ -3,7 +3,6 @@ package biuropodrozy.gotravel.validation;
 import biuropodrozy.gotravel.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -11,7 +10,6 @@ import java.time.LocalDate;
 /**
  * Represents data used for validating reservations.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter

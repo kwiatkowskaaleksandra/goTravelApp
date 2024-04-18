@@ -140,12 +140,11 @@ public class AuthenticateController {
     /**
      * Signs up a new user.
      * This endpoint allows a new user to sign up by providing their signup details.
-     * It validates the signup request, saves the user in the system, and returns an HTTP 201 Created response upon successful signup.
+     * It validates the signup request, saves the user in the system, and returns an HTTP 200 OK response upon successful signup.
      *
      * @param signUpRequest The SignUpRequest object containing the signup details.
      * @return A ResponseEntity indicating successful signup with an HTTP 201 Created status code.
      */
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         PasswordRequest passwordRequest = new PasswordRequest(null, signUpRequest.getPassword(), signUpRequest.getRepeatedPassword());

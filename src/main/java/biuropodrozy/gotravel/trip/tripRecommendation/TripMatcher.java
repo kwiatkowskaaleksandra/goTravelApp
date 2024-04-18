@@ -155,7 +155,7 @@ public class TripMatcher {
         boolean matchesDuration = Math.abs(trip.getNumberOfDays() - preferences.getDuration()) <= 5;
         boolean matchesTripType = determineTripType(trip.getTripDescription()) == preferences.getTripType();
         boolean matchesFood = matchFoodPreference(trip, preferences.getFood()) >= 0.5;
-
+        System.out.println(matchesPrice +" " + matchesActivity + matchesDuration + matchesTripType + matchesFood);
         return matchesPrice && matchesActivity && matchesDuration && matchesFood && matchesTripType;
     }
 

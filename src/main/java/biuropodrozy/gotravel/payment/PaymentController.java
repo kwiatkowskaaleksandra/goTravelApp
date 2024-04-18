@@ -2,6 +2,7 @@ package biuropodrozy.gotravel.payment;
 
 import biuropodrozy.gotravel.payment.dto.request.PaymentRequest;
 import com.stripe.exception.StripeException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,9 @@ public class PaymentController {
      * @throws StripeException If an error occurs during the Stripe payment process.
      */
     @PostMapping
-    public ResponseEntity<?> completePayment(@RequestBody PaymentRequest request) throws StripeException {
+    public ResponseEntity<?> completePayment(@RequestBody @Valid PaymentRequest request) throws StripeException {
         String chargeId= paymentService.charge(request);
-        return chargeId!=null? new ResponseEntity<>(chargeId, HttpStatus.OK):
+        return chargeId!=null ? new ResponseEntity<>(chargeId, HttpStatus.OK):
                 new ResponseEntity<>("Please check the credit card details entered", HttpStatus.BAD_REQUEST);
     }
 

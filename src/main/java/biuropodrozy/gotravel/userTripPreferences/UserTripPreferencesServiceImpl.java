@@ -1,6 +1,5 @@
 package biuropodrozy.gotravel.userTripPreferences;
 
-import biuropodrozy.gotravel.exception.UserNotFoundException;
 import biuropodrozy.gotravel.exception.UserTripPreferencesException;
 import biuropodrozy.gotravel.user.User;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class UserTripPreferencesServiceImpl implements UserTripPreferencesServic
     public UserTripPreferences getUserTripPreferences(User user) {
         return userTripPreferencesRepository.findByUser(user)
                 .orElseThrow(() ->
-                        new UserNotFoundException("The user has no preferences added.")
+                        new UserTripPreferencesException("The user has no preferences added.")
                 );
     }
 
@@ -36,7 +35,6 @@ public class UserTripPreferencesServiceImpl implements UserTripPreferencesServic
         if (userTripPreferences.getActivityLevel() == -1 || userTripPreferences.getDuration() == -1 || userTripPreferences.getPriceLevel() == -1 ||
         userTripPreferences.getTripType() == -1 || userTripPreferences.getFood() == -1) {
             log.error("Preferences have been entered incorrectly.");
-            System.out.println( userTripPreferences.getFood());
             throw new UserTripPreferencesException("preferencesHaveBeenEnteredIncorrectly");
         }
 
