@@ -87,7 +87,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public long saveReservation(final Reservation reservation, User user) {
+    public long saveReservation(Reservation reservation, User user) {
         ValidationData validationData = new ValidationData(user, reservation.getNumberOfChildren(), reservation.getNumberOfAdults(), reservation.getDepartureDate(),
                 reservation.getTrip().getTripAccommodation().getIdAccommodation(), reservation.getTrip().getTripCity().getIdCity(), reservation.getTrip().getNumberOfDays());
         validateReservation.validateReservationData(validationData);

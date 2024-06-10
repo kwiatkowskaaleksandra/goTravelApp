@@ -62,12 +62,11 @@ public class TripMatcher {
     public boolean matchesVeryHighCriteria(Trip trip, UserTripPreferences preferences, double minPrice, double maxPrice) {
         double tripPriceLevel = (trip.getPrice() - minPrice) / (maxPrice - minPrice) * 10;
 
-        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 1;
+        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 1 || tripPriceLevel == 0;
         boolean matchesActivity = Math.abs(trip.getActivityLevel() - preferences.getActivityLevel()) <= 1;
         boolean matchesDuration = Math.abs(trip.getNumberOfDays() - preferences.getDuration()) <= 1;
         boolean matchesTripType = determineTripType(trip.getTripDescription()) == preferences.getTripType();
         boolean matchesFood = matchFoodPreference(trip, preferences.getFood()) >= 0.5;
-
         return matchesPrice && matchesActivity && matchesDuration && matchesFood && matchesTripType;
     }
 
@@ -84,7 +83,7 @@ public class TripMatcher {
     public boolean matchesHighCriteria(Trip trip, UserTripPreferences preferences, double minPrice, double maxPrice) {
         double tripPriceLevel = (trip.getPrice() - minPrice) / (maxPrice - minPrice) * 10;
 
-        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 2;
+        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 2 || tripPriceLevel == 0;
         boolean matchesActivity = Math.abs(trip.getActivityLevel() - preferences.getActivityLevel()) <= 2;
         boolean matchesDuration = Math.abs(trip.getNumberOfDays() - preferences.getDuration()) <= 2;
         boolean matchesTripType = determineTripType(trip.getTripDescription()) == preferences.getTripType();
@@ -106,7 +105,7 @@ public class TripMatcher {
     public boolean matchesMediumCriteria(Trip trip, UserTripPreferences preferences, double minPrice, double maxPrice) {
         double tripPriceLevel = (trip.getPrice() - minPrice) / (maxPrice - minPrice) * 10;
 
-        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 3;
+        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 3 || tripPriceLevel == 0;
         boolean matchesActivity = Math.abs(trip.getActivityLevel() - preferences.getActivityLevel()) <= 3;
         boolean matchesDuration = Math.abs(trip.getNumberOfDays() - preferences.getDuration()) <= 3;
         boolean matchesTripType = determineTripType(trip.getTripDescription()) == preferences.getTripType();
@@ -128,7 +127,7 @@ public class TripMatcher {
     public boolean matchesLowCriteria(Trip trip, UserTripPreferences preferences, double minPrice, double maxPrice) {
         double tripPriceLevel = (trip.getPrice() - minPrice) / (maxPrice - minPrice) * 10;
 
-        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 4;
+        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 4 || tripPriceLevel == 0;
         boolean matchesActivity = Math.abs(trip.getActivityLevel() - preferences.getActivityLevel()) <= 4;
         boolean matchesDuration = Math.abs(trip.getNumberOfDays() - preferences.getDuration()) <= 4;
         boolean matchesTripType = determineTripType(trip.getTripDescription()) == preferences.getTripType();
@@ -150,12 +149,12 @@ public class TripMatcher {
     public boolean matchesVeryLowCriteria(Trip trip, UserTripPreferences preferences, double minPrice, double maxPrice) {
         double tripPriceLevel = (trip.getPrice() - minPrice) / (maxPrice - minPrice) * 10;
 
-        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 5;
+        boolean matchesPrice = Math.abs(tripPriceLevel - preferences.getPriceLevel()) <= 5 || tripPriceLevel == 0;
         boolean matchesActivity = Math.abs(trip.getActivityLevel() - preferences.getActivityLevel()) <= 5;
         boolean matchesDuration = Math.abs(trip.getNumberOfDays() - preferences.getDuration()) <= 5;
         boolean matchesTripType = determineTripType(trip.getTripDescription()) == preferences.getTripType();
         boolean matchesFood = matchFoodPreference(trip, preferences.getFood()) >= 0.5;
-        System.out.println(matchesPrice +" " + matchesActivity + matchesDuration + matchesTripType + matchesFood);
+
         return matchesPrice && matchesActivity && matchesDuration && matchesFood && matchesTripType;
     }
 

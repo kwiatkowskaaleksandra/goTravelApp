@@ -149,7 +149,7 @@ class Login extends Component {
                                             </div>
 
                                             <div className="col-sm-12">
-                                                <a href="/client/fromMails/ForgotPassword" className="float-end text-primary">{t('goTravelNamespace3:doNotYouRememberThePassword')}</a>
+                                                <a href="/forgotPassword" className="float-end text-primary">{t('goTravelNamespace3:doNotYouRememberThePassword')}</a>
                                             </div>
 
                                             <div className="line-container">

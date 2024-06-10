@@ -324,7 +324,6 @@ class AddTripModal extends Component {
                             <Col>
                                 <select style={{width: '300px', fontFamily: 'Comic Sans MS', marginRight: '170px' }} className="form-control search-slt" id="exampleFormControlSelect2" name="selectedTransport" onChange={(e) => this.setState({selectedFood: e.target.value, changesNotSaved: true})} value={this.state.selectedFood}>
                                     <option value={""}>{t('goTravelNamespace1:choose')}</option>
-                                    <option value={"none"}>{t('goTravelNamespace2:none')}</option>
                                     <option value={"breakfast"}>{t('goTravelNamespace2:breakfast')}</option>
                                     <option value={"dinner"}>{t('goTravelNamespace2:dinner')}</option>
                                     <option value={"supper"}>{t('goTravelNamespace2:supper')}</option>
@@ -397,7 +396,7 @@ class AddTripModal extends Component {
                                 </Col>
                                 <Col>
                                     <div style={{ marginRight: '220px' }}>
-                                        <img className="img-hover-zoom" style={{ width: '150px', height: '120px' }} src={photo.url || "https://via.placeholder.com/150"} alt={""} />
+                                        <img className="img-hover-zoom" style={{ width: '150px', height: '120px' }} src={photo.url || "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png"} alt={""} />
                                     </div>
                                 </Col>
                             </Row>

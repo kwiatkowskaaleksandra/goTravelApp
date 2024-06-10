@@ -55,7 +55,7 @@ public class UserTripPreferences {
     /**
      * The user associated with these trip preferences.
      */
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "idUser")
     @JsonIgnoreProperties({"opinions", "roles", "reservations", "ownOffer", "userTripPreferences", "favoriteTrips"})
     private User user;

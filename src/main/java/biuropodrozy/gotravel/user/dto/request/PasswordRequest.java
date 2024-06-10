@@ -4,13 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * The PasswordRequest class represents a request object containing password-related information.
  */
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PasswordRequest {

@@ -47,7 +47,7 @@ function NavigationBarClient({ isAuthenticated, lang, onLogout, onChangeLang, us
                         <Row>
                             <Col>
                                 <center><NavDropdown.Item className="dropdown-item-nav-bar">
-                                    <Nav.Link as={Link} to={"/allOffers/exotics"} style={{color: 'black'}}> <img alt=""
+                                    <Nav.Link as={Link} to={"/allOffers/exotics"} style={{color: 'black'}} onClick={() => localStorage.removeItem('search')}> <img alt=""
                                                                                                                  src={exotic}
                                                                                                                  width="80"
                                                                                                                  height="80"
@@ -56,38 +56,38 @@ function NavigationBarClient({ isAuthenticated, lang, onLogout, onChangeLang, us
                                 </NavDropdown.Item></center>
 
                                 <center><NavDropdown.Item>
-                                    <Nav.Link as={Link} to={"/allOffers/cruises"} style={{color: 'black'}}>
+                                    <Nav.Link as={Link} to={"/allOffers/cruises"} style={{color: 'black'}} onClick={() => localStorage.removeItem('search')}>
                                         <img alt="" src={cruise} width="80" height="80"
                                              className="d-inline-block align top"/><br/>
                                         {t('cruises')}</Nav.Link></NavDropdown.Item></center>
 
                                 <center><NavDropdown.Item>
-                                    <Nav.Link as={Link} to={"/allOffers/allInclusive"} style={{color: 'black'}}>
+                                    <Nav.Link as={Link} to={"/allOffers/allInclusive"} style={{color: 'black'}} onClick={() => localStorage.removeItem('search')}>
                                         <img alt="" src={allInclusive} width="80" height="80"
                                              className="d-inline-block align top"/><br/>
                                         {t('allInclusive')}</Nav.Link></NavDropdown.Item></center>
                             </Col>
                             <Col>
                                 <center><NavDropdown.Item>
-                                    <Nav.Link as={Link} to={"/allOffers/longTrips"} style={{color: 'black'}}>
+                                    <Nav.Link as={Link} to={"/allOffers/longTrips"} style={{color: 'black'}} onClick={() => localStorage.removeItem('search')}>
                                         <img alt="" src={longTrip} width="80" height="80"
                                              className="d-inline-block align top"/><br/>
                                         {t('longTrips')}</Nav.Link></NavDropdown.Item></center>
                                 <center><NavDropdown.Item>
-                                    <Nav.Link as={Link} to={"/allOffers/shortTrips"} style={{color: 'black'}}>
+                                    <Nav.Link as={Link} to={"/allOffers/shortTrips"} style={{color: 'black'}} onClick={() => localStorage.removeItem('search')}>
                                         <img alt="" src={shortTrip} width="80" height="80"
                                              className="d-inline-block align top"/><br/>
                                         {t('shortTrips')}</Nav.Link></NavDropdown.Item></center>
                                 <center><NavDropdown.Item>
-                                    <Nav.Link as={Link} to={"/allOffers/familyTrips"} style={{color: 'black'}}>
+                                    <Nav.Link as={Link} to={"/allOffers/familyTrips"} style={{color: 'black'}} onClick={() => localStorage.removeItem('search')}>
                                         <img alt="" src={familyTrip} width="80" height="80"
                                              className="d-inline-block align top"/><br/>
                                         {t('familyTrips')}</Nav.Link></NavDropdown.Item></center>
                             </Col>
                         </Row>
                     </NavDropdown>
-                    <Nav.Link as={Link} to={"/allOffers/lastMinute"} className="navbar-menu">{t('lastMinute').toUpperCase()}</Nav.Link>
-                    <Nav.Link as={Link} to={"/allOffers/promotions"} className="navbar-menu">{t('promotions').toUpperCase()}</Nav.Link>
+                    <Nav.Link as={Link} to={"/allOffers/lastMinute"} className="navbar-menu" onClick={() => localStorage.removeItem('search')}>{t('lastMinute').toUpperCase()}</Nav.Link>
+                    <Nav.Link as={Link} to={"/allOffers/promotions"} className="navbar-menu" onClick={() => localStorage.removeItem('search')}>{t('promotions').toUpperCase()}</Nav.Link>
                     <Nav.Link as={Link} to={"/allOffers/proposedForYou"} className="navbar-menu">{t('goTravelNamespace3:proposedForYou').toUpperCase()}</Nav.Link>
                     <Nav.Link as={Link} to={"/yourOwnOffer"} className="navbar-menu">{t('yourOwnOffer').toUpperCase()}</Nav.Link>
 

@@ -82,15 +82,15 @@ public class OwnOfferController {
      * This endpoint allows users with the role 'USER' to update the payment status of their own offer.
      * The payment status is changed for the offer identified by the provided ID.
      *
-     * @param idOwnOffer The ID of the own offer whose payment status is to be updated.
+     * @param idOffer The ID of the own offer whose payment status is to be updated.
      * @return A ResponseEntity with an appropriate message indicating whether the payment status was successfully updated or not.
      */
     @PutMapping("/updatePaymentStatus")
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<?> updatePaymentStatus(@RequestParam Long idOwnOffer) {
+    ResponseEntity<?> updatePaymentStatus(@RequestParam Long idOffer) {
         User authenticationUser = authenticationHelper.validateAuthentication();
         if (authenticationUser != null) {
-            ownOfferService.updatePaymentStatus(idOwnOffer);
+            ownOfferService.updatePaymentStatus(idOffer);
             return ResponseEntity.ok().body("Payment status changed correctly.");
         }
         log.error("Unauthorized access.");
@@ -104,7 +104,7 @@ public class OwnOfferController {
      * @param period The period for which to retrieve active orders ("activeOrders", "purchasedTrips")
      * @return ResponseEntity containing the active orders for the authenticated user
      */
-    @GetMapping("/getOwnOffersActiveOrders/{period}")
+    @GetMapping("/getReservationActiveOrders/{period}")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> getOwnOffersActiveOrders(@PathVariable String period) {
         User authenticationUser = authenticationHelper.validateAuthentication();

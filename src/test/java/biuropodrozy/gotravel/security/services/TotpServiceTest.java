@@ -1,7 +1,6 @@
 package biuropodrozy.gotravel.security.services;
 
 import biuropodrozy.gotravel.user.User;
-import biuropodrozy.gotravel.security.services.TotpService;
 import org.jboss.aerogear.security.otp.Totp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,7 @@ class TotpServiceTest {
     void generateQRUrl() {
         TotpService totpService = new TotpService();
         String qrUrl = totpService.generateQRUrl(user);
-        assertThat(qrUrl).startsWith("https://chart.googleapis.com/chart");
+        assertThat(qrUrl).startsWith("https://quickchart.io/chart?cht=qr&chs=200x200&chl=");
     }
 
     @Test

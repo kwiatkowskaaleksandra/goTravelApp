@@ -18,7 +18,7 @@ public class TotpService {
     /**
      * Prefix for generating QR codes using the Google Chart API.
      */
-    private static final String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
+    private static final String QR_PREFIX = "https://quickchart.io/chart?cht=qr&chs=200x200&chl=";
 
     /**
      * Byte value used in calculations.

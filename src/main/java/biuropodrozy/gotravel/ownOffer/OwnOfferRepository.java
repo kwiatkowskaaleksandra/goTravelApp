@@ -44,6 +44,6 @@ public interface OwnOfferRepository extends JpaRepository<OwnOffer, Long> {
      *
      * @return a list of own offers with future departure dates that have not been accepted
      */
-    @Query("SELECT o FROM OwnOffer o WHERE o.accepted = FALSE AND o.changedAcceptanceState = FALSE AND o.departureDate > CURRENT_DATE")
+    @Query("SELECT o FROM OwnOffer o WHERE o.accepted = FALSE AND o.changedAcceptanceState = FALSE AND o.departureDate > CURRENT_DATE AND o.payment = TRUE")
     List<OwnOffer> findAllFutureDeparturesNotAccepted();
 }

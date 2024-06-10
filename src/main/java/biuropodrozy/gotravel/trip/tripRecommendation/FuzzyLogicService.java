@@ -2,8 +2,10 @@ package biuropodrozy.gotravel.trip.tripRecommendation;
 
 import biuropodrozy.gotravel.userTripPreferences.UserTripPreferences;
 import net.sourceforge.jFuzzyLogic.FIS;
+import net.sourceforge.jFuzzyLogic.plot.JFuzzyChart;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.net.URL;
 
 /**
@@ -19,6 +21,8 @@ public class FuzzyLogicService {
      * @return the evaluation score
      */
     public double evaluateUserPreferences(UserTripPreferences preferences) {
+//        System.setProperty("java.awt.headless", "false");
+
         URL url = getClass().getClassLoader().getResource("preferencesEvaluation.fcl");
         assert url != null;
         String fileName = url.getPath();
@@ -29,6 +33,9 @@ public class FuzzyLogicService {
             return -1;
         }
 
+//        if (!GraphicsEnvironment.isHeadless()) {
+//            JFuzzyChart.get().chart(fis);
+//        }
         fis.setVariable("activityLevel", preferences.getActivityLevel());
         fis.setVariable("priceLevel", preferences.getPriceLevel());
         fis.setVariable("duration", preferences.getDuration());

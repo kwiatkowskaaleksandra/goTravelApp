@@ -105,7 +105,7 @@ class ReservationControllerTest {
 
         mockMvc.perform(put("/api/reservations/updatePaymentStatus")
                         .with(csrf())
-                        .param("idReservation", String.valueOf(reservation))
+                        .param("idOffer", String.valueOf(reservation))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Payment status changed correctly."));
@@ -121,7 +121,7 @@ class ReservationControllerTest {
 
         mockMvc.perform(put("/api/reservations/updatePaymentStatus")
                         .with(csrf())
-                        .param("idReservation", String.valueOf(1L))
+                        .param("idOffer", String.valueOf(1L))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 

@@ -43,7 +43,7 @@ public class PaymentService {
     public String charge(PaymentRequest request) throws StripeException {
         Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("amount", request.getAmount());
-        chargeParams.put("currency", PaymentRequest.Currency.USD);
+        chargeParams.put("currency", PaymentRequest.Currency.PLN);
         chargeParams.put("source", request.getToken().getId());
 
         Charge charge = Charge.create(chargeParams);

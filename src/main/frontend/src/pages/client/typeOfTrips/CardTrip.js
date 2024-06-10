@@ -133,11 +133,13 @@ class CardTrip extends Component {
                                         <div className={"d-flex row gx-5"}>
 
                                             <div className="col">
-                                                <div className="p-3 ">
+                                                <div className={"p-3 "} >
                                                     <Card.Img className={"justify-content-center"}
                                                                   style={{
                                                                   marginTop: '10px',
-                                                                  marginLeft: '2%'
+                                                                  marginLeft: '2%',
+                                                                      height: '350px',
+                                                                      objectFit:'cover'
                                                               }} variant="top"
                                                                   src={tr.representativePhoto}/>
 

@@ -129,11 +129,11 @@ public class User {
     private Set<OwnOffer> ownOffers;
 
     /**
-     * Set of user trip preferences associated with this user.
+     * User trip preferences associated with this user.
      */
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<UserTripPreferences> userTripPreferences;
+    private UserTripPreferences userTripPreferences;
 
     /**
      * Flag indicating if the user is using two-factor authentication.

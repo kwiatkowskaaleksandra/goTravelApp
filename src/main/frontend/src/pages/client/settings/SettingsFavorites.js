@@ -64,7 +64,7 @@ class SettingsFavorites extends Component {
                     <section className={"d-flex justify-content-center mb-4 ms-5 me-5"}>
                         <div className="justify-content-around w-75">
 
-                            <Alert show={this.state.noFavorites} variant="light" className={"recommendationAlert"}>
+                            <Alert show={this.state.noFavorites} variant="light" className={"recommendationAlert"} style={{marginBottom: '15%'}}>
                                 <p>{t('goTravelNamespace3:noTripsAddedToFavorites')}</p>
                             </Alert>
 

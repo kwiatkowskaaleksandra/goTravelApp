@@ -90,11 +90,11 @@ class ReservationManagement extends Component {
                                     <Tab eventKey="ownOffer" title={t('goTravelNamespace3:ownTrips')} className="custom-tab"/>
                                 </Tabs>
                             </div>
-                            <div className={"ml-auto"} style={{marginLeft: '5%'}}>
+                            <div className={"ml-auto"} style={{marginLeft: '5%', marginBottom: '15%'}}>
                                 {key === 'reservations' &&
                                     <div className={"justify-content-center"} style={{width: '1000px'}}>
                                         {this.state.reservationsActiveOrders.length === 0 ? (
-                                            <div style={{borderRadius: '10px', backgroundColor: '#efe8e8', width: '800px', height: '200px', marginBottom: '5%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                            <div style={{borderRadius: '10px', backgroundColor: '#efe8e8', width: '800px', height: '200px', marginBottom: '10%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                                 <GiEmptyHourglass style={{width: '80px', height: '80px', color: '#4ec3ff'}}/>
                                                 <label>{t('goTravelNamespace3:theresNothingToShow')}</label>
                                             </div>
@@ -107,7 +107,7 @@ class ReservationManagement extends Component {
                                 {key === 'ownOffer' &&
                                     <div className={"justify-content-center"} style={{width: '1000px'}}>
                                         {this.state.ownOffersActiveOrders.length === 0 ? (
-                                            <div style={{borderRadius: '10px', backgroundColor: '#efe8e8', width: '800px', height: '200px', marginBottom: '5%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                            <div style={{borderRadius: '10px', backgroundColor: '#efe8e8', width: '800px', height: '200px', marginBottom: '10%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                                 <GiEmptyHourglass style={{width: '80px', height: '80px', color: '#4ec3ff'}}/>
                                                 <label>{t('goTravelNamespace3:theresNothingToShow')}</label>
                                             </div>

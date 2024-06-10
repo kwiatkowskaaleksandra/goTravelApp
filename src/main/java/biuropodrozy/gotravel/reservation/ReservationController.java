@@ -63,15 +63,15 @@ public class ReservationController {
      * This endpoint allows users to update the payment status of their reservation.
      * Only users with the 'USER' role are authorized to access this endpoint.
      *
-     * @param idReservation The ID of the reservation whose payment status is to be updated.
+     * @param idOffer The ID of the reservation whose payment status is to be updated.
      * @return A ResponseEntity with an appropriate message indicating whether the payment status was successfully updated or not.
      */
     @PutMapping("/updatePaymentStatus")
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<?> updatePaymentStatus(@RequestParam final long idReservation) {
+    ResponseEntity<?> updatePaymentStatus(@RequestParam final long idOffer) {
         User authentication = authenticationHelper.validateAuthentication();
         if (authentication != null) {
-            reservationService.updatePaymentStatus(idReservation);
+            reservationService.updatePaymentStatus(idOffer);
             return ResponseEntity.ok().body("Payment status changed correctly.");
         }
         log.error("Unauthorized access.");

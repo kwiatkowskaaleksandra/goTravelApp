@@ -39,7 +39,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT r FROM Reservation r WHERE r.user = :user AND r.departureDate < CURRENT_DATE")
     List<Reservation> findPastDeparturesForUser(User user);
 
-    @Query("SELECT r FROM Reservation r WHERE r.accepted = FALSE AND r.changedAcceptanceState = FALSE AND r.departureDate > CURRENT_DATE")
+    @Query("SELECT r FROM Reservation r WHERE r.accepted = FALSE AND r.changedAcceptanceState = FALSE AND r.departureDate > CURRENT_DATE AND r.payment = TRUE")
     List<Reservation> findAllFutureDeparturesNotAccepted();
 
 }

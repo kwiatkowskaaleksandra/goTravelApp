@@ -4,7 +4,7 @@ import StripeButton from "../StripeButton";
 
 const ReservationAccordion = ({t, reservations, cancelReservationModal, generateInvoice, user, mode, userType, changeAcceptStatus}) => {
     return (
-        <Accordion style={{marginBottom: '10%', width: '1000px'}}>
+        <Accordion style={{marginBottom: '15%', width: '1000px'}}>
             {reservations.map(res => (
                 <Accordion.Item eventKey = {res.idReservation} >
                     <Accordion.Header>
@@ -44,9 +44,10 @@ const ReservationAccordion = ({t, reservations, cancelReservationModal, generate
                             <Col xs={12}>
                                 {userType === 'client' &&
                                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    {mode === 'active' && <button className="btn btn-primary activeOffers" type="submit" onClick={() => cancelReservationModal(res.idReservation)}>{t('goTravelNamespace3:cancelYourReservation')}</button>}
-                                    {res.payment && res.accepted && <button className="btn btn-primary activeOffers" type="submit" onClick={() => generateInvoice(res.idReservation)}>{t('goTravelNamespace3:downloadTheInvoice')}</button>}
-                                    {!res.payment && res.accepted && mode === 'active' && <StripeButton price={res.totalPrice} email={user.data.sub} user={user} type={"reservations"} id={res.idReservation} style={{marginTop: '40px'}}/>}
+                                    {mode === 'active' && ((res.payment && res.accepted && res.changedAcceptanceState) || (res.payment && !res.accepted && !res.changedAcceptanceState) || (!res.payment && !res.accepted && !res.changedAcceptanceState)) && <button className="btn btn-primary activeOffers" type="submit" onClick={() => cancelReservationModal(res.idReservation)}>{t('goTravelNamespace3:cancelYourReservation')}</button>}
+                                    {res.payment && res.accepted && res.changedAcceptanceState && <button className="btn btn-primary activeOffers" type="submit" onClick={() => generateInvoice(res.idReservation)}>{t('goTravelNamespace3:downloadTheInvoice')}</button>}
+                                    {mode === 'active' && !res.payment && !res.accepted && !res.changedAcceptanceState && <StripeButton price={res.totalPrice} email={user.data.sub} user={user} type={"reservations"} id={res.idReservation} style={{marginTop: '40px'}}/>}
+                                    {res.payment && ((!res.accepted && res.changedAcceptanceState) || (mode === 'notActive' && !res.accepted && !res.changedAcceptanceState)) && <label style={{marginTop: '2%'}}>{t('goTravelNamespace4:theMoneyWillBeReturnedToYourAccount')}</label>}
                                 </div>
                                 }
                                 {userType === 'employee' &&

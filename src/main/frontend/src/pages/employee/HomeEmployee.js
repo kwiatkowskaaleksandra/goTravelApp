@@ -6,6 +6,7 @@ import Card from "react-bootstrap/Card";
 import {FaUserCog} from "react-icons/fa";
 import { SiYourtraveldottv } from "react-icons/si";
 import { GiBookPile } from "react-icons/gi";
+import Footer from "../home/Footer";
 
 class HomeEmployee extends Component {
 
@@ -16,7 +17,7 @@ class HomeEmployee extends Component {
                 <NavigationBar/>
                 <header>
                     <section>
-                        <Container style={{marginTop: '5%', width: '70%'}}>
+                        <Container style={{marginTop: '5%', marginBottom: '5%', width: '70%'}}>
                             <Row className="justify-content-center">
 
                                 <Col md={4} className="mb-4">
@@ -66,6 +67,7 @@ class HomeEmployee extends Component {
                         </Container>
                     </section>
                 </header>
+                <Footer/>
             </main>
         )
     }

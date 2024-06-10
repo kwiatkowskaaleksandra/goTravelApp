@@ -147,7 +147,7 @@ class OwnOfferControllerTest {
 
         mockMvc.perform(put("/api/ownOffer/updatePaymentStatus")
                         .with(csrf())
-                        .param("idOwnOffer", String.valueOf(idOwnOffer))
+                        .param("idOffer", String.valueOf(idOwnOffer))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Payment status changed correctly."));
@@ -163,7 +163,7 @@ class OwnOfferControllerTest {
 
         mockMvc.perform(put("/api/ownOffer/updatePaymentStatus")
                         .with(csrf())
-                        .param("idOwnOffer", String.valueOf(1L))
+                        .param("idOffer", String.valueOf(1L))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 
@@ -189,7 +189,7 @@ class OwnOfferControllerTest {
         when(authenticationHelper.validateAuthentication()).thenReturn(user);
         when(ownOfferService.getOwnOffersActiveOrders(user, period)).thenReturn(ownOffers);
 
-        mockMvc.perform(get("/api/ownOffer/getOwnOffersActiveOrders/{period}", period)
+        mockMvc.perform(get("/api/ownOffer/getReservationActiveOrders/{period}", period)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
@@ -204,7 +204,7 @@ class OwnOfferControllerTest {
     void getOwnOffersActiveOrdersUnauthorized() throws Exception {
         when(authenticationHelper.validateAuthentication()).thenReturn(null);
 
-        mockMvc.perform(get("/api/ownOffer/getOwnOffersActiveOrders/{period}", "activeOrders")
+        mockMvc.perform(get("/api/ownOffer/getReservationActiveOrders/{period}", "activeOrders")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 

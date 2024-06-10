@@ -245,7 +245,7 @@ class SeeTheOffer extends Component {
                                                 className="d-block"
                                                 src={photo.urlPhoto}
                                                 alt=" "
-                                                style={{width: '40rem'}}
+                                                style={{width: '740px', height: '540px',objectFit: 'cover'}}
                                             />
                                         </Carousel.Item>
                                     )}

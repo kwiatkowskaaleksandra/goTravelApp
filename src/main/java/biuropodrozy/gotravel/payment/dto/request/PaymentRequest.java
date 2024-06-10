@@ -3,7 +3,6 @@ package biuropodrozy.gotravel.payment.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Represents a payment request.
@@ -11,7 +10,6 @@ import lombok.Setter;
  * email associated with the payment, and payment token.
  */
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentRequest {

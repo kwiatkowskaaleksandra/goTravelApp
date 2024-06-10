@@ -390,7 +390,7 @@ class UserServiceImplTest {
     @Test
     void changePassword_oldPasswordIsDifferentFromTheCurrentOne() {
         User user = new User();
-        user.setPassword("oldPassword1234.");
+        user.setPassword("myPassword99!");
         String oldPassword = "oldPassword123.";
         String newPassword = "newPassword123.";
         String newRepeatedPassword = "newPassword123.";

@@ -35,6 +35,7 @@
     "reactstrap": "^9.1.9",
     "semantic-ui-react": "^2.1.4",
     "sweetpagination": "^1.0.15",
+    "visualize-react-component": "^1.0.43",
     "web-vitals": "^3.3.0"
   },
   "scripts": {

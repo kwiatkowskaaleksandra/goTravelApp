@@ -52,7 +52,7 @@ class TripRecommendation extends Component {
             }).catch(error => {
                 handleLogError(error)
                 const errorData = error.response.data
-                if (errorData.status === 404) {
+                if (errorData.status === 409) {
                     console.log(errorData.message)
                     this.getMostBookedTrips()
                     this.setState({
@@ -99,7 +99,7 @@ class TripRecommendation extends Component {
     getTripRecommendation = async (preferences) => {
         const csrfResponse = await goTravelApi.csrf()
         const csrfToken = csrfResponse.data.token
-console.log(csrfResponse.data.token)
+
         goTravelApi.getRecommendation(this.state.userInfo, preferences, csrfToken).then(res => {
             if (res.data.length === 0) {
                 this.getMostBookedTrips()
@@ -316,19 +316,19 @@ console.log(csrfResponse.data.token)
 
                                 <p className="question">5. {t('goTravelNamespace4:question5')}</p>
                                 <div className="options" style={{textAlign: 'justify', marginBottom: '10px'}}>
-                                    {[...Array(8)].map((_, index) => (
+                                    {[...Array(7)].map((_, index) => (
                                         <div className="form-check" style={{marginBottom: '10px'}} key={index}>
                                             <input
                                                 className="form-check-input"
                                                 type="radio"
                                                 name="question5"
-                                                id={`inline5Radio${index + 1}`}
-                                                value={`option${index + 1}`}
-                                                checked={this.state.foodSelectedOption === `option${index + 1}`}
-                                                onChange={() => this.setState({foodSelectedOption: `option${index + 1}`})}
+                                                id={`inline5Radio${index + 2}`}
+                                                value={`option${index + 2}`}
+                                                checked={this.state.foodSelectedOption === `option${index + 2}`}
+                                                onChange={() => this.setState({foodSelectedOption: `option${index + 2}`})}
                                             />
-                                            <label className="form-check-label" htmlFor={`inline5Radio${index + 1}`}>
-                                                {t(`goTravelNamespace4:question5answer${index + 1}`)}
+                                            <label className="form-check-label" htmlFor={`inline5Radio${index + 2}`}>
+                                                {t(`goTravelNamespace4:question5answer${index + 2}`)}
                                             </label>
                                         </div>
                                     ))}

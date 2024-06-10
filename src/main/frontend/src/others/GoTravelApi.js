@@ -349,10 +349,10 @@ function addOpinion(user, token, opinion) {
     })
 }
 
-function updatePaymentStatus(user, token, type, idOwnOffer) {
+function updatePaymentStatus(user, token, type, idOffer) {
     return instance.put("api/"+type+"/updatePaymentStatus", null, {
         params:{
-          "idOwnOffer": idOwnOffer
+          "idOffer": idOffer
         },
         withCredentials: true,
         headers: {

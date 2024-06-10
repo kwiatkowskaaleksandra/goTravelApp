@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import './Home.css'
-import Footer from "./Footer";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../others/AuthContext";
 import HomeEmployee from "../employee/HomeEmployee";
@@ -36,7 +35,6 @@ class Home extends Component {
                         <HomeClient/>
                     )}
                 </header>
-                <Footer/>
             </main>
         )
     }

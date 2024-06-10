@@ -49,7 +49,7 @@
             <<div class="card-body mt-5">
                 <h5 class="card-title">Hi ${username} !</h5>
                 <p class="card-text">Below is a link to reset your password for a given email address: ${email}.
-                    The link will only be valid for one hour. After the time has elapsed, you will have to do the whole email change procedure all over again.</p>
+                    The link will only be valid for one hour. After the time has elapsed, you will have to do the whole password change procedure all over again.</p>
 
                 <a class="btn" style="color: white;   width: 300px; height: 40px; text-align: center; line-height: 2; display: block;" role="button" href=${code}>Reset password</a>
 

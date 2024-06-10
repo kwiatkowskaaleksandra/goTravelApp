@@ -1,7 +1,7 @@
 export const setPreferencesActivityLevel = (activityLvl, setState) => {
     if (activityLvl >= 0 && activityLvl < 2) {
         setState({activityLevelSelectedOption: 'option1'});
-    } else if (activityLvl >= 2 && activityLvl < 6) {
+    } else if (activityLvl >= 2 && activityLvl < 5) {
         setState({activityLevelSelectedOption: 'option2'});
     } else if (activityLvl >= 5 && activityLvl < 7) {
         setState({activityLevelSelectedOption: 'option3'});

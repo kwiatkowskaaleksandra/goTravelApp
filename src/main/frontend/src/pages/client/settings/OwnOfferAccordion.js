@@ -3,6 +3,7 @@ import React from "react";
 import StripeButton from "../StripeButton";
 
 const OwnOfferAccordion = ({t, ownOffers, generateInvoice, cancelReservationModal, user, mode, userType, changeAcceptStatus}) => {
+    console.log(ownOffers)
     return (
         <Accordion style={{marginBottom: '15%', width: '1000px'}}>
             {ownOffers.map(ownOffer => (
@@ -44,9 +45,10 @@ const OwnOfferAccordion = ({t, ownOffers, generateInvoice, cancelReservationModa
                             <Col xs={12}>
                                 {userType === 'client' &&
                                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    {mode === 'active' && <button className="btn btn-primary activeOffers" type="submit" onClick={() => cancelReservationModal(ownOffer.idOwnOffer)}>{t('goTravelNamespace3:cancelYourReservation')}</button> }
-                                    {ownOffer.payment && ownOffer.accepted && <button className="btn btn-primary activeOffers" type="submit" onClick={() => generateInvoice(ownOffer.idOwnOffer)}>{t('goTravelNamespace3:downloadTheInvoice')}</button>}
-                                    {!ownOffer.payment && ownOffer.accepted && <StripeButton price={ownOffer.totalPrice} email={user.data.sub} user={user} type={"ownOffer"} id={ownOffer.idOwnOffer} style={{marginTop: '40px'}}/>}
+                                    {mode === 'active' && ((ownOffer.payment && ownOffer.accepted && ownOffer.changedAcceptanceState) || (ownOffer.payment && !ownOffer.accepted && !ownOffer.changedAcceptanceState) || (!ownOffer.payment && !ownOffer.accepted && !ownOffer.changedAcceptanceState)) && <button className="btn btn-primary activeOffers" type="submit" onClick={() => cancelReservationModal(ownOffer.idOwnOffer)}>{t('goTravelNamespace3:cancelYourReservation')}</button>}
+                                    {ownOffer.payment && ownOffer.accepted && ownOffer.changedAcceptanceState && <button className="btn btn-primary activeOffers" type="submit" onClick={() => generateInvoice(ownOffer.idOwnOffer)}>{t('goTravelNamespace3:downloadTheInvoice')}</button>}
+                                    {mode === 'active' && !ownOffer.payment && !ownOffer.accepted && !ownOffer.changedAcceptanceState && <StripeButton price={ownOffer.totalPrice} email={user.data.sub} user={user} type={"ownOffer"} id={ownOffer.idOwnOffer} style={{marginTop: '40px'}}/>}
+                                    {ownOffer.payment && ((!ownOffer.accepted && ownOffer.changedAcceptanceState) || (mode === 'notActive' && !ownOffer.accepted && !ownOffer.changedAcceptanceState)) && <label style={{marginTop: '2%'}}>{t('goTravelNamespace4:theMoneyWillBeReturnedToYourAccount')}</label>}
                                 </div>
                                 }
                                 {userType === 'employee' &&

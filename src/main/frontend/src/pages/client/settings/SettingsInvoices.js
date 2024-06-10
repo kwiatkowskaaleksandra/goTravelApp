@@ -169,7 +169,7 @@ class SettingsInvoices extends Component {
                                         </div>
                                     </div>
                                     {key === 'activeOrders' &&
-                                        <div className={"justify-content-center"} style={{width: '1000px'}}>
+                                        <div className={"d-flex justify-content-center"} style={{width: '1000px'}}>
                                             {this.state.ownOffersActiveOrders.length === 0 && this.state.reservationsActiveOrders.length === 0 ? (
                                                 <div style={{borderRadius: '10px', backgroundColor: '#efe8e8', width: '800px', height: '200px', marginBottom: '5%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                                     <GiEmptyHourglass style={{width: '80px', height: '80px', color: '#4ec3ff'}}/>
@@ -179,7 +179,7 @@ class SettingsInvoices extends Component {
                                                 ( this.state.reservationOrigin === 'reservations' && (
                                                     <ReservationAccordion t={t} reservations={this.state.reservationsActiveOrders} cancelReservationModal = {this.cancelReservationModal} generateInvoice={this.generateInvoice} user={this.state.user} mode = 'active' userType = 'client'/>
                                                 )) || (this.state.reservationOrigin === 'ownOffer' && (
-                                                    <OwnOfferAccordion t={t} ownOffers={this.state.ownOffersActiveOrders} generateInvoice={this.generateInvoice} cancelReservationModal = {this.cancelReservationModal} user={this.state.user} mode = 'active'/>
+                                                    <OwnOfferAccordion t={t} ownOffers={this.state.ownOffersActiveOrders} generateInvoice={this.generateInvoice} cancelReservationModal = {this.cancelReservationModal} user={this.state.user} mode = 'active' userType = 'client'/>
                                                 ))
                                             )}
                                         </div>
@@ -196,7 +196,7 @@ class SettingsInvoices extends Component {
                                             ( this.state.reservationOrigin === 'reservations' && (
                                                 <ReservationAccordion t={t} reservations={this.state.reservationsPurchasedTrips} cancelReservationModal = {this.cancelReservationModal} generateInvoice={this.generateInvoice} user={this.state.user} mode = 'notActive' userType = 'client'/>
                                             )) || (this.state.reservationOrigin === 'ownOffer' && (
-                                               <OwnOfferAccordion t={t} ownOffers={this.state.ownOffersPurchasedTrips} generateInvoice={this.generateInvoice} cancelReservationModal = {this.cancelReservationModal} user={this.state.user} mode = 'notActive'/>
+                                               <OwnOfferAccordion t={t} ownOffers={this.state.ownOffersPurchasedTrips} generateInvoice={this.generateInvoice} cancelReservationModal = {this.cancelReservationModal} user={this.state.user} mode = 'notActive' userType = 'client'/>
                                             ))
                                         )
                                         }

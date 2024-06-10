@@ -65,7 +65,7 @@ class TourOffersManagement extends Component {
         let currentPage = page !== undefined ? page : 1;
         if (page < 1) currentPage = 1
         else if (page > this.state.howManyPages) currentPage = this.state.howManyPages
-
+        if (currentPage - 1 < 0) currentPage = 1
         goTravelApi.getTrips(this.state.typeOfTrip, currentPage - 1, this.state.itemsPerPage).then(res => {
             this.setState({
                 trips: res.data.content,
@@ -125,6 +125,8 @@ class TourOffersManagement extends Component {
                     <section className={"d-flex justify-content-center"}>
                         <div style={{width: '90%', marginTop: '10px'}}>
                             <Row className="justify-content-center">
+                                {this.state.trips.length < 1 &&
+                                <div style={{height: '150px'}}></div>}
                                 {this.state.trips.map((trip) => (
                                     <Col key={trip.idTrip} md={3} className="mb-4">
                                         <Card style={{ marginBottom: '30px' }} className="tripCard">

@@ -64,6 +64,7 @@ class AllOffers extends Component {
 
     loadDataBasedOnLocation(pathname) {
         const type = pathname.split('/allOffers/').pop();
+        console.log(type+"   typ")
         this.setState({typeOfTrips: type}, () => {
             this.handleGetTrips(this.state.page);
             this.handleGetTransports()
@@ -82,7 +83,7 @@ class AllOffers extends Component {
 
         if (page < 1) currentPage = 1
         else if (page > this.state.howManyPages) currentPage = this.state.howManyPages
-
+        if (currentPage - 1 < 0) currentPage = 1
         goTravelApi.getTrips(this.state.typeOfTrips, currentPage - 1, size).then(res => {
             this.setState({
                 trips: res.data.content,
